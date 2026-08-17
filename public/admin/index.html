@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Feiz Food Group — Content Manager</title>
+    <!--
+      Decap resolves its config relative to the current URL. `/admin` is served
+      by a rewrite (no trailing slash), so the default lookup would resolve to
+      `/config.yml` and get swallowed by the locale proxy. Pinning an absolute
+      path makes the CMS work at /admin, /admin/ and /admin/index.html alike.
+    -->
+    <link href="/admin/config.yml" type="text/yaml" rel="cms-config-url" />
+  </head>
+  <body>
+    <!--
+      Decap CMS admin entry point.
+
+      Collections and fields live in config.yml. Authentication uses the GitHub
+      backend against this app's own OAuth broker (src/app/api/auth and
+      src/app/api/callback), so the client secret never reaches the browser.
+    -->
+
+    <!--
+      Manual init: hold Decap back on load so `backend.base_url` can be set
+      from the current origin.
+
+      base_url is deliberately NOT hardcoded in config.yml — a fixed domain
+      would break Vercel preview deployments and local runs, because the OAuth
+      redirect_uri must match the origin the request was made against. Values
+      passed to `CMS.init` are merged over the loaded config.yml, so this
+      overrides only that one key and leaves the file as the source of truth.
+    -->
+    <script>
+      window.CMS_MANUAL_INIT = true;
+    </script>
+    <!--
+      Self-hosted, version-pinned Decap runtime (audit SEC-M1).
+
+      Previously this loaded `decap-cms@^3` from unpkg: a mutable semver range
+      on a third-party CDN, resolved fresh on every cache cycle, with no
+      integrity pinning — for a script that receives the editor's GitHub token.
+
+      The bundle is now served from this origin. It is copied out of the
+      exact-pinned `decap-cms` devDependency by `scripts/vendor-decap.mjs`, and
+      every served byte is recorded in `decap-cms-manifest.json`. The version
+      appears in the path, so a runtime upgrade is a visible, reviewable diff.
+
+      Keep this a plain relative-safe absolute path: Decap is code-split and
+      webpack derives its publicPath from this script's own src at runtime, so
+      the chunks (`<id>.decap-cms.js`) load from the same directory.
+
+      To change versions see docs/CMS-ADMIN-SETUP.md § "Updating the runtime".
+    -->
+    <script src="/admin/vendor/decap-cms/3.15.1/decap-cms.js"></script>
+    <script>
+      window.CMS.init({
+        config: {
+          backend: { base_url: window.location.origin },
+        },
+      });
+    </script>
+  </body>
+</html>

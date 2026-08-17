@@ -1,0 +1,848 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* ── Brand Colors ── */
+  --color-navy: #0a1628;
+  --color-navy-light: #111d33;
+  --color-navy-card: #152238;
+  --color-navy-glass: rgba(10, 22, 40, 0.65);
+
+  --color-cyan-brand: #0891b2;
+  --color-cyan-hover: #06b6d4;
+  --color-cyan-glow: rgba(8, 145, 178, 0.15);
+  --color-cyan-light: #22d3ee;
+
+  --color-emerald-cta: #047857;
+  --color-emerald-hover: #059669;
+
+  --color-gold: #f59e0b;
+  --color-gold-light: #fbbf24;
+
+  --color-smoke: #f8fafc;
+  --color-silver: #94a3b8;
+  /* Body / label ink on light surfaces — darker and more readable than silver. */
+  --color-ink: #2d3d4f;
+  --color-label: #5c6d80;
+  --color-stone-300: #d6d3d1;
+
+  /* ── Typography ── */
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-fa:
+    "Vazirmatn Variable", "Vazirmatn", ui-sans-serif, system-ui, sans-serif;
+
+  /* ── Radius ── */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ── */
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.1);
+  --shadow-glow-cyan: 0 0 24px rgba(8, 145, 178, 0.15);
+
+  /* ── Button system shadows (see components/ui/button.tsx) ── */
+  --shadow-btn:
+    0 1px 2px rgba(10, 22, 40, 0.18), 0 4px 14px -6px rgba(8, 145, 178, 0.35);
+  --shadow-btn-hover:
+    0 2px 6px rgba(10, 22, 40, 0.14), 0 8px 22px -6px rgba(8, 145, 178, 0.45);
+  --shadow-btn-navy: 0 6px 18px -8px rgba(10, 22, 40, 0.5);
+}
+
+/* ── Button motion system ──────────────────────────────────────────────
+   Single source of truth for every button interaction on the site.
+   The Button component (src/components/ui/button.tsx) consumes these
+   tokens, so hover, press and icon-nudge timing are identical on every
+   page, in every locale, for mouse, keyboard and touch.
+   Premium · smooth · corporate · subtle: one short duration, one ease. */
+:root {
+  --btn-duration: 200ms;
+  --btn-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --btn-icon-nudge: 3px;
+}
+
+/* Centralized arrow/icon movement for buttons.
+   Any icon inside a Button marked with `data-icon="end"` (trailing,
+   e.g. ArrowRight) nudges forward on hover/focus; `data-icon="start"`
+   (leading, e.g. a back arrow) nudges backward. Uses the individual
+   `translate` property so it composes with Tailwind's `rotate` utilities
+   (e.g. `rtl:rotate-180`) instead of overriding them. Flipped
+   automatically under dir="rtl". */
+[data-slot="button"] [data-icon] {
+  translate: 0 0;
+  transition: translate var(--btn-duration) var(--btn-ease);
+}
+
+[data-slot="button"]:hover [data-icon="end"],
+[data-slot="button"]:focus-visible [data-icon="end"] {
+  translate: var(--btn-icon-nudge) 0;
+}
+
+[data-slot="button"]:hover [data-icon="start"],
+[data-slot="button"]:focus-visible [data-icon="start"] {
+  translate: calc(-1 * var(--btn-icon-nudge)) 0;
+}
+
+html[dir="rtl"] [data-slot="button"]:hover [data-icon="end"],
+html[dir="rtl"] [data-slot="button"]:focus-visible [data-icon="end"] {
+  translate: calc(-1 * var(--btn-icon-nudge)) 0;
+}
+
+html[dir="rtl"] [data-slot="button"]:hover [data-icon="start"],
+html[dir="rtl"] [data-slot="button"]:focus-visible [data-icon="start"] {
+  translate: var(--btn-icon-nudge) 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="button"] [data-icon] {
+    transition: none;
+  }
+}
+
+/* ── Base ── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-navy);
+  background: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* RTL support */
+html[dir="rtl"] body {
+  font-family: var(--font-fa);
+}
+
+/* ── Selection ── */
+::selection {
+  background: rgba(8, 145, 178, 0.2);
+  color: var(--color-navy);
+}
+
+/* ── Focus ── */
+*:focus-visible {
+  outline: 2px solid var(--color-cyan-brand);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-smoke);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-silver);
+  border-radius: var(--radius-full);
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Scroll Reveal (see components/shared/Reveal.tsx) ──
+   Entrance state is toggled by a single IntersectionObserver that disconnects
+   after firing, so scrolling stays free of JS work. Only opacity/transform
+   animate, keeping the effect on the compositor. */
+.reveal {
+  opacity: 0;
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal[data-reveal-from="up"] {
+  transform: translate3d(0, 20px, 0);
+}
+/* Mobile-first: sideways offsets would push full-bleed media past the viewport
+   edge, so below `lg` every direction animates vertically. */
+.reveal[data-reveal-from="start"],
+.reveal[data-reveal-from="end"] {
+  transform: translate3d(0, 20px, 0);
+}
+
+/* From `lg` up there is gutter room for horizontal motion.
+   Logical directions: flipped automatically under dir="rtl". */
+@media (min-width: 1024px) {
+  .reveal[data-reveal-from="start"] {
+    transform: translate3d(-24px, 0, 0);
+  }
+  .reveal[data-reveal-from="end"] {
+    transform: translate3d(24px, 0, 0);
+  }
+  html[dir="rtl"] .reveal[data-reveal-from="start"] {
+    transform: translate3d(24px, 0, 0);
+  }
+  html[dir="rtl"] .reveal[data-reveal-from="end"] {
+    transform: translate3d(-24px, 0, 0);
+  }
+}
+.reveal[data-reveal="shown"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal[data-reveal-from="up"],
+  .reveal[data-reveal-from="start"],
+  .reveal[data-reveal-from="end"] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ── Markets hero: export-network map ───────────────────────────────────────
+   The banner artwork is a 2.36:1 world map whose subject is the Iran →
+   Vietnam corridor on the right-hand half. A plain `object-cover` centre crop
+   keeps the Atlantic and drops the trade lanes on narrow screens, so the focal
+   point is moved deliberately per breakpoint instead of being left to chance.
+
+   Small mobile  — hard right: only the Iran → SE Asia arcs remain in frame.
+   Mobile/tablet — easing back left as more width becomes available.
+   Desktop       — near-centre; the full network reads at once.
+
+   The crop is shared by every locale. Mirroring it under dir="rtl" was tried
+   and rejected: the corridor is drawn near the right edge of the artwork, so
+   no crop moves it away from the RTL copy column, and pulling the frame left
+   only drops the destinations out of view. Legibility behind the Persian copy
+   is handled by the direction-aware `.markets-hero-scrim` instead. */
+.markets-hero-map {
+  object-position: 78% 42%;
+}
+
+@media (min-width: 480px) {
+  .markets-hero-map {
+    object-position: 72% 45%;
+  }
+}
+
+@media (min-width: 768px) {
+  .markets-hero-map {
+    object-position: 66% 50%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .markets-hero-map {
+    object-position: 60% 50%;
+  }
+}
+
+@media (min-width: 1440px) {
+  .markets-hero-map {
+    object-position: 55% 50%;
+  }
+}
+
+/* ── Markets page: destination panel image scrim ────────────────────────────
+   Blends the panel image into the navy content surface. Mobile stacks
+   (image above content) so the fade runs upward; from `lg` the panel is a
+   two-column grid and the fade runs horizontally toward whichever side the
+   content occupies.
+
+   Written as a plain rule rather than Tailwind utilities because a single
+   element cannot carry two opposing `bg-gradient-to-*` directions, and the
+   direction depends on both `data-side` and text direction. */
+.market-panel-scrim {
+  background: linear-gradient(
+    to top,
+    rgba(10, 22, 40, 0.85) 0%,
+    rgba(10, 22, 40, 0.2) 55%,
+    rgba(10, 22, 40, 0) 100%
+  );
+}
+
+@media (min-width: 1024px) {
+  /* Image on the reading-start side → content sits to its right in LTR. */
+  .market-panel-scrim[data-side="start"] {
+    background: linear-gradient(
+      to right,
+      rgba(10, 22, 40, 0) 0%,
+      rgba(10, 22, 40, 0.1) 55%,
+      rgba(10, 22, 40, 0.7) 100%
+    );
+  }
+
+  .market-panel-scrim[data-side="end"] {
+    background: linear-gradient(
+      to left,
+      rgba(10, 22, 40, 0) 0%,
+      rgba(10, 22, 40, 0.1) 55%,
+      rgba(10, 22, 40, 0.7) 100%
+    );
+  }
+
+  /* A grid in RTL lays its columns right-to-left, so the physical side of the
+     image flips while `data-side` (logical) stays the same. Mirror the fade so
+     it still points at the content. */
+  html[dir="rtl"] .market-panel-scrim[data-side="start"] {
+    background: linear-gradient(
+      to left,
+      rgba(10, 22, 40, 0) 0%,
+      rgba(10, 22, 40, 0.1) 55%,
+      rgba(10, 22, 40, 0.7) 100%
+    );
+  }
+
+  html[dir="rtl"] .market-panel-scrim[data-side="end"] {
+    background: linear-gradient(
+      to right,
+      rgba(10, 22, 40, 0) 0%,
+      rgba(10, 22, 40, 0.1) 55%,
+      rgba(10, 22, 40, 0.7) 100%
+    );
+  }
+}
+
+/* Secondary destination panels use the same image-to-content blend as the
+   primary panel, retinted to meet their white content surface. */
+.market-panel-scrim-light {
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(255, 255, 255, 0.16) 55%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+@media (min-width: 1024px) {
+  .market-panel-scrim-light[data-side="start"] {
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.08) 55%,
+      rgb(81, 79, 102) 100%
+    );
+  }
+
+  .market-panel-scrim-light[data-side="end"] {
+    background: linear-gradient(
+      to left,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.08) 55%,
+      rgb(81, 79, 102) 100%
+    );
+  }
+
+  html[dir="rtl"] .market-panel-scrim-light[data-side="start"] {
+    background: linear-gradient(
+      to left,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.08) 55%,
+      rgb(81, 79, 102) 100%
+    );
+  }
+
+  html[dir="rtl"] .market-panel-scrim-light[data-side="end"] {
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.08) 55%,
+      rgb(81, 79, 102) 100%
+    );
+  }
+}
+
+/* Prose rendered on a navy surface (primary-market panel).
+   `Prose` hard-codes light-surface ink colours, which is right for 95% of the
+   site; rather than threading a tone prop through every call site, this class
+   re-tints the few dark-surface instances. */
+.markets-prose-dark p,
+.markets-prose-dark li {
+  color: #cbd5e1;
+}
+
+.markets-prose-dark h2,
+.markets-prose-dark h3,
+.markets-prose-dark h4,
+.markets-prose-dark strong {
+  color: #ffffff;
+}
+
+.markets-prose-dark a {
+  color: var(--color-cyan-light);
+}
+
+/* Side scrim behind the hero copy. Written as a plain rule rather than a
+   Tailwind gradient pair because `bg-gradient-to-r` and `bg-gradient-to-l`
+   cannot both be applied to one element via `rtl:` variants. */
+.markets-hero-scrim {
+  background: linear-gradient(
+    to right,
+    rgba(10, 22, 40, 0.9) 0%,
+    rgba(10, 22, 40, 0.55) 38%,
+    rgba(10, 22, 40, 0) 78%
+  );
+}
+
+html[dir="rtl"] .markets-hero-scrim {
+  background: linear-gradient(
+    to left,
+    rgba(10, 22, 40, 0.9) 0%,
+    rgba(10, 22, 40, 0.55) 38%,
+    rgba(10, 22, 40, 0) 78%
+  );
+}
+
+/* ── Glass Utility ── */
+.glass {
+  background: var(--color-navy-glass);
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-2xl {
+  background: rgba(10, 22, 40, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl);
+}
+
+/* ── Shadcn overrides ── */
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0.017 285.82);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0.017 285.82);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0.017 285.82);
+  --primary: #0891b2;
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0.001 286.38);
+  --secondary-foreground: oklch(0.21 0.015 285.94);
+  --muted: oklch(0.97 0.001 286.38);
+  --muted-foreground: oklch(0.552 0.014 286.07);
+  --accent: oklch(0.97 0.001 286.38);
+  --accent-foreground: oklch(0.21 0.015 285.94);
+  --destructive: oklch(0.577 0.245 27.33);
+  --destructive-foreground: oklch(0.577 0.245 27.33);
+  --border: oklch(0.92 0.004 286.32);
+  --input: oklch(0.92 0.004 286.32);
+  --ring: #0891b2;
+  --radius: 0.75rem;
+}
+
+/* ── Supply-chain flow connectors ──
+   The dashed segment drifts toward the arrowhead so the connector reads as
+   movement through the chain rather than a static divider. Pure CSS: one
+   keyframe on an SVG stroke offset, no JS and no animation library. */
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -10;
+  }
+}
+
+.flow-connector svg path[stroke-dasharray] {
+  animation: flow-dash 1.4s linear infinite;
+}
+
+.flow-connector svg path:not([stroke-dasharray]) {
+  animation: flow-arrowhead 1.4s ease-in-out infinite;
+}
+
+@keyframes flow-arrowhead {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: translateX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(1.5px);
+  }
+}
+
+/* The horizontal arrow points along the reading direction, so mirror it in RTL.
+   Applied as a plain rule rather than a Tailwind `rtl:` scale utility: that
+   utility only sets --tw-scale-x, which has no effect unless a `scale` is
+   already applied to the element. */
+html[dir="rtl"] .flow-arrow {
+  transform: scaleX(-1);
+}
+
+/* Mobile connectors point downward, so nudge the arrowhead on the Y axis. */
+@media (max-width: 1023px) {
+  @keyframes flow-arrowhead {
+    0%,
+    100% {
+      opacity: 0.55;
+      transform: translateY(0);
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(1.5px);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-connector svg path[stroke-dasharray],
+  .flow-connector svg path:not([stroke-dasharray]) {
+    animation: none;
+  }
+}
+
+/* ── Homepage supply-chain rail ──
+   Icon-first single-row flow. The dashes drift toward each arrowhead so the
+   whole rail reads as continuous movement from origin to delivery. */
+.supply-rail-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.supply-rail-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.supply-rail-arrow path[stroke-dasharray] {
+  animation: supply-rail-dash 1.6s linear infinite;
+}
+.supply-rail-arrow path:not([stroke-dasharray]) {
+  animation: supply-rail-head 1.6s ease-in-out infinite;
+}
+
+@keyframes supply-rail-dash {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+@keyframes supply-rail-head {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translateX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(2px);
+  }
+}
+
+/* Fade the trailing edge while the rail scrolls, so it is obvious that more
+   stages continue off-screen. Direction-aware, and dropped once everything
+   fits on one screen. */
+@media (max-width: 1279px) {
+  .supply-rail-scroll {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 18px,
+      #000 calc(100% - 40px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 18px,
+      #000 calc(100% - 40px),
+      transparent 100%
+    );
+  }
+  html[dir="rtl"] .supply-rail-scroll {
+    -webkit-mask-image: linear-gradient(
+      to left,
+      transparent 0,
+      #000 18px,
+      #000 calc(100% - 40px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to left,
+      transparent 0,
+      #000 18px,
+      #000 calc(100% - 40px),
+      transparent 100%
+    );
+  }
+}
+
+/* Arrows point along the reading direction, so mirror the whole rail arrow in
+   RTL. Set as a plain rule because Tailwind's `rtl:-scale-x-100` only assigns
+   --tw-scale-x, which does nothing unless a scale is already applied. */
+html[dir="rtl"] .supply-rail-arrow {
+  transform: scaleX(-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .supply-rail-arrow path[stroke-dasharray],
+  .supply-rail-arrow path:not([stroke-dasharray]) {
+    animation: none;
+  }
+}
+
+/* ── Header navigation ────────────────────────────────────────────────────
+   Three distinct states, no pill:
+   default  — muted white, no mark
+   hover    — bright white + short centred dash
+   active   — cyan label + full cyan dash under the word
+   The dash is centred with translateX, so RTL needs no extra rule. */
+
+.nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.6rem;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.62);
+  background: transparent;
+  transition: color 200ms ease;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0.12rem;
+  height: 2px;
+  width: 1.15rem;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.75);
+  transform: translateX(-50%) scaleX(0);
+  transform-origin: center;
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 200ms ease;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+  color: #ffffff;
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: translateX(-50%) scaleX(0.6);
+}
+
+.nav-link.is-active,
+.nav-link[aria-current="page"] {
+  color: var(--color-cyan-light);
+}
+
+.nav-link.is-active::after,
+.nav-link[aria-current="page"]::after {
+  transform: translateX(-50%) scaleX(1);
+  background: var(--color-cyan-brand);
+}
+
+/* Language dropdown: stay mounted, fade + lift. origin-top-end is logical. */
+.nav-lang-menu {
+  position: absolute;
+  top: 100%;
+  inset-inline-end: 0;
+  z-index: 50;
+  margin-top: 0.75rem;
+  width: 11rem;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(10, 22, 40, 0.95);
+  box-shadow: 0 20px 40px -16px rgba(0, 0, 0, 0.55);
+  transform-origin: top right;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate3d(0, -6px, 0) scale(0.98);
+  transition:
+    opacity 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 200ms;
+}
+
+html[dir="rtl"] .nav-lang-menu {
+  transform-origin: top left;
+}
+
+.nav-lang-menu.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* Mobile overlay: fade the navy sheet; items stagger in on open only. */
+.nav-mobile-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  overflow-y: auto;
+  background: var(--color-navy);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 280ms;
+}
+
+.nav-mobile-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.nav-mobile-item {
+  --nav-i: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 0.875rem;
+  padding-inline-start: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition:
+    color 200ms ease,
+    background-color 200ms ease,
+    opacity 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-mobile-overlay.is-open .nav-mobile-item {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: calc(70ms + var(--nav-i) * 32ms);
+}
+
+.nav-mobile-overlay:not(.is-open) .nav-mobile-item {
+  transition-delay: 0ms;
+}
+
+.nav-mobile-item:hover,
+.nav-mobile-item:focus-visible {
+  color: #ffffff;
+}
+
+.nav-mobile-item.is-active,
+.nav-mobile-item[aria-current="page"] {
+  color: var(--color-cyan-light);
+}
+
+.nav-mobile-item.is-active::before,
+.nav-mobile-item[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  inset-block: 0.7rem;
+  inset-inline-start: 0;
+  width: 2px;
+  border-radius: 999px;
+  background: var(--color-cyan-brand);
+}
+
+.nav-mobile-chrome {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  transition:
+    opacity 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-mobile-overlay.is-open .nav-mobile-chrome {
+  opacity: 1;
+  transform: none;
+  transition-delay: 40ms;
+}
+
+.nav-mobile-overlay:not(.is-open) .nav-mobile-chrome {
+  transition-delay: 0ms;
+}
+
+/* Scroll-to-top: md+ only. Hidden until a meaningful scroll. */
+.scroll-to-top {
+  position: fixed;
+  bottom: 2rem;
+  inset-inline-end: 1.5rem;
+  z-index: 40;
+  height: 2.75rem;
+  width: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(10, 22, 40, 0.9);
+  color: #ffffff;
+  box-shadow: 0 10px 28px -12px rgba(10, 22, 40, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate3d(0, 10px, 0);
+  transition:
+    opacity 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 240ms,
+    background-color var(--btn-duration) var(--btn-ease),
+    border-color var(--btn-duration) var(--btn-ease),
+    color var(--btn-duration) var(--btn-ease);
+}
+
+.scroll-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate3d(0, 0, 0);
+}
+
+.scroll-to-top:hover,
+.scroll-to-top:focus-visible {
+  background: var(--color-cyan-brand);
+  border-color: rgba(8, 145, 178, 0.7);
+}
+
+.scroll-to-top:active {
+  transform: translate3d(0, 0, 0) scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-link::after,
+  .nav-lang-menu,
+  .nav-mobile-overlay,
+  .nav-mobile-item,
+  .nav-mobile-chrome,
+  .scroll-to-top {
+    transition: none !important;
+    transition-delay: 0ms !important;
+  }
+
+  .nav-mobile-item,
+  .nav-mobile-chrome {
+    opacity: 1;
+    transform: none;
+  }
+
+  .nav-lang-menu:not(.is-open),
+  .nav-mobile-overlay:not(.is-open),
+  .scroll-to-top:not(.is-visible) {
+    opacity: 0;
+  }
+}

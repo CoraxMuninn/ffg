@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feiz Food Group — Architecture Audit</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --navy: #0a1628;
+    --navy-light: #111d33;
+    --navy-card: #152238;
+    --cyan: #0891b2;
+    --cyan-light: #22d3ee;
+    --cyan-hover: #06b6d4;
+    --emerald: #047857;
+    --emerald-hover: #059669;
+    --gold: #f59e0b;
+    --silver: #94a3b8;
+    --smoke: #f8fafc;
+    --white: #ffffff;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border: rgba(148, 163, 184, 0.12);
+    --red: #ef4444;
+    --orange: #f97316;
+    --yellow: #eab308;
+    --green: #22c55e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--navy);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Layout */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Header */
+  .audit-header {
+    padding: 48px 0 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+
+  .audit-header h1 {
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--white);
+    margin-bottom: 8px;
+    letter-spacing: -1px;
+  }
+
+  .audit-header .subtitle {
+    font-size: 16px;
+    color: var(--cyan-light);
+    font-weight: 500;
+  }
+
+  .audit-header .meta {
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .audit-header .meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .badge-red { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+  .badge-yellow { background: rgba(234,179,8,0.15); color: var(--yellow); border: 1px solid rgba(234,179,8,0.2); }
+  .badge-green { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+  .badge-cyan { background: rgba(8,145,178,0.15); color: var(--cyan-light); border: 1px solid rgba(8,145,178,0.2); }
+  .badge-silver { background: rgba(148,163,184,0.1); color: var(--silver); border: 1px solid var(--border); }
+
+  /* Section */
+  .section {
+    margin-bottom: 56px;
+  }
+
+  .section-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--white);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-title .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--cyan);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 800;
+    color: white;
+  }
+
+  .section-subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  /* Diagram Boxes */
+  .diagram {
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+
+  .diagram-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--cyan-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+  }
+
+  .flow-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .flow-box {
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .flow-box.blue {
+    background: rgba(8,145,178,0.15);
+    border: 1px solid rgba(8,145,178,0.3);
+    color: var(--cyan-light);
+  }
+
+  .flow-box.navy {
+    background: rgba(10,22,40,0.6);
+    border: 1px solid rgba(148,163,184,0.15);
+    color: var(--white);
+  }
+
+  .flow-box.green {
+    background: rgba(34,197,94,0.12);
+    border: 1px solid rgba(34,197,94,0.25);
+    color: var(--green);
+  }
+
+  .flow-box.amber {
+    background: rgba(234,179,8,0.12);
+    border: 1px solid rgba(234,179,8,0.25);
+    color: var(--yellow);
+  }
+
+  .flow-box.red {
+    background: rgba(239,68,68,0.12);
+    border: 1px solid rgba(239,68,68,0.25);
+    color: var(--red);
+  }
+
+  .flow-box.purple {
+    background: rgba(139,92,246,0.12);
+    border: 1px solid rgba(139,92,246,0.25);
+    color: #a78bfa;
+  }
+
+  .flow-arrow {
+    color: var(--cyan);
+    font-size: 20px;
+    font-weight: 300;
+  }
+
+  .flow-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  /* Grid Diagrams */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+
+  .grid-4 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 12px;
+  }
+
+  .grid-card {
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    font-size: 12px;
+  }
+
+  .grid-card h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .grid-card p {
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .grid-card .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .tag-implemented { background: rgba(34,197,94,0.15); color: var(--green); }
+  .tag-missing { background: rgba(239,68,68,0.15); color: var(--red); }
+  .tag-partial { background: rgba(234,179,8,0.15); color: var(--yellow); }
+  .tag-conflict { background: rgba(249,115,22,0.15); color: var(--orange); }
+
+  /* Comparison Table */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+
+  .compare-table th {
+    background: var(--navy-card);
+    color: var(--cyan-light);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .compare-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text);
+  }
+
+  .compare-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .compare-table .col-status-implemented { color: var(--green); font-weight: 600; }
+  .compare-table .col-status-missing { color: var(--red); font-weight: 600; }
+  .compare-table .col-status-partial { color: var(--yellow); font-weight: 600; }
+  .compare-table .col-status-conflict { color: var(--orange); font-weight: 600; }
+
+  /* Priority Roadmap */
+  .priority-block {
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    border-left: 4px solid;
+  }
+
+  .priority-block.p0 { background: rgba(239,68,68,0.06); border-color: var(--red); }
+  .priority-block.p1 { background: rgba(234,179,8,0.06); border-color: var(--yellow); }
+  .priority-block.p2 { background: rgba(8,145,178,0.06); border-color: var(--cyan); }
+  .priority-block.p3 { background: rgba(34,197,94,0.06); border-color: var(--green); }
+  .priority-block.p4 { background: rgba(139,92,246,0.06); border-color: #8b5cf6; }
+  .priority-block.p5 { background: rgba(148,163,184,0.06); border-color: var(--silver); }
+
+  .priority-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .priority-label {
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  .p0 .priority-label { background: rgba(239,68,68,0.2); color: var(--red); }
+  .p1 .priority-label { background: rgba(234,179,8,0.2); color: var(--yellow); }
+  .p2 .priority-label { background: rgba(8,145,178,0.2); color: var(--cyan-light); }
+  .p3 .priority-label { background: rgba(34,197,94,0.2); color: var(--green); }
+  .p4 .priority-label { background: rgba(139,92,246,0.2); color: #a78bfa; }
+  .p5 .priority-label { background: rgba(148,163,184,0.2); color: var(--silver); }
+
+  .priority-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .priority-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .priority-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: var(--text);
+  }
+
+  /* Risk Cards */
+  .risk-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .risk-card {
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    border-top: 3px solid;
+  }
+
+  .risk-card.critical { border-color: var(--red); }
+  .risk-card.high { border-color: var(--orange); }
+  .risk-card.medium { border-color: var(--yellow); }
+
+  .risk-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .risk-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .risk-card .risk-label {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  /* Status Banner */
+  .status-banner {
+    background: linear-gradient(135deg, rgba(234,179,8,0.1), rgba(239,68,68,0.05));
+    border: 1px solid rgba(234,179,8,0.2);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .status-banner .status-icon {
+    font-size: 40px;
+  }
+
+  .status-banner h3 {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--yellow);
+    margin-bottom: 4px;
+  }
+
+  .status-banner p {
+    font-size: 13px;
+    color: var(--text-muted);
+    max-width: 600px;
+  }
+
+  /* TOC */
+  .toc {
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 48px;
+  }
+
+  .toc h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cyan-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 24px;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 13px;
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--border);
+  }
+
+  .toc-item .toc-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: var(--navy-card);
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--silver);
+    flex-shrink: 0;
+  }
+
+  /* Footer */
+  .audit-footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+    margin-top: 48px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .grid-2, .grid-3, .grid-4, .risk-grid, .toc-grid {
+      grid-template-columns: 1fr;
+    }
+    .audit-header h1 { font-size: 28px; }
+    .compare-table { font-size: 12px; }
+    .compare-table th, .compare-table td { padding: 8px 10px; }
+    .flow-row { gap: 4px; }
+    .flow-box { padding: 8px 12px; font-size: 11px; }
+  }
+
+  /* Highlight box */
+  .highlight-box {
+    background: rgba(8,145,178,0.08);
+    border: 1px solid rgba(8,145,178,0.2);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+
+  .highlight-box.warning {
+    background: rgba(234,179,8,0.08);
+    border-color: rgba(234,179,8,0.2);
+  }
+
+  .highlight-box.danger {
+    background: rgba(239,68,68,0.08);
+    border-color: rgba(239,68,68,0.2);
+  }
+
+  .highlight-box h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--cyan-light);
+    margin-bottom: 6px;
+  }
+
+  .highlight-box.warning h4 { color: var(--yellow); }
+  .highlight-box.danger h4 { color: var(--red); }
+
+  .highlight-box p { color: var(--text-muted); line-height: 1.6; }
+
+  /* Layer Stack */
+  .layer-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  .layer {
+    padding: 16px 20px;
+    font-size: 13px;
+    position: relative;
+  }
+
+  .layer:not(:last-child) {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .layer .layer-num {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: var(--cyan);
+    border-radius: 6px;
+    text-align: center;
+    line-height: 24px;
+    font-size: 11px;
+    font-weight: 800;
+    color: white;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+
+  .layer .layer-name {
+    font-weight: 700;
+    color: var(--white);
+    font-size: 14px;
+  }
+
+  .layer .layer-desc {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  .layer-row {
+    display: flex;
+    align-items: center;
+  }
+
+  .layer-top { background: rgba(8,145,178,0.08); }
+  .layer-mid { background: rgba(148,163,184,0.04); }
+  .layer-bot { background: rgba(34,197,94,0.06); }
+
+  .layer-arrow {
+    text-align: center;
+    color: var(--cyan);
+    font-size: 14px;
+    padding: 4px 0;
+    opacity: 0.6;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="container">
+  <div class="audit-header">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <h1>Feiz Food Group</h1>
+      <span class="badge badge-cyan">Architecture Audit</span>
+      <span class="badge badge-yellow">Read-Only</span>
+      <span class="badge badge-silver">v1.0</span>
+    </div>
+    <p class="subtitle">Current State vs. Target Architecture — Complete Gap Analysis</p>
+    <div class="meta">
+      <span>📅 August 10, 2026</span>
+      <span>📂 github.com/CoraxMuninn/ffg</span>
+      <span>📄 6 MD + 2 HTML docs reviewed</span>
+      <span>🔍 20 areas audited</span>
+    </div>
+  </div>
+
+  <!-- STATUS BANNER -->
+  <div class="status-banner">
+    <div class="status-icon">🏗️</div>
+    <div>
+      <h3>Overall Status: FOUNDATION</h3>
+      <p>A polished homepage visual scaffold exists, but none of the documented B2B export platform has been built. No i18n routing, no CMS, no product pages, no RFQ flow, no translations, no SEO infrastructure, no security headers.</p>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <h3>Audit Contents</h3>
+    <div class="toc-grid">
+      <a class="toc-item" href="#s1"><span class="toc-num">1</span> Current Architecture</a>
+      <a class="toc-item" href="#s2"><span class="toc-num">2</span> Target Architecture</a>
+      <a class="toc-item" href="#s3"><span class="toc-num">3</span> Current vs Target Comparison</a>
+      <a class="toc-item" href="#s4"><span class="toc-num">4</span> Route Structure Matrix</a>
+      <a class="toc-item" href="#s5"><span class="toc-num">5</span> CMS Data Flow</a>
+      <a class="toc-item" href="#s6"><span class="toc-num">6</span> i18n Architecture</a>
+      <a class="toc-item" href="#s7"><span class="toc-num">7</span> RFQ Conversion Flow</a>
+      <a class="toc-item" href="#s8"><span class="toc-num">8</span> SEO Architecture</a>
+      <a class="toc-item" href="#s9"><span class="toc-num">9</span> Security Layers</a>
+      <a class="toc-item" href="#s10"><span class="toc-num">10</span> Implementation Dependency Graph</a>
+      <a class="toc-item" href="#s11"><span class="toc-num">11</span> Priority Roadmap</a>
+      <a class="toc-item" href="#s12"><span class="toc-num">12</span> Risk Analysis</a>
+      <a class="toc-item" href="#s13"><span class="toc-num">13</span> Key Conflicts</a>
+    </div>
+  </div>
+
+  <!-- SECTION 1: CURRENT ARCHITECTURE -->
+  <div class="section" id="s1">
+    <div class="section-title"><span class="num">1</span> Current Architecture</div>
+    <div class="section-subtitle">What the repository actually contains today</div>
+
+    <div class="diagram">
+      <div class="diagram-title">Current System Diagram</div>
+      <div class="flow-row">
+        <div class="flow-box navy" style="background:rgba(10,22,40,0.8);border-color:rgba(148,163,184,0.2);">User Request</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box blue">Next.js 16.3<br><small style="font-weight:400;opacity:0.7;">Single route: /</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box navy" style="background:rgba(10,22,40,0.8);border-color:rgba(148,163,184,0.2);">layout.tsx<br><small style="font-weight:400;opacity:0.7;">Server · lang="en" dir="ltr"</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box navy" style="background:rgba(10,22,40,0.8);border-color:rgba(148,163,184,0.2);">page.tsx<br><small style="font-weight:400;opacity:0.7;">Server Component</small></div>
+      </div>
+      <div style="text-align:center;margin:16px 0 8px;font-size:12px;color:var(--text-muted);">▼ renders 9 section components (all Server Components) ▼</div>
+      <div class="grid-3">
+        <div class="grid-card">
+          <h4>🧭 Header</h4>
+          <p>Client Component. Scroll detection, mobile menu, language switcher UI (non-functional). Uses lucide-react, next/link, next/image.</p>
+        </div>
+        <div class="grid-card">
+          <h4>📦 7 Content Sections</h4>
+          <p>Hero, ProductRange, FeaturedProduct, BuyerPriorities, Certifications, QualityPreview, SupplyChainPreview — all hardcoded data, Server Components.</p>
+        </div>
+        <div class="grid-card">
+          <h4>🎯 2 CTA Sections</h4>
+          <p>MarketsFocus + FinalCTA. Hardcoded data. Links to non-existent pages.</p>
+        </div>
+      </div>
+      <div style="text-align:center;margin:12px 0 8px;font-size:12px;color:var(--text-muted);">▼ footer component ▼</div>
+      <div class="flow-row">
+        <div class="flow-box navy" style="background:rgba(10,22,40,0.8);border-color:rgba(148,163,184,0.2);">Footer</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box red">No output<br><small style="font-weight:400;opacity:0.7;">No API routes<br>No CMS<br>No i18n<br>No SEO files<br>No error pages<br>No translations<br>No security headers</small></div>
+      </div>
+    </div>
+
+    <div class="highlight-box danger">
+      <h4>⚠️ Critical Observation</h4>
+      <p>The current system is a <strong>single-page visual prototype</strong> with no application architecture beneath it. Every piece of content, navigation link, and CTA points to pages that do not exist. The language switcher creates an expectation of multilingual functionality that is entirely absent.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 2: TARGET ARCHITECTURE -->
+  <div class="section" id="s2">
+    <div class="section-title"><span class="num">2</span> Target Architecture</div>
+    <div class="section-subtitle">What the documentation requires the system to become</div>
+
+    <div class="diagram">
+      <div class="diagram-title">Target System Diagram</div>
+      <div class="flow-row" style="flex-wrap:wrap;gap:4px 8px;">
+        <div class="flow-box navy" style="background:rgba(10,22,40,0.8);border-color:rgba(148,163,184,0.2);">User Request</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box purple">Middleware<br><small style="font-weight:400;opacity:0.7;">Locale detection<br>/ → /en redirect</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box blue">/[locale]/<br><small style="font-weight:400;opacity:0.7;">Dynamic lang + dir<br>RTL for FA</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box navy" style="background:rgba(10,22,40,0.8);border-color:rgba(148,163,184,0.2);">layout.tsx<br><small style="font-weight:400;opacity:0.7;">Server · dynamic lang/dir</small></div>
+      </div>
+      <div style="text-align:center;margin:12px 0;font-size:12px;color:var(--text-muted);">▼ Layout Shell with functional language switcher ▼</div>
+      <div class="flow-row" style="flex-wrap:wrap;gap:4px 8px;">
+        <div class="flow-box green">Pages<br><small style="font-weight:400;opacity:0.7;">CMS-driven content<br>10 pages + 4 product<br>routes + blog</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box amber">API Routes<br><small style="font-weight:400;opacity:0.7;">POST /api/rfq<br>Validate → Sanitize<br>Rate-limit → Anti-bot<br>→ Resend → Inbox</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box blue">SEO Pipeline<br><small style="font-weight:400;opacity:0.7;">Metadata per page<br>hreflang · canonical<br>Schema.org · sitemap<br>robots · Open Graph</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box red">Security<br><small style="font-weight:400;opacity:0.7;">CSP · HSTS<br>X-Frame-Options<br>Referrer-Policy<br>Permissions-Policy</small></div>
+      </div>
+      <div style="text-align:center;margin:16px 0 8px;font-size:12px;color:var(--text-muted);">▼ Content Source: Decap CMS → GitHub → Markdown ▼</div>
+      <div class="flow-row">
+        <div class="flow-box green">Decap CMS<br><small style="font-weight:400;opacity:0.7;">/admin · GitHub OAuth<br>Editorial Workflow<br>Draft → Review → Publish</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box navy" style="background:rgba(10,22,40,0.8);border-color:rgba(148,163,184,0.2);">GitHub<br><small style="font-weight:400;opacity:0.7;">content/ directory<br>Markdown files<br>per locale<br>public/media/</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box blue">Next.js<br><small style="font-weight:400;opacity:0.7;">Reads content at<br>build/request time<br>Renders UI + SEO</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: COMPARISON -->
+  <div class="section" id="s3">
+    <div class="section-title"><span class="num">3</span> Current vs Target Comparison</div>
+    <div class="section-subtitle">Side-by-side architecture comparison</div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th style="width:22%;">Area</th>
+          <th style="width:39%;">Current State</th>
+          <th style="width:39%;">Target State</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Routing</strong></td>
+          <td class="col-status-missing">Single route: `/`. No locale prefix. No middleware.</td>
+          <td class="col-status-implemented" style="color:var(--green);">`/[locale]/...` with middleware, `/` → `/en` redirect</td>
+        </tr>
+        <tr>
+          <td><strong>Locales</strong></td>
+          <td class="col-status-missing">Hardcoded `lang="en" dir="ltr"`. No dynamic direction.</td>
+          <td class="col-status-implemented" style="color:var(--green);">Dynamic lang + dir per locale. FA = RTL, others LTR.</td>
+        </tr>
+        <tr>
+          <td><strong>Language Switcher</strong></td>
+          <td class="col-status-conflict">Client-state toggle. Changes flag only. No navigation.</td>
+          <td class="col-status-implemented" style="color:var(--green);">Functional switcher that navigates to locale-prefixed URL.</td>
+        </tr>
+        <tr>
+          <td><strong>CMS</strong></td>
+          <td class="col-status-missing">None. All content hardcoded in components.</td>
+          <td class="col-status-implemented" style="color:var(--green);">Decap CMS → GitHub → Markdown → Next.js</td>
+        </tr>
+        <tr>
+          <td><strong>Content Source</strong></td>
+          <td class="col-status-missing">TypeScript arrays inside component files. English only.</td>
+          <td class="col-status-implemented" style="color:var(--green);">Markdown files per locale in `content/` directory. EN first, then FA/RU/VI.</td>
+        </tr>
+        <tr>
+          <td><strong>Pages</strong></td>
+          <td class="col-status-missing">1 page (home). 9 of 10 required pages missing. 4 product detail routes missing.</td>
+          <td class="col-status-implemented" style="color:var(--green);">10 pages + 4 product detail routes + blog listing + blog detail. All locale-prefixed.</td>
+        </tr>
+        <tr>
+          <td><strong>Products</strong></td>
+          <td class="col-status-partial">4 hardcoded product cards. Featured section with 8 specs. No detail pages.</td>
+          <td class="col-status-implemented" style="color:var(--green);">4 CMS-driven product records. 4 independent detail pages. Chicken Feet deepest content.</td>
+        </tr>
+        <tr>
+          <td><strong>Markets</strong></td>
+          <td class="col-status-conflict">4 hardcoded market cards. Links to individual market pages that don't exist. Docs say ONE markets page.</td>
+          <td class="col-status-implemented" style="color:var(--green);">One `/markets` page with 4 market cards. Links to single page, not individual pages.</td>
+        </tr>
+        <tr>
+          <td><strong>Certifications</strong></td>
+          <td class="col-status-partial">4 of 6 shown (HACCP, ISO 22000, Halal, Health Cert). Missing: Veterinary Cert, Certificate of Origin.</td>
+          <td class="col-status-implemented" style="color:var(--green);">All 6 certifications from CMS: HACCP, ISO 22000, Halal, Health Cert, Veterinary Cert, Certificate of Origin.</td>
+        </tr>
+        <tr>
+          <td><strong>Trust Features</strong></td>
+          <td class="col-status-partial">8 hardcoded capability cards with Lucide icons. Matches spec but not CMS-driven.</td>
+          <td class="col-status-implemented" style="color:var(--green);">8 CMS-driven capability records with Lucide icon registry.</td>
+        </tr>
+        <tr>
+          <td><strong>Supply Chain</strong></td>
+          <td class="col-status-partial">8 of 9 steps shown. Missing: Destination Delivery.</td>
+          <td class="col-status-implemented" style="color:var(--green);">All 9 steps: Farm → Processing → Sorting → IQF → Cold Storage → QC → Loading → Shipping → Delivery.</td>
+        </tr>
+        <tr>
+          <td><strong>RFQ</strong></td>
+          <td class="col-status-missing">No form. No API. No validation. No email. No feedback states.</td>
+          <td class="col-status-implemented" style="color:var(--green);">RFQ form (Contact page) → POST /api/rfq → validate → sanitize → rate-limit → anti-bot → Resend with Reply-To → success/error/loading states.</td>
+        </tr>
+        <tr>
+          <td><strong>SEO Root</strong></td>
+          <td class="col-status-partial">Root metadata with title, description, OG, robots, hreflang alternates. Good start.</td>
+          <td class="col-status-implemented" style="color:var(--green);">Root metadata + per-page metadata for all pages. Dynamic per locale.</td>
+        </tr>
+        <tr>
+          <td><strong>SEO Pages</strong></td>
+          <td class="col-status-missing">No per-page metadata. No sitemap. No robots. No Schema.org. No Twitter Card.</td>
+          <td class="col-status-implemented" style="color:var(--green);">Per-page metadata, sitemap.xml, robots.txt, Schema.org (Org, Product, Article, BreadcrumbList), Twitter Card, per-page OG.</td>
+        </tr>
+        <tr>
+          <td><strong>Security</strong></td>
+          <td class="col-status-missing">No security headers. No CSP. No HSTS. No rate limiting. No CSRF. Next.config.ts empty.</td>
+          <td class="col-status-implemented" style="color:var(--green);">Full security headers in next.config.ts. CSP, HSTS, X-Frame-Options, Referrer-Policy, Permissions-Policy. Rate limiting + CSRF on RFQ API.</td>
+        </tr>
+        <tr>
+          <td><strong>Error Pages</strong></td>
+          <td class="col-status-missing">No custom 404, 500, loading, empty, or error boundary.</td>
+          <td class="col-status-implemented" style="color:var(--green);">Custom 404, 500, loading states, empty states, error boundaries, RFQ-specific error/success/loading states.</td>
+        </tr>
+        <tr>
+          <td><strong>Translations</strong></td>
+          <td class="col-status-missing">English only. No Persian, Russian, or Vietnamese content.</td>
+          <td class="col-status-implemented" style="color:var(--green);">EN (default + x-default), FA (RTL), RU, VI (highest priority). All CMS-driven content translated.</td>
+        </tr>
+        <tr>
+          <td><strong>Fonts</strong></td>
+          <td class="col-status-implemented" style="color:var(--green);">Inter + Vazirmatn via next/font/local. Variable fonts. display: swap.</td>
+          <td class="col-status-implemented" style="color:var(--green);">Same — already correct. EN/RU/VI = Inter, FA = Vazirmatn.</td>
+        </tr>
+        <tr>
+          <td><strong>Images</strong></td>
+          <td class="col-status-implemented" style="color:var(--green);">All using next/image. Alt text present. Priority on hero. Sizes attribute used.</td>
+          <td class="col-status-implemented" style="color:var(--green);">Same approach. Additional: WebP/AVIF handled by next/image. Real images needed (placeholders currently in use).</td>
+        </tr>
+        <tr>
+          <td><strong>Responsive</strong></td>
+          <td class="col-status-implemented" style="color:var(--green);">Mobile-first. All breakpoints covered. Full-screen mobile menu. Large touch targets.</td>
+          <td class="col-status-implemented" style="color:var(--green);">Same — already well implemented.</td>
+        </tr>
+        <tr>
+          <td><strong>Accessibility</strong></td>
+          <td class="col-status-partial">Good foundation: focus states, semantic HTML, aria-label on menu button. Missing: skip nav, aria-current, reduced-motion on bounce animation.</td>
+          <td class="col-status-implemented" style="color:var(--green);">Full WCAG AA compliance. Skip nav, aria-current, reduced-motion respected everywhere, form labels, error announcements.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 4: ROUTE STRUCTURE -->
+  <div class="section" id="s4">
+    <div class="section-title"><span class="num">4</span> Route Structure Matrix</div>
+    <div class="section-subtitle">Every required route with current status</div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Route</th>
+          <th>Intent</th>
+          <th>Status</th>
+          <th>Priority</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>/</code></td>
+          <td>Should redirect to <code>/en</code> (x-default)</td>
+          <td class="col-status-missing">No redirect configured</td>
+          <td class="col-status-missing">P0</td>
+        </tr>
+        <tr>
+          <td><code>/en</code></td>
+          <td>English homepage</td>
+          <td class="col-status-missing">Exists as `/` only, no locale prefix</td>
+          <td class="col-status-missing">P0</td>
+        </tr>
+        <tr>
+          <td><code>/fa</code></td>
+          <td>Persian homepage (RTL)</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-missing">P0</td>
+        </tr>
+        <tr>
+          <td><code>/ru</code></td>
+          <td>Russian homepage</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-missing">P0</td>
+        </tr>
+        <tr>
+          <td><code>/vi</code></td>
+          <td>Vietnamese homepage (highest priority)</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-missing">P0</td>
+        </tr>
+        <tr>
+          <td><code>/[locale]/products</code></td>
+          <td>Product listing page</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-missing">P1</td>
+        </tr>
+        <tr>
+          <td><code>/[locale]/products/frozen-chicken-feet</code></td>
+          <td>Chicken Feet detail (deepest content)</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-missing">P1</td>
+        </tr>
+        <tr>
+          <td><code>/[locale]/products/chicken-liver</code></td>
+          <td>Chicken Liver detail</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-partial">P2</td>
+        </tr>
+        <tr>
+          <td><code>/[locale]/products/chicken-gizzard</code></td>
+          <td>Chicken Gizzard detail</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-partial">P2</td>
+        </tr>
+        <tr>
+          <td><code>/[locale]/products/chicken-heart</code></td>
+          <td>Chicken Heart detail</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-partial">P2</td>
+        </tr>
+        <tr>
+          <td><code>/[locale]/about</code></td>
+          <td>About Us page</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-missing">P1</td>
+        </tr>
+        <tr>
+          <td><code>/[locale]/markets</code></td>
+          <td>Markets page — ONE page only (docs spec)</td>
+          <td class="col-status-missing">Does not exist. Code links to individual market pages (conflict).</td>
+          <td class="col-status-missing">P1</td>
+        </tr>
+        <tr>
+          <td><code>/[locale]/supply-chain</code></td>
+          <td>Supply Chain page (9 steps)</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-missing">P1</td>
+        </tr>
+        <tr>
+          <td><code>/[locale]/quality-control</code></td>
+          <td>Quality Control page (9 processes)</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-missing">P1</td>
+        </tr>
+        <tr>
+          <td><code>/[locale]/certifications</code></td>
+          <td>Certifications page (6 certs)</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-missing">P1</td>
+        </tr>
+        <tr>
+          <td><code>/[locale]/contact</code></td>
+          <td>Contact page + RFQ form</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-missing">P1</td>
+        </tr>
+        <tr>
+          <td><code>/[locale]/blog</code></td>
+          <td>Blog listing page</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-partial">P2</td>
+        </tr>
+        <tr>
+          <td><code>/[locale]/blog/[slug]</code></td>
+          <td>Blog post detail page</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-partial">P2</td>
+        </tr>
+        <tr>
+          <td><code>/sitemap.xml</code></td>
+          <td>Sitemap with all pages across all locales</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-missing">P4</td>
+        </tr>
+        <tr>
+          <td><code>/robots.txt</code></td>
+          <td>Robots file</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-missing">P4</td>
+        </tr>
+        <tr>
+          <td><code>/admin</code></td>
+          <td>Decap CMS admin interface</td>
+          <td class="col-status-missing">Does not exist</td>
+          <td class="col-status-missing">P1</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 5: CMS FLOW -->
+  <div class="section" id="s5">
+    <div class="section-title"><span class="num">5</span> CMS Data Flow</div>
+    <div class="section-subtitle">Decap CMS → GitHub → Markdown → Next.js</div>
+
+    <div class="diagram">
+      <div class="diagram-title">Content Architecture Flow</div>
+
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+        <div class="flow-box green" style="min-width:200px;">
+          <strong>Decap CMS</strong>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">/admin · GitHub OAuth · Editorial Workflow</div>
+        </div>
+        <div style="color:var(--cyan);font-size:20px;">↓ creates/updates</div>
+        <div class="flow-box navy" style="min-width:240px;background:var(--navy-card);border-color:rgba(148,163,184,0.2);">
+          <strong>GitHub Repository</strong>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+            content/<br>
+            ├── en/ · fa/ · ru/ · vi/<br>
+            │   ├── products/ · blog/<br>
+            │   ├── certifications/<br>
+            │   ├── features/<br>
+            │   ├── markets.md<br>
+            │   ├── supply-chain.md<br>
+            │   ├── quality-control.md<br>
+            │   ├── about.md · contact.md<br>
+            public/media/<br>
+            ├── products/ · certifications/<br>
+            ├── hero/ · supply-chain/ · quality/
+          </div>
+        </div>
+        <div style="color:var(--cyan);font-size:20px;">↓ read at build/request</div>
+        <div class="flow-box blue" style="min-width:200px;">
+          <strong>Next.js Content Layer</strong>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+            getProduct(locale, slug)<br>
+            getProducts(locale)<br>
+            getCertifications(locale)<br>
+            getCapabilities(locale)<br>
+            getMarkets(locale)<br>
+            getPageContent(locale, slug)<br>
+            getBlogPosts(locale) · getBlogPost(locale, slug)
+          </div>
+        </div>
+        <div style="color:var(--cyan);font-size:20px;">↓ render</div>
+        <div class="flow-box amber" style="min-width:200px;">
+          <strong>Rendered Pages</strong>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+            Dynamic metadata per page<br>
+            Schema.org JSON-LD<br>
+            hreflang + canonical<br>
+            per-locale content
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <h4>📁 Content Directory Structure (Target)</h4>
+      <p><code>content/</code><br>
+      &nbsp;&nbsp;<code>en/</code> · <code>fa/</code> · <code>ru/</code> · <code>vi/</code><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<code>products/</code> — frozen-chicken-feet.md, chicken-liver.md, chicken-gizzard.md, chicken-heart.md<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<code>blog/</code> — individual post files<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<code>certifications.json</code> — 6 certification records<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<code>features.json</code> — 8 trust/capability records<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<code>markets.md</code> — 4 market records<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<code>supply-chain.md</code> — 9 step records<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<code>quality-control.md</code> — 9 process records<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<code>about.md</code> · <code>contact.md</code></p>
+    </div>
+  </div>
+
+  <!-- SECTION 6: I18N -->
+  <div class="section" id="s6">
+    <div class="section-title"><span class="num">6</span> Internationalization Architecture</div>
+    <div class="section-subtitle">4 languages · 2 text directions · stable English slugs</div>
+
+    <div class="grid-2">
+      <div class="diagram">
+        <div class="diagram-title">Locale Configuration</div>
+        <table class="compare-table">
+          <thead><tr><th>Language</th><th>Code</th><th>Direction</th><th>Font</th><th>Priority</th></tr></thead>
+          <tbody>
+            <tr><td>English</td><td><code>en</code></td><td class="col-status-implemented">LTR</td><td>Inter</td><td>Default + x-default</td></tr>
+            <tr><td>Persian</td><td><code>fa</code></td><td class="col-status-implemented">RTL</td><td>Vazirmatn</td><td>Company language</td></tr>
+            <tr><td>Russian</td><td><code>ru</code></td><td class="col-status-implemented">LTR</td><td>Inter (Cyrillic)</td><td>Secondary market</td></tr>
+            <tr><td>Vietnamese</td><td><code>vi</code></td><td class="col-status-implemented">LTR</td><td>Inter</td><td>⭐ Highest priority</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="diagram">
+        <div class="diagram-title">i18n Requirements</div>
+        <div class="grid-2">
+          <div class="grid-card">
+            <h4>URL Structure</h4>
+            <p>Stable English slugs across all locales:<br><code>/en/products/frozen-chicken-feet</code><br><code>/fa/products/frozen-chicken-feet</code><br><code>/vi/products/frozen-chicken-feet</code></p>
+          </div>
+          <div class="grid-card">
+            <h4>RTL Handling</h4>
+            <p>Direction set at <code>&lt;html dir&gt;</code> level — not component level. Logical CSS properties for RTL compatibility. No separate RTL components.</p>
+          </div>
+          <div class="grid-card">
+            <h4>hreflang</h4>
+            <p>Every translated page needs:<br><code>&lt;link rel="alternate" hreflang="vi" href="..."/&gt;</code><br>x-default → English<br>Self-referencing canonical</p>
+          </div>
+          <div class="grid-card">
+            <h4>Metadata</h4>
+            <p>Localized title + description per page per locale. Correct hreflang tags. Correct locale metadata. Low-quality machine translation never published.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box warning">
+      <h4>⚠️ Current State: No i18n Infrastructure</h4>
+      <p>The Header component contains a language selector UI with 4 languages, but it is purely cosmetic — it changes a displayed flag and label without navigating, changing content, or adjusting direction. This creates a critical UX problem: users expect the site to switch languages when they use the selector, but nothing happens.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 7: RFQ FLOW -->
+  <div class="section" id="s7">
+    <div class="section-title"><span class="num">7</span> RFQ Conversion Flow</div>
+    <div class="section-subtitle">Primary business conversion — currently non-existent</div>
+
+    <div class="diagram">
+      <div class="diagram-title">RFQ End-to-End Flow (Target)</div>
+
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <div class="flow-box green" style="min-width:180px;">
+          <strong>1. Buyer fills RFQ Form</strong>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Contact page · Required: Name, Company, Email, Country, Product, Quantity, Message<br>Optional: Destination Port, Packaging Spec</div>
+        </div>
+        <div style="color:var(--cyan);font-size:16px;">↓ client-side validation</div>
+        <div class="flow-box blue" style="min-width:180px;">
+          <strong>2. Client-side Validation</strong>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Required fields · Email format · Product selection</div>
+        </div>
+        <div style="color:var(--cyan);font-size:16px;">↓ form submit</div>
+        <div class="flow-box purple" style="min-width:180px;">
+          <strong>3. Server API (POST /api/rfq)</strong>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Input sanitization · Server-side validation (Zod) · Rate limiting (5/hour/IP) · Anti-bot (honeypot + Turnstile)</div>
+        </div>
+        <div style="color:var(--cyan);font-size:16px;">↓ on success</div>
+        <div class="flow-box amber" style="min-width:180px;">
+          <strong>4. Resend API</strong>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">To: company@feizfood.com<br>Reply-To: buyer@email.com<br>Subject: "New RFQ from [Company] — [Product]"</div>
+        </div>
+        <div style="color:var(--cyan);font-size:16px;">↓</div>
+        <div class="flow-box green" style="min-width:180px;">
+          <strong>5. Company Inbox</strong>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Sales team receives RFQ<br>Replies directly to buyer via Reply-To</div>
+        </div>
+        <div style="color:var(--cyan);font-size:16px;margin-top:8px;">↓ UI feedback (parallel)</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+          <div class="flow-box green" style="min-width:100px;"><strong>✅ Success</strong><br><small style="font-weight:400;opacity:0.7;">Confirmation message<br>Sonner Toast</small></div>
+          <div class="flow-box red" style="min-width:100px;"><strong>❌ Error</strong><br><small style="font-weight:400;opacity:0.7;">Error message<br>Retry option</small></div>
+          <div class="flow-box blue" style="min-width:100px;"><strong>⏳ Loading</strong><br><small style="font-weight:400;opacity:0.7;">Spinner / disabled<br>form during submit</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box danger">
+      <h4>🚨 Critical Gap: No RFQ Infrastructure</h4>
+      <p>The RFQ form is the primary business conversion mechanism. Every CTA on the homepage links to <code>/contact</code> — a page that does not exist. There is no form, no API, no validation, no email integration, and no feedback states. <strong>Zero implementation of the primary business objective.</strong></p>
+    </div>
+  </div>
+
+  <!-- SECTION 8: SEO -->
+  <div class="section" id="s8">
+    <div class="section-title"><span class="num">8</span> SEO Architecture</div>
+    <div class="section-subtitle">Technical SEO for a multilingual B2B export platform</div>
+
+    <div class="grid-2">
+      <div class="diagram">
+        <div class="diagram-title">SEO Components Required</div>
+        <div class="grid-2">
+          <div class="grid-card">
+            <h4>Metadata API</h4>
+            <p>Next.js Metadata API per page. Dynamic metadata from content. Unique title + description per locale.</p>
+            <span class="tag tag-missing">Missing</span>
+          </div>
+          <div class="grid-card">
+            <h4>hreflang</h4>
+            <p>All language alternates per page. x-default → English. Self-referencing canonical.</p>
+            <span class="tag tag-missing">Missing</span>
+          </div>
+          <div class="grid-card">
+            <h4>Sitemap</h4>
+            <p>sitemap.xml with all pages across all locales. Generated dynamically.</p>
+            <span class="tag tag-missing">Missing</span>
+          </div>
+          <div class="grid-card">
+            <h4>Robots</h4>
+            <p>robots.txt allowing all crawlers. Pointing to sitemap.</p>
+            <span class="tag tag-missing">Missing</span>
+          </div>
+          <div class="grid-card">
+            <h4>Schema.org</h4>
+            <p>Organization + WebSite (home). Product + BreadcrumbList (product pages). Article + BreadcrumbList (blog). BreadcrumbList (internal pages).</p>
+            <span class="tag tag-missing">Missing</span>
+          </div>
+          <div class="grid-card">
+            <h4>Open Graph</h4>
+            <p>Per-page OG tags. Title, description, images, locale, type. Unique per page.</p>
+            <span class="tag tag-missing">Missing</span>
+          </div>
+          <div class="grid-card">
+            <h4>Twitter Card</h4>
+            <p>Twitter Card metadata per page. Card type, title, description.</p>
+            <span class="tag tag-missing">Missing</span>
+          </div>
+          <div class="grid-card">
+            <h4>Image SEO</h4>
+            <p>Alt text on all images (✅ already done). WebP/AVIF via next/image (✅ already done). Descriptive filenames (✅ mostly done).</p>
+            <span class="tag tag-implemented">Partial</span>
+          </div>
+        </div>
+      </div>
+      <div class="diagram">
+        <div class="diagram-title">Schema.org by Page Type</div>
+        <div class="layer-stack">
+          <div class="layer layer-top">
+            <div class="layer-row">
+              <span class="layer-num">HG</span>
+              <div>
+                <div class="layer-name">Homepage</div>
+                <div class="layer-desc">Organization + WebSite schema</div>
+              </div>
+            </div>
+          </div>
+          <div class="layer-arrow">↓</div>
+          <div class="layer layer-top">
+            <div class="layer-row">
+              <span class="layer-num">PR</span>
+              <div>
+                <div class="layer-name">Product Detail Pages</div>
+                <div class="layer-desc">Product + BreadcrumbList schema. Properties supported by actual page content only.</div>
+              </div>
+            </div>
+          </div>
+          <div class="layer-arrow">↓</div>
+          <div class="layer layer-top">
+            <div class="layer-row">
+              <span class="layer-num">BL</span>
+              <div>
+                <div class="layer-name">Blog Articles</div>
+                <div class="layer-desc">Article + BreadcrumbList schema</div>
+              </div>
+            </div>
+          </div>
+          <div class="layer-arrow">↓</div>
+          <div class="layer layer-mid">
+            <div class="layer-row">
+              <span class="layer-num">IN</span>
+              <div>
+                <div class="layer-name">Internal Pages</div>
+                <div class="layer-desc">BreadcrumbList where applicable. LocalBusiness only where actual business/location data satisfies requirements.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="highlight-box" style="margin-top:16px;">
+          <h4>🌐 Multilingual SEO Requirements</h4>
+          <p>Every translated page must have: correct hreflang, self-referencing canonical, localized title, localized description, correct locale metadata. x-default → English. URL structure: <code>/[locale]/...</code> with stable English slugs.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 9: SECURITY -->
+  <div class="section" id="s9">
+    <div class="section-title"><span class="num">9</span> Security Layers</div>
+    <div class="section-subtitle">5-Layer Defense in Depth (target architecture)</div>
+
+    <div class="diagram">
+      <div class="diagram-title">Security Architecture (Target)</div>
+
+      <div class="layer-stack">
+        <div class="layer layer-top">
+          <div class="layer-row">
+            <span class="layer-num">1</span>
+            <div>
+              <div class="layer-name">CDN / WAF (Cloudflare) — Edge</div>
+              <div class="layer-desc">DDoS protection · WAF rules (SQLi, XSS, Path Traversal) · Bot management · SSL/TLS</div>
+            </div>
+          </div>
+        </div>
+        <div class="layer-arrow">↓</div>
+        <div class="layer layer-top">
+          <div class="layer-row">
+            <span class="layer-num">2</span>
+            <div>
+              <div class="layer-name">Network (Nginx/Caddy Reverse Proxy)</div>
+              <div class="layer-desc">HTTPS forced + HSTS (1 year) · Security headers · IP whitelist for /admin · Rate limiting</div>
+            </div>
+          </div>
+        </div>
+        <div class="layer-arrow">↓</div>
+        <div class="layer layer-top">
+          <div class="layer-row">
+            <span class="layer-num">3</span>
+            <div>
+              <div class="layer-name">Application (Next.js)</div>
+              <div class="layer-desc">CSP (no unsafe-inline/eval) · React auto-escaping XSS protection · Input sanitization · Server-side validation</div>
+            </div>
+          </div>
+        </div>
+        <div class="layer-arrow">↓</div>
+        <div class="layer layer-top">
+          <div class="layer-row">
+            <span class="layer-num">4</span>
+            <div>
+              <div class="layer-name">API (RFQ Endpoint)</div>
+              <div class="layer-desc">Rate limiting (5/hour/IP) · CSRF tokens · Server-side validation (Zod) · Safe error responses (no stack traces)</div>
+            </div>
+          </div>
+        </div>
+        <div class="layer-arrow">↓</div>
+        <div class="layer layer-bot">
+          <div class="layer-row">
+            <span class="layer-num">5</span>
+            <div>
+              <div class="layer-name">Data / Secrets</div>
+              <div class="layer-desc">Environment secrets only in process.env (server-side) · .env in .gitignore · No client exposure · Encrypted backups · Dependency audit</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;">
+        <div class="diagram-title">Security Headers Required (Production)</div>
+        <div class="flow-box red" style="font-family:monospace;font-size:11px;padding:12px 16px;background:rgba(239,68,68,0.06);border-color:rgba(239,68,68,0.2);white-space:pre-wrap;text-align:left;">
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=()
+Cross-Origin-Opener-Policy: same-origin
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box danger">
+      <h4>🔴 Current State: No Security Headers Configured</h4>
+      <p><code>next.config.ts</code> is empty. No CSP, no HSTS, no X-Frame-Options, no Referrer-Policy, no Permissions-Policy. When the RFQ API is built, it will be a public-facing endpoint accepting user input and sending email — without any security foundation in place.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 10: DEPENDENCY GRAPH -->
+  <div class="section" id="s10">
+    <div class="section-title"><span class="num">10</span> Implementation Dependency Graph</div>
+    <div class="section-subtitle">Correct sequence derived from the project's actual constraints</div>
+
+    <div class="diagram">
+      <div class="diagram-title">Dependency Chain — Why Each Phase Must Precede the Next</div>
+
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;">
+
+        <div class="flow-box red" style="min-width:160px;text-align:left;padding:8px 14px;">
+          <strong>PHASE 0: FOUNDATION</strong>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Design tokens · i18n architecture · locale routing · middleware · file structure</div>
+        </div>
+        <div style="color:var(--red);font-size:13px;font-weight:600;">⬇ EVERYTHING depends on this</div>
+        <div style="font-size:11px;color:var(--text-muted);text-align:center;max-width:500px;">Without i18n routing, every page route, link, metadata entry, and SEO element must be rebuilt later. Without design tokens locked, styling will drift across components.</div>
+
+        <div class="flow-box yellow" style="min-width:160px;text-align:left;padding:8px 14px;">
+          <strong>PHASE 1: CMS + CONTENT</strong>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Decap CMS · content/ directory · schemas · content loading utilities · icon registry · EN content for all types</div>
+        </div>
+        <div style="color:var(--yellow);font-size:13px;font-weight:600;">⬇ Pages need a content source to consume</div>
+        <div style="font-size:11px;color:var(--text-muted);text-align:center;max-width:500px;">Building pages without a CMS means hardcoding content that must later be refactored. Building pages without content models means the data layer must be redesigned.</div>
+
+        <div class="flow-box cyan" style="min-width:160px;text-align:left;padding:8px 14px;">
+          <strong>PHASE 2: PAGES + ROUTES</strong>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Layout shell · Home · Products list · Product detail template · About · Markets · Supply Chain · Quality · Certifications · Contact · Blog</div>
+        </div>
+        <div style="color:var(--cyan);font-size:13px;font-weight:600;">⬇ RFQ lives on Contact page; buyer journey passes through product pages</div>
+        <div style="font-size:11px;color:var(--text-muted);text-align:center;max-width:500px;">The RFQ form is on the Contact page. The buyer journey flows through product pages before reaching RFQ. Pages must exist before the conversion flow can be completed.</div>
+
+        <div class="flow-box green" style="min-width:160px;text-align:left;padding:8px 14px;">
+          <strong>PHASE 3: RFQ CONVERSION</strong>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">RFQ form UI · Server API · Validation · Sanitization · Rate limiting · Anti-bot · Resend · Reply-To · Email template · Feedback states</div>
+        </div>
+        <div style="color:var(--green);font-size:13px;font-weight:600;">⬇ SEO describes pages that must already exist</div>
+        <div style="font-size:11px;color:var(--text-muted);text-align:center;max-width:500px;">SEO metadata depends on having actual pages with actual content to describe. sitemap depends on having routes. Schema.org depends on having page content.</div>
+
+        <div class="flow-box purple" style="min-width:160px;text-align:left;padding:8px 14px;">
+          <strong>PHASE 4: SEO + SECURITY</strong>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Per-page metadata · hreflang · canonical · sitemap · robots · Schema.org · Security headers · CSP · HSTS · Rate limiting · CSRF</div>
+        </div>
+        <div style="color:#8b5cf6;font-size:13px;font-weight:600;">⬇ Translations are content work, not architecture work</div>
+        <div style="font-size:11px;color:var(--text-muted);text-align:center;max-width:500px;">Security headers are applied to a running system — most effective when there's something to protect. Translations can happen in parallel once English content and pages are stable.</div>
+
+        <div class="flow-box" style="background:rgba(148,163,184,0.08);border-color:var(--border);min-width:160px;text-align:left;padding:8px 14px;color:var(--text);">
+          <strong>PHASE 5: TRANSLATIONS</strong>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">FA (RTL) · RU · VI (highest priority) — full site translation</div>
+        </div>
+        <div style="color:var(--silver);font-size:13px;font-weight:600;">⬇ QA verifies everything above</div>
+        <div style="font-size:11px;color:var(--text-muted);text-align:center;max-width:500px;">QA can only verify what exists. Translations need stable English source content. Polish needs all components built.</div>
+
+        <div class="flow-box" style="background:rgba(34,197,94,0.06);border-color:var(--green);min-width:160px;text-align:left;padding:8px 14px;color:var(--text);">
+          <strong>PHASE 6: QA + DEPLOYMENT</strong>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">/seoaudit · /uiaudit · /uxaudit · /optimize · /killcritic · Security audit · VPS · CI/CD · Backup · Rollback</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 11: PRIORITY ROADMAP -->
+  <div class="section" id="s11">
+    <div class="section-title"><span class="num">11</span> Priority Roadmap</div>
+    <div class="section-subtitle">P0 (blocking) through P5 (polish) — derived from dependency analysis</div>
+
+    <div class="priority-block p0">
+      <div class="priority-header">
+        <span class="priority-label">P0 — Foundation</span>
+        <span class="priority-title">Must be solved before other work can safely proceed</span>
+      </div>
+      <div class="priority-items">
+        <span class="priority-item">i18n routing architecture ([locale] segment)</span>
+        <span class="priority-item">Middleware for locale detection + / → /en redirect</span>
+        <span class="priority-item">Dynamic html lang + dir per locale (FA = RTL)</span>
+        <span class="priority-item">Design token lock (colors, typography, spacing)</span>
+        <span class="priority-item">Primary CTA color decision (Navy vs Cyan — resolve conflict)</span>
+        <span class="priority-item">Feature-based file structure expansion</span>
+      </div>
+    </div>
+
+    <div class="priority-block p1">
+      <div class="priority-header">
+        <span class="priority-label">P1 — Core Architecture</span>
+        <span class="priority-title">Critical architecture and content infrastructure</span>
+      </div>
+      <div class="priority-items">
+        <span class="priority-item">Decap CMS installation + configuration</span>
+        <span class="priority-item">Content directory structure + schemas (products, certs, features, markets, blog)</span>
+        <span class="priority-item">Icon registry (Lucide name → component mapping)</span>
+        <span class="priority-item">Content loading utilities</span>
+        <span class="priority-item">All EN content: 4 products, 6 certs, 8 features, 4 markets, 9 supply chain steps, 9 quality processes, About, Contact</span>
+        <span class="priority-item">Admin route (/admin with Decap CMS)</span>
+        <span class="priority-item">Layout shell with locale-aware header + footer</span>
+      </div>
+    </div>
+
+    <div class="priority-block p2">
+      <div class="priority-header">
+        <span class="priority-label">P2 — Core Product Experience</span>
+        <span class="priority-title">All pages + product routes + blog</span>
+      </div>
+      <div class="priority-items">
+        <span class="priority-item">Home page (/[locale])</span>
+        <span class="priority-item">Products list page (/[locale]/products)</span>
+        <span class="priority-item">Product detail template (/[locale]/products/[slug]) × 4</span>
+        <span class="priority-item">About Us page</span>
+        <span class="priority-item">Markets page — ONE page (fix conflict with individual market links)</span>
+        <span class="priority-item">Supply Chain page (9 steps)</span>
+        <span class="priority-item">Quality Control page (9 processes)</span>
+        <span class="priority-item">Certifications page (6 certs)</span>
+        <span class="priority-item">Contact page with RFQ form UI (UI only, no backend yet)</span>
+        <span class="priority-item">Blog list + blog post template</span>
+        <span class="priority-item">Custom 404 + 500 pages</span>
+      </div>
+    </div>
+
+    <div class="priority-block p3">
+      <div class="priority-header">
+        <span class="priority-label">P3 — Conversion</span>
+        <span class="priority-title">RFQ form, API, Resend, feedback</span>
+      </div>
+      <div class="priority-items">
+        <span class="priority-item">RFQ form component with client-side validation</span>
+        <span class="priority-item">Server API (POST /api/rfq)</span>
+        <span class="priority-item">Server-side validation (Zod schema)</span>
+        <span class="priority-item">Input sanitization</span>
+        <span class="priority-item">Rate limiting (5/hour/IP)</span>
+        <span class="priority-item">Anti-bot (honeypot + Turnstile)</span>
+        <span class="priority-item">Resend integration</span>
+        <span class="priority-item">Reply-To configuration</span>
+        <span class="priority-item">Email template</span>
+        <span class="priority-item">Success/error/loading states</span>
+        <span class="priority-item">.env.example</span>
+        <span class="priority-item">Sonner Toast integration for RFQ feedback</span>
+      </div>
+    </div>
+
+    <div class="priority-block p4">
+      <div class="priority-header">
+        <span class="priority-label">P4 — SEO / Performance / Security</span>
+        <span class="priority-title">Technical optimization and hardening</span>
+      </div>
+      <div class="priority-items">
+        <span class="priority-item">Per-page metadata exports (all pages)</span>
+        <span class="priority-item">Dynamic metadata from content</span>
+        <span class="priority-item">Per-locale hreflang</span>
+        <span class="priority-item">Self-referencing canonicals</span>
+        <span class="priority-item">sitemap.xml generation</span>
+        <span class="priority-item">robots.txt</span>
+        <span class="priority-item">Organization schema (homepage)</span>
+        <span class="priority-item">Product schema (product pages)</span>
+        <span class="priority-item">Article schema (blog posts)</span>
+        <span class="priority-item">BreadcrumbList schema (applicable pages)</span>
+        <span class="priority-item">Open Graph per page</span>
+        <span class="priority-item">Twitter Card metadata</span>
+        <span class="priority-item">Security headers in next.config.ts</span>
+        <span class="priority-item">CSP · HSTS · X-Frame-Options · Referrer-Policy · Permissions-Policy</span>
+        <span class="priority-item">Dependency audit</span>
+        <span class="priority-item">Caching strategy for CMS content</span>
+      </div>
+    </div>
+
+    <div class="priority-block p5">
+      <div class="priority-header">
+        <span class="priority-label">P5 — Polish / QA</span>
+        <span class="priority-title">Visual refinement, accessibility, responsive QA, multilingual QA, final testing</span>
+      </div>
+      <div class="priority-items">
+        <span class="priority-item">Persian translation (FA) — full site, RTL</span>
+        <span class="priority-item">Russian translation (RU) — full site</span>
+        <span class="priority-item">Vietnamese translation (VI) — full site, highest priority</span>
+        <span class="priority-item">Visual refinement across all pages</span>
+        <span class="priority-item">Responsive QA across all breakpoints</span>
+        <span class="priority-item">RTL QA (Persian)</span>
+        <span class="priority-item">Accessibility audit (WCAG AA)</span>
+        <span class="priority-item">Core Web Vitals optimization</span>
+        <span class="priority-item">Animation polish + reduced-motion verification</span>
+        <span class="priority-item">Mobile touch target verification</span>
+        <span class="priority-item">/seoaudit · /uiaudit · /uxaudit · /optimize · /killcritic</span>
+        <span class="priority-item">Final security audit</span>
+        <span class="priority-item">Real image replacement (placeholders → real industrial imagery)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 12: RISK ANALYSIS -->
+  <div class="section" id="s12">
+    <div class="section-title"><span class="num">12</span> Risk Analysis</div>
+    <div class="section-subtitle">Biggest risks across architecture, business, UX, SEO, and security</div>
+
+    <div class="risk-grid">
+      <div class="risk-card critical">
+        <span class="risk-label" style="background:rgba(239,68,68,0.2);color:var(--red);">Critical</span>
+        <h4>🏗️ Biggest Architectural Risk</h4>
+        <p><strong>No i18n routing foundation.</strong> Every page, link, metadata entry, and SEO element depends on the locale routing structure. Building pages without this foundation means they must be rebuilt when i18n is added. This is the single most important architectural decision to make before building any pages.</p>
+      </div>
+      <div class="risk-card critical">
+        <span class="risk-label" style="background:rgba(239,68,68,0.2);color:var(--red);">Critical</span>
+        <h4>💼 Biggest Business Risk</h4>
+        <p><strong>No RFQ infrastructure.</strong> The primary business objective — generating qualified quotes from international buyers — has zero implementation. Every visitor who wants to request a quote hits a 404 page. This is a complete business failure point.</p>
+      </div>
+      <div class="risk-card high">
+        <span class="risk-label" style="background:rgba(249,115,22,0.2);color:var(--orange);">High</span>
+        <h4>📱 Biggest UX Risk</h4>
+        <p><strong>Non-functional language switcher.</strong> The header presents a language selector with 4 languages as a core navigation element. When a user selects "فارسی", nothing happens. This creates a broken expectation and undermines trust in the site's international capability — which is central to the business.</p>
+      </div>
+      <div class="risk-card high">
+        <span class="risk-label" style="background:rgba(249,115,22,0.2);color:var(--orange);">High</span>
+        <h4>🔍 Biggest SEO Risk</h4>
+        <p><strong>No multilingual SEO infrastructure.</strong> The documentation specifies hreflang, x-default, localized metadata, sitemap across locales, and localized schema. Without any of this, the site cannot rank in any language market. For a business whose primary market (Vietnam) requires Vietnamese SEO, this is a critical gap.</p>
+      </div>
+      <div class="risk-card high">
+        <span class="risk-label" style="background:rgba(249,115,22,0.2);color:var(--orange);">High</span>
+        <h4>🔒 Biggest Security Risk</h4>
+        <p><strong>No security headers and no API security foundation.</strong> When the RFQ API is built, it will be a public-facing endpoint accepting user input and sending email. Without rate limiting, input validation, CSP, and security headers in place from the start, this will be a high-value attack target. Security must be built in, not bolted on.</p>
+      </div>
+      <div class="risk-card medium">
+        <span class="risk-label" style="background:rgba(234,179,8,0.2);color:var(--yellow);">Medium</span>
+        <h4>⚠️ Documentation/Code Conflict</h4>
+        <p><strong>Market page structure.</strong> Documentation says "one Markets page." Code links to individual market pages (/markets/vietnam, etc.). This conflict must be resolved before implementation.</p>
+      </div>
+      <div class="risk-card medium">
+        <span class="risk-label" style="background:rgba(234,179,8,0.2);color:var(--yellow);">Medium</span>
+        <h4>🎨 Design System Drift</h4>
+        <p><strong>Primary CTA color.</strong> Documentation says Midnight Navy. Code uses Cyan 600 throughout. This affects every button in the system and must be resolved before building the design system.</p>
+      </div>
+      <div class="risk-card medium">
+        <span class="risk-label" style="background:rgba(234,179,8,0.2);color:var(--yellow);">Medium</span>
+        <h4>🖼️ Placeholder Images</h4>
+        <p><code>generate-placeholders.js</code> creates placeholder images. It is unclear whether the current images are placeholders or final. Real industrial imagery is required per the design specification.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 13: KEY CONFLICTS -->
+  <div class="section" id="s13">
+    <div class="section-title"><span class="num">13</span> Key Documentation vs Code Conflicts</div>
+    <div class="section-subtitle">Areas where documentation and implementation disagree — resolution needed before proceeding</div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th style="width:20%;">Area</th>
+          <th style="width:27%;">Documentation Says</th>
+          <th style="width:27%;">Code Does</th>
+          <th style="width:26%;">Recommended Direction</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Primary CTA Color</strong></td>
+          <td>Midnight Navy with cyan hover. "Primary example: Request a Quote"</td>
+          <td>Cyan 600 background (`bg-cyan-brand`) used for all primary CTAs across header, hero, and final CTA sections</td>
+          <td class="col-status-conflict"><strong>Confirm with stakeholders.</strong> Documentation is source of truth. If Cyan is intentional, update documentation to reflect the design decision.</td>
+        </tr>
+        <tr>
+          <td><strong>Market Page Structure</strong></td>
+          <td>"Use one Markets page. Do not create separate market pages at this stage."</td>
+          <td><code>MarketsFocus</code> component links to <code>/markets/vietnam</code>, <code>/markets/uae</code>, <code>/markets/russia</code>, <code>/markets/thailand</code></td>
+          <td class="col-status-conflict"><strong>Follow documentation.</strong> Use a single <code>/[locale]/markets</code> page. Update the MarketsFocus component to link to the single markets page.</td>
+        </tr>
+        <tr>
+          <td><strong>Certifications Count</strong></td>
+          <td>6 required: HACCP, ISO 22000, Halal, Health Certificate, Veterinary Certificate, Certificate of Origin</td>
+          <td>Only 4 shown: HACCP, ISO 22000, Halal, Health Certificate. Missing: Veterinary Certificate, Certificate of Origin.</td>
+          <td class="col-status-conflict"><strong>Add missing certifications.</strong> The 2 missing certifications must be added to the CMS schema and content.</td>
+        </tr>
+        <tr>
+          <td><strong>Supply Chain Steps</strong></td>
+          <td>9 steps: Farm → Processing → Sorting → IQF Freezing → Cold Storage → Quality Inspection → Container Loading → Sea Shipping → Destination Delivery</td>
+          <td>8 steps shown. Missing: Destination Delivery (the final step).</td>
+          <td class="col-status-conflict"><strong>Add Destination Delivery.</strong> The final step of the supply chain is missing from the current implementation.</td>
+        </tr>
+        <tr>
+          <td><strong>Locale Routing</strong></td>
+          <td><code>/[locale]/...</code> structure with middleware for locale detection and <code>/</code> → <code>/en</code> redirect. Stable English slugs across all locales.</td>
+          <td>Root-level routes. No locale prefix. No middleware. No redirect. All navigation links are root-level.</td>
+          <td class="col-status-conflict"><strong>Implement per documentation.</strong> The <code>/[locale]/</code> routing structure must be implemented as specified. This is the foundational architecture decision.</td>
+        </tr>
+        <tr>
+          <td><strong>Language Switcher</strong></td>
+          <td>Functional locale switching that navigates to the correct locale-prefixed URL and displays content in the selected language.</td>
+          <td>Client-state toggle that changes only the displayed flag and label. No navigation. No content change. No direction change. No persistence.</td>
+          <td class="col-status-conflict"><strong>Replace with functional implementation.</strong> The current implementation creates a UX problem by presenting a language selector that does nothing.</td>
+        </tr>
+        <tr>
+          <td><strong>RTL Support</strong></td>
+          <td>Dynamic per locale. FA = RTL set at <code>&lt;html dir&gt;</code> level. Logical CSS properties. No separate RTL components.</td>
+          <td>Hardcoded <code>lang="en" dir="ltr"</code> in <code>layout.tsx</code>. CSS rule for RTL exists but is never activated. No dynamic direction.</td>
+          <td class="col-status-conflict"><strong>Make direction dynamic.</strong> The direction must be based on the active locale, not hardcoded.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="audit-footer">
+    <p>Feiz Food Group — Architecture Audit v1.0 — August 10, 2026</p>
+    <p style="margin-top:4px;font-size:12px;">Read-Only Analysis · No Code Modified · Documentation: 6 MD + 2 HTML files reviewed · Repository: github.com/CoraxMuninn/ffg</p>
+  </div>
+</div>
+
+</body>
+</html>

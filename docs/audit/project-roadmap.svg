@@ -1,0 +1,415 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" width="1200" height="1600">
+  <defs>
+    <linearGradient id="navyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a1628"/>
+      <stop offset="100%" style="stop-color:#111d33"/>
+    </linearGradient>
+    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0891b2"/>
+      <stop offset="100%" style="stop-color:#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#dc2626"/>
+      <stop offset="100%" style="stop-color:#ef4444"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#047857"/>
+      <stop offset="100%" style="stop-color:#10b981"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d97706"/>
+      <stop offset="100%" style="stop-color:#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c3aed"/>
+      <stop offset="100%" style="stop-color:#8b5cf6"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="1600" fill="url(#navyGrad)"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.03">
+    <line x1="0" y1="0" x2="0" y2="1600" stroke="#fff" stroke-width="1"/>
+    <line x1="100" y1="0" x2="100" y2="1600" stroke="#fff" stroke-width="1"/>
+    <line x1="200" y1="0" x2="200" y2="1600" stroke="#fff" stroke-width="1"/>
+    <line x1="300" y1="0" x2="300" y2="1600" stroke="#fff" stroke-width="1"/>
+    <line x1="400" y1="0" x2="400" y2="1600" stroke="#fff" stroke-width="1"/>
+    <line x1="500" y1="0" x2="500" y2="1600" stroke="#fff" stroke-width="1"/>
+    <line x1="600" y1="0" x2="600" y2="1600" stroke="#fff" stroke-width="1"/>
+    <line x1="700" y1="0" x2="700" y2="1600" stroke="#fff" stroke-width="1"/>
+    <line x1="800" y1="0" x2="800" y2="1600" stroke="#fff" stroke-width="1"/>
+    <line x1="900" y1="0" x2="900" y2="1600" stroke="#fff" stroke-width="1"/>
+    <line x1="1000" y1="0" x2="1000" y2="1600" stroke="#fff" stroke-width="1"/>
+    <line x1="1100" y1="0" x2="1100" y2="1600" stroke="#fff" stroke-width="1"/>
+    <line x1="1200" y1="0" x2="1200" y2="1600" stroke="#fff" stroke-width="1"/>
+  </g>
+
+  <!-- Title -->
+  <text x="600" y="52" text-anchor="middle" fill="#fff" font-family="Inter, sans-serif" font-size="28" font-weight="900" letter-spacing="-0.5">Feiz Food Group</text>
+  <text x="600" y="80" text-anchor="middle" fill="#22d3ee" font-family="Inter, sans-serif" font-size="14" font-weight="600" letter-spacing="2">PROJECT ROADMAP · CURRENT STATE → TARGET SYSTEM</text>
+  <text x="600" y="100" text-anchor="middle" fill="#94a3b8" font-family="Inter, sans-serif" font-size="11">August 2026 · Foundation Status · Read-Only Audit</text>
+
+  <!-- Divider -->
+  <line x1="60" y1="115" x2="1140" y2="115" stroke="#0891b2" stroke-width="1" opacity="0.3"/>
+
+  <!-- STATUS BADGE -->
+  <rect x="440" y="128" width="320" height="36" rx="18" fill="rgba(234,179,8,0.12)" stroke="#eab308" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="600" y="151" text-anchor="middle" fill="#fbbf24" font-family="Inter, sans-serif" font-size="13" font-weight="700" letter-spacing="1.5">🟡 OVERALL STATUS: FOUNDATION</text>
+
+  <!-- PHASE 0: CURRENT STATE -->
+  <g transform="translate(60, 180)">
+    <rect width="1080" height="120" rx="12" fill="rgba(239,68,68,0.06)" stroke="#ef4444" stroke-width="1" stroke-dasharray="6,3"/>
+    <rect x="0" y="0" width="8" height="120" rx="4" fill="url(#redGrad)"/>
+    <text x="28" y="32" fill="#ef4444" font-family="Inter, sans-serif" font-size="11" font-weight="800" letter-spacing="2">P0 · CURRENT STATE</text>
+    <text x="28" y="52" fill="#fff" font-family="Inter, sans-serif" font-size="16" font-weight="700">Single-Page Homepage Scaffold</text>
+    <text x="28" y="72" fill="#94a3b8" font-family="Inter, sans-serif" font-size="11">Next.js 16 · Tailwind v4 · shadcn/ui v4 · TypeScript</text>
+    <text x="28" y="92" fill="#94a3b8" font-family="Inter, sans-serif" font-size="11">1 page · Hardcoded EN content · No i18n · No CMS · No RFQ</text>
+    <text x="28" y="110" fill="#ef4444" font-family="Inter, sans-serif" font-size="10" font-weight="600">No product pages · No translations · No SEO · No security headers</text>
+    <text x="980" y="52" text-anchor="end" fill="#ef4444" font-family="Inter, sans-serif" font-size="20" font-weight="900">0%</text>
+    <text x="980" y="70" text-anchor="end" fill="#94a3b8" font-family="Inter, sans-serif" font-size="10">of documented system</text>
+    <text x="980" y="110" text-anchor="end" fill="#ef4444" font-family="Inter, sans-serif" font-size="28" font-weight="900">built</text>
+
+    <!-- Current state feature list -->
+    <g transform="translate(28, 132)">
+      <rect x="0" y="0" width="12" height="12" rx="3" fill="#22c55e"/>
+      <text x="20" y="10" fill="#22c55e" font-family="Inter, sans-serif" font-size="10" font-weight="600">Next.js 16 + App Router + TS</text>
+      <rect x="260" y="0" width="12" height="12" rx="3" fill="#22c55e"/>
+      <text x="280" y="10" fill="#22c55e" font-family="Inter, sans-serif" font-size="10" font-weight="600">Tailwind v4 + shadcn/ui v4</text>
+      <rect x="520" y="0" width="12" height="12" rx="3" fill="#22c55e"/>
+      <text x="540" y="10" fill="#22c55e" font-family="Inter, sans-serif" font-size="10" font-weight="600">Lucide React icons</text>
+      <rect x="0" y="22" width="12" height="12" rx="3" fill="#22c55e"/>
+      <text x="20" y="32" fill="#22c55e" font-family="Inter, sans-serif" font-size="10" font-weight="600">Inter + Vazirmatn fonts (loaded)</text>
+      <rect x="260" y="22" width="12" height="12" rx="3" fill="#22c55e"/>
+      <text x="280" y="32" fill="#22c55e" font-family="Inter, sans-serif" font-size="10" font-weight="600">Design tokens (colors defined)</text>
+      <rect x="520" y="22" width="12" height="12" rx="3" fill="#22c55e"/>
+      <text x="540" y="32" fill="#22c55e" font-family="Inter, sans-serif" font-size="10" font-weight="600">Responsive components</text>
+      <rect x="0" y="44" width="12" height="12" rx="3" fill="#22c55e"/>
+      <text x="20" y="54" fill="#22c55e" font-family="Inter, sans-serif" font-size="10" font-weight="600">Header (Client) + 9 sections (Server)</text>
+      <rect x="260" y="44" width="12" height="12" rx="3" fill="#22c55e"/>
+      <text x="280" y="54" fill="#22c55e" font-family="Inter, sans-serif" font-size="10" font-weight="600">All images via next/image</text>
+      <rect x="520" y="44" width="12" height="12" rx="3" fill="#22c55e"/>
+      <text x="540" y="54" fill="#22c55e" font-family="Inter, sans-serif" font-size="10" font-weight="600">Root metadata + hreflang declared</text>
+      <rect x="0" y="66" width="12" height="12" rx="3" fill="#ef4444"/>
+      <text x="20" y="76" fill="#ef4444" font-family="Inter, sans-serif" font-size="10" font-weight="600">No i18n routing</text>
+      <rect x="180" y="66" width="12" height="12" rx="3" fill="#ef4444"/>
+      <text x="200" y="76" fill="#ef4444" font-family="Inter, sans-serif" font-size="10" font-weight="600">No CMS</text>
+      <rect x="340" y="66" width="12" height="12" rx="3" fill="#ef4444"/>
+      <text x="360" y="76" fill="#ef4444" font-family="Inter, sans-serif" font-size="10" font-weight="600">No product pages</text>
+      <rect x="500" y="66" width="12" height="12" rx="3" fill="#ef4444"/>
+      <text x="520" y="76" fill="#ef4444" font-family="Inter, sans-serif" font-size="10" font-weight="600">No RFQ</text>
+      <rect x="660" y="66" width="12" height="12" rx="3" fill="#ef4444"/>
+      <text x="680" y="76" fill="#ef4444" font-family="Inter, sans-serif" font-size="10" font-weight="600">No translations</text>
+      <rect x="0" y="88" width="12" height="12" rx="3" fill="#ef4444"/>
+      <text x="20" y="98" fill="#ef4444" font-family="Inter, sans-serif" font-size="10" font-weight="600">No SEO infra (sitemap, robots, schema)</text>
+      <rect x="340" y="88" width="12" height="12" rx="3" fill="#ef4444"/>
+      <text x="360" y="98" fill="#ef4444" font-family="Inter, sans-serif" font-size="10" font-weight="600">No security headers</text>
+      <rect x="660" y="88" width="12" height="12" rx="3" fill="#ef4444"/>
+      <text x="680" y="98" fill="#ef4444" font-family="Inter, sans-serif" font-size="10" font-weight="600">7 of 10 pages missing</text>
+    </g>
+  </g>
+
+  <!-- Arrow -->
+  <g transform="translate(600, 310)">
+    <line x1="0" y1="0" x2="0" y2="40" stroke="#0891b2" stroke-width="2"/>
+    <polygon points="0,48 -8,38 8,38" fill="#0891b2"/>
+    <text x="0" y="68" text-anchor="middle" fill="#22d3ee" font-family="Inter, sans-serif" font-size="11" font-weight="700" letter-spacing="2">GAP ANALYSIS</text>
+    <text x="0" y="84" text-anchor="middle" fill="#94a3b8" font-family="Inter, sans-serif" font-size="10">8 critical areas identified</text>
+  </g>
+
+  <!-- GAP ANALYSIS BOX -->
+  <g transform="translate(60, 345)">
+    <rect width="1080" height="72" rx="10" fill="rgba(148,163,184,0.05)" stroke="#94a3b8" stroke-width="0.5" stroke-dasharray="3,3"/>
+    <text x="20" y="26" fill="#f59e0b" font-family="Inter, sans-serif" font-size="10" font-weight="800" letter-spacing="1.5">GAP ANALYSIS — CRITICAL GAPS IDENTIFIED</text>
+
+    <g transform="translate(20, 36)">
+      <circle cx="6" cy="6" r="5" fill="#ef4444"/>
+      <text x="18" y="10" fill="#ef4444" font-family="Inter, sans-serif" font-size="10" font-weight="600">No i18n routing — every page depends on this</text>
+    </g>
+    <g transform="translate(380, 36)">
+      <circle cx="6" cy="6" r="5" fill="#ef4444"/>
+      <text x="18" y="10" fill="#ef4444" font-family="Inter, sans-serif" font-size="10" font-weight="600">No CMS — all content hardcoded</text>
+    </g>
+    <g transform="translate(620, 36)">
+      <circle cx="6" cy="6" r="5" fill="#ef4444"/>
+      <text x="18" y="10" fill="#ef4444" font-family="Inter, sans-serif" font-size="10" font-weight="600">No RFQ infrastructure — primary conversion missing</text>
+    </g>
+    <g transform="translate(20, 54)">
+      <circle cx="6" cy="6" r="5" fill="#f97316"/>
+      <text x="18" y="10" fill="#f97316" font-family="Inter, sans-serif" font-size="10" font-weight="600">No product pages — 4 required, 0 exist</text>
+    </g>
+    <g transform="translate(380, 54)">
+      <circle cx="6" cy="6" r="5" fill="#f97316"/>
+      <text x="18" y="10" fill="#f97316" font-family="Inter, sans-serif" font-size="10" font-weight="600">No translations — 3 of 4 languages empty</text>
+    </g>
+    <g transform="translate(620, 54)">
+      <circle cx="6" cy="6" r="5" fill="#f97316"/>
+      <text x="18" y="10" fill="#f97316" font-family="Inter, sans-serif" font-size="10" font-weight="600">No SEO infrastructure — no sitemap, robots, schema</text>
+    </g>
+    <g transform="translate(20, 72)">
+      <circle cx="6" cy="6" r="5" fill="#f97316"/>
+      <text x="18" y="10" fill="#f97316" font-family="Inter, sans-serif" font-size="10" font-weight="600">No security headers — next.config.ts empty</text>
+    </g>
+    <g transform="translate(380, 72)">
+      <circle cx="6" cy="6" r="5" fill="#eab308"/>
+      <text x="18" y="10" fill="#eab308" font-family="Inter, sans-serif" font-size="10" font-weight="600">Non-functional language switcher — broken UX expectation</text>
+    </g>
+    <g transform="translate(620, 72)">
+      <circle cx="6" cy="6" r="5" fill="#eab308"/>
+      <text x="18" y="10" fill="#eab308" font-family="Inter, sans-serif" font-size="10" font-weight="600">Market pages conflict — docs say one page, code links to individual</text>
+    </g>
+  </g>
+
+  <!-- Arrow down -->
+  <g transform="translate(600, 430)">
+    <line x1="0" y1="0" x2="0" y2="35" stroke="#0891b2" stroke-width="2"/>
+    <polygon points="0,43 -8,33 8,33" fill="#0891b2"/>
+  </g>
+
+  <!-- IMPLEMENTATION PHASES -->
+  <g transform="translate(60, 470)">
+    <rect width="1080" height="40" rx="8" fill="rgba(8,145,178,0.1)" stroke="#0891b2" stroke-width="0.5"/>
+    <text x="20" y="26" fill="#22d3ee" font-family="Inter, sans-serif" font-size="11" font-weight="800" letter-spacing="2">IMPLEMENTATION ROADMAP — 6 PHASES</text>
+    <text x="1060" y="26" text-anchor="end" fill="#94a3b8" font-family="Inter, sans-serif" font-size="10">Dependencies →</text>
+  </g>
+
+  <!-- Phase labels row -->
+  <g transform="translate(60, 518)">
+    <!-- P0 -->
+    <rect x="0" y="0" width="195" height="56" rx="8" fill="rgba(239,68,68,0.08)" stroke="#ef4444" stroke-width="1"/>
+    <rect x="0" y="0" width="195" height="22" rx="8" fill="rgba(239,68,68,0.15)"/>
+    <rect x="0" y="14" width="195" height="8" fill="rgba(239,68,68,0.15)"/>
+    <text x="10" y="15" fill="#ef4444" font-family="Inter, sans-serif" font-size="9" font-weight="800" letter-spacing="1">P0 · FOUNDATION</text>
+    <text x="10" y="36" fill="#fff" font-family="Inter, sans-serif" font-size="10" font-weight="700">i18n routing</text>
+    <text x="10" y="48" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">middleware · locale detection</text>
+
+    <!-- Arrow -->
+    <text x="200" y="30" fill="#0891b2" font-family="Inter, sans-serif" font-size="14" font-weight="300">→</text>
+
+    <!-- P1 -->
+    <rect x="215" y="0" width="195" height="56" rx="8" fill="rgba(234,179,8,0.08)" stroke="#eab308" stroke-width="1"/>
+    <rect x="215" y="0" width="195" height="22" rx="8" fill="rgba(234,179,8,0.15)"/>
+    <rect x="215" y="14" width="195" height="8" fill="rgba(234,179,8,0.15)"/>
+    <text x="225" y="15" fill="#fbbf24" font-family="Inter, sans-serif" font-size="9" font-weight="800" letter-spacing="1">P1 · CMS + CONTENT</text>
+    <text x="225" y="36" fill="#fff" font-family="Inter, sans-serif" font-size="10" font-weight="700">Decap CMS · content/</text>
+    <text x="225" y="48" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">schemas · EN content</text>
+
+    <!-- Arrow -->
+    <text x="420" y="30" fill="#0891b2" font-family="Inter, sans-serif" font-size="14" font-weight="300">→</text>
+
+    <!-- P2 -->
+    <rect x="435" y="0" width="195" height="56" rx="8" fill="rgba(8,145,178,0.08)" stroke="#0891b2" stroke-width="1"/>
+    <rect x="435" y="0" width="195" height="22" rx="8" fill="rgba(8,145,178,0.15)"/>
+    <rect x="435" y="14" width="195" height="8" fill="rgba(8,145,178,0.15)"/>
+    <text x="445" y="15" fill="#22d3ee" font-family="Inter, sans-serif" font-size="9" font-weight="800" letter-spacing="1">P2 · PAGES + ROUTES</text>
+    <text x="445" y="36" fill="#fff" font-family="Inter, sans-serif" font-size="10" font-weight="700">10 pages · 4 product</text>
+    <text x="445" y="48" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">routes · blog · error pages</text>
+
+    <!-- Arrow -->
+    <text x="640" y="30" fill="#0891b2" font-family="Inter, sans-serif" font-size="14" font-weight="300">→</text>
+
+    <!-- P3 -->
+    <rect x="655" y="0" width="195" height="56" rx="8" fill="rgba(34,197,94,0.08)" stroke="#22c55e" stroke-width="1"/>
+    <rect x="655" y="0" width="195" height="22" rx="8" fill="rgba(34,197,94,0.15)"/>
+    <rect x="655" y="14" width="195" height="8" fill="rgba(34,197,94,0.15)"/>
+    <text x="665" y="15" fill="#4ade80" font-family="Inter, sans-serif" font-size="9" font-weight="800" letter-spacing="1">P3 · CONVERSION</text>
+    <text x="665" y="36" fill="#fff" font-family="Inter, sans-serif" font-size="10" font-weight="700">RFQ form · API</text>
+    <text x="665" y="48" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Resend · validation</text>
+
+    <!-- Arrow -->
+    <text x="860" y="30" fill="#0891b2" font-family="Inter, sans-serif" font-size="14" font-weight="300">→</text>
+
+    <!-- P4 -->
+    <rect x="875" y="0" width="195" height="56" rx="8" fill="rgba(139,92,246,0.08)" stroke="#8b5cf6" stroke-width="1"/>
+    <rect x="875" y="0" width="195" height="22" rx="8" fill="rgba(139,92,246,0.15)"/>
+    <rect x="875" y="14" width="195" height="8" fill="rgba(139,92,246,0.15)"/>
+    <text x="885" y="15" fill="#a78bfa" font-family="Inter, sans-serif" font-size="9" font-weight="800" letter-spacing="1">P4 · SEO + SECURITY</text>
+    <text x="885" y="36" fill="#fff" font-family="Inter, sans-serif" font-size="10" font-weight="700">sitemap · robots</text>
+    <text x="885" y="48" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">schema · CSP · HSTS</text>
+  </g>
+
+  <!-- Phase details -->
+  <g transform="translate(60, 590)">
+    <!-- P0 Detail -->
+    <rect x="0" y="0" width="570" height="88" rx="8" fill="rgba(239,68,68,0.04)" stroke="#ef4444" stroke-width="0.5"/>
+    <text x="12" y="20" fill="#ef4444" font-family="Inter, sans-serif" font-size="10" font-weight="800" letter-spacing="1">P0 — FOUNDATION / BLOCKING</text>
+    <text x="12" y="38" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Why: Every page, link, metadata entry, and SEO element depends on locale routing.</text>
+    <text x="12" y="54" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Items: i18n routing architecture · Middleware · Dynamic lang/dir · Design token lock</text>
+    <text x="12" y="70" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Primary CTA color decision · Feature-based file structure expansion</text>
+    <text x="12" y="84" fill="#ef4444" font-family="Inter, sans-serif" font-size="9" font-weight="600">Dependency: NONE — this phase must come first.</text>
+
+    <!-- P1 Detail -->
+    <rect x="590" y="0" width="570" height="88" rx="8" fill="rgba(234,179,8,0.04)" stroke="#eab308" stroke-width="0.5"/>
+    <text x="602" y="20" fill="#eab308" font-family="Inter, sans-serif" font-size="10" font-weight="800" letter-spacing="1">P1 — CORE ARCHITECTURE + CONTENT</text>
+    <text x="602" y="38" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Why: Pages need a CMS content source. Building pages with hardcoded data = refactoring later.</text>
+    <text x="602" y="54" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Items: Decap CMS + admin route · content/ directory · schemas · icon registry</text>
+    <text x="602" y="70" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Content: 4 products · 6 certs · 8 features · 4 markets · supply chain · quality · About</text>
+    <text x="602" y="84" fill="#eab308" font-family="Inter, sans-serif" font-size="9" font-weight="600">Dependency: P0 (i18n routing must exist first)</text>
+  </g>
+
+  <g transform="translate(60, 692)">
+    <!-- P2 Detail -->
+    <rect x="0" y="0" width="570" height="88" rx="8" fill="rgba(8,145,178,0.04)" stroke="#0891b2" stroke-width="0.5"/>
+    <text x="12" y="20" fill="#0891b2" font-family="Inter, sans-serif" font-size="10" font-weight="800" letter-spacing="1">P2 — CORE PRODUCT EXPERIENCE</text>
+    <text x="12" y="38" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Why: RFQ lives on Contact page. Buyer journey passes through product pages before RFQ.</text>
+    <text x="12" y="54" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Pages: Home · Products list · Product detail ×4 · About · Markets (one page) · Supply Chain</text>
+    <text x="12" y="70" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Quality Control · Certifications · Contact (with RFQ UI) · Blog list · Blog detail · 404 · 500</text>
+    <text x="12" y="84" fill="#0891b2" font-family="Inter, sans-serif" font-size="9" font-weight="600">Dependency: P1 (CMS + content must exist first)</text>
+
+    <!-- P3 Detail -->
+    <rect x="590" y="0" width="570" height="88" rx="8" fill="rgba(34,197,94,0.04)" stroke="#22c55e" stroke-width="0.5"/>
+    <text x="602" y="20" fill="#22c55e" font-family="Inter, sans-serif" font-size="10" font-weight="800" letter-spacing="1">P3 — CONVERSION SYSTEM</text>
+    <text x="602" y="38" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Why: Primary business objective. Every CTA leads here. Must be built securely from the start.</text>
+    <text x="602" y="54" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Items: RFQ form UI · POST /api/rfq · Zod validation · Sanitization · Rate limiting</text>
+    <text x="602" y="70" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Anti-bot (honeypot + Turnstile) · Resend · Reply-To · Email template · Feedback states</text>
+    <text x="602" y="84" fill="#22c55e" font-family="Inter, sans-serif" font-size="9" font-weight="600">Dependency: P2 (Contact page must exist first)</text>
+  </g>
+
+  <g transform="translate(60, 794)">
+    <!-- P4 Detail -->
+    <rect x="0" y="0" width="570" height="72" rx="8" fill="rgba(139,92,246,0.04)" stroke="#8b5cf6" stroke-width="0.5"/>
+    <text x="12" y="20" fill="#8b5cf6" font-family="Inter, sans-serif" font-size="10" font-weight="800" letter-spacing="1">P4 — SEO + PERFORMANCE + SECURITY</text>
+    <text x="12" y="38" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Why: SEO describes pages that must already exist. Security headers protect a running system.</text>
+    <text x="12" y="54" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Items: Per-page metadata · hreflang · canonical · sitemap.xml · robots.txt · Schema.org</text>
+    <text x="12" y="70" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Security headers · CSP · HSTS · Dependency audit · Caching strategy</text>
+
+    <!-- P5 Detail -->
+    <rect x="590" y="0" width="570" height="72" rx="8" fill="rgba(148,163,184,0.04)" stroke="#94a3b8" stroke-width="0.5"/>
+    <text x="602" y="20" fill="#94a3b8" font-family="Inter, sans-serif" font-size="10" font-weight="800" letter-spacing="1">P5 — POLISH + QA + TRANSLATIONS</text>
+    <text x="602" y="38" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Why: QA can only verify what exists. Translations need stable EN content as source.</text>
+    <text x="602" y="54" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Translations: FA (RTL) · RU · VI (highest priority) — full site</text>
+    <text x="602" y="70" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">QA: /seoaudit · /uiaudit · /uxaudit · /optimize · /killcritic · Security audit</text>
+  </g>
+
+  <!-- Divider -->
+  <line x1="60" y1="880" x2="1140" y2="880" stroke="#0891b2" stroke-width="0.5" opacity="0.3"/>
+
+  <!-- TARGET SYSTEM PREVIEW -->
+  <g transform="translate(60, 900)">
+    <rect width="1080" height="34" rx="8" fill="rgba(34,197,94,0.06)" stroke="#22c55e" stroke-width="0.5"/>
+    <text x="16" y="22" fill="#4ade80" font-family="Inter, sans-serif" font-size="10" font-weight="800" letter-spacing="1.5">TARGET SYSTEM — WHEN COMPLETE</text>
+    <text x="1064" y="22" text-anchor="end" fill="#22c55e" font-family="Inter, sans-serif" font-size="10" font-weight="600">↑ 100% of documented system built ↑</text>
+  </g>
+
+  <!-- Target system diagram -->
+  <g transform="translate(60, 948)">
+    <!-- User -->
+    <rect x="0" y="0" width="100" height="48" rx="8" fill="rgba(8,145,178,0.15)" stroke="#0891b2" stroke-width="1"/>
+    <text x="50" y="20" text-anchor="middle" fill="#22d3ee" font-family="Inter, sans-serif" font-size="10" font-weight="700">User</text>
+    <text x="50" y="36" text-anchor="middle" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">International B2B Buyer</text>
+
+    <text x="115" y="28" fill="#0891b2" font-family="Inter, sans-serif" font-size="12">→</text>
+
+    <!-- Middleware -->
+    <rect x="130" y="0" width="110" height="48" rx="8" fill="rgba(139,92,246,0.15)" stroke="#8b5cf6" stroke-width="1"/>
+    <text x="185" y="20" text-anchor="middle" fill="#a78bfa" font-family="Inter, sans-serif" font-size="10" font-weight="700">Middleware</text>
+    <text x="185" y="36" text-anchor="middle" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Locale detection</text>
+
+    <text x="248" y="28" fill="#0891b2" font-family="Inter, sans-serif" font-size="12">→</text>
+
+    <!-- Next.js -->
+    <rect x="260" y="0" width="130" height="48" rx="8" fill="rgba(8,145,178,0.15)" stroke="#0891b2" stroke-width="1"/>
+    <text x="325" y="20" text-anchor="middle" fill="#22d3ee" font-family="Inter, sans-serif" font-size="10" font-weight="700">Next.js 16</text>
+    <text x="325" y="36" text-anchor="middle" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">App Router + i18n</text>
+
+    <text x="398" y="28" fill="#0891b2" font-family="Inter, sans-serif" font-size="12">→</text>
+
+    <!-- Pages column -->
+    <rect x="410" y="0" width="200" height="48" rx="8" fill="rgba(34,197,94,0.1)" stroke="#22c55e" stroke-width="1"/>
+    <text x="510" y="16" text-anchor="middle" fill="#fff" font-family="Inter, sans-serif" font-size="9" font-weight="700">PAGES (CMS-driven)</text>
+    <text x="510" y="32" text-anchor="middle" fill="#94a3b8" font-family="Inter, sans-serif" font-size="8">Home · Products · Product Detail</text>
+    <text x="510" y="44" text-anchor="middle" fill="#94a3b8" font-family="Inter, sans-serif" font-size="8">About · Markets · Supply Chain</text>
+
+    <!-- More pages below -->
+    <rect x="410" y="54" width="200" height="36" rx="6" fill="rgba(34,197,94,0.06)" stroke="#22c55e" stroke-width="0.5"/>
+    <text x="510" y="70" text-anchor="middle" fill="#94a3b8" font-family="Inter, sans-serif" font-size="8">Quality · Certifications · Contact+RFQ</text>
+    <text x="510" y="82" text-anchor="middle" fill="#94a3b8" font-family="Inter, sans-serif" font-size="8">Blog list · Blog detail · 404 · 500</text>
+
+    <text x="618" y="28" fill="#0891b2" font-family="Inter, sans-serif" font-size="12">→</text>
+
+    <!-- API -->
+    <rect x="630" y="0" width="120" height="48" rx="8" fill="rgba(234,179,8,0.12)" stroke="#eab308" stroke-width="1"/>
+    <text x="690" y="18" text-anchor="middle" fill="#fbbf24" font-family="Inter, sans-serif" font-size="10" font-weight="700">API Routes</text>
+    <text x="690" y="34" text-anchor="middle" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">POST /api/rfq</text>
+
+    <text x="758" y="28" fill="#0891b2" font-family="Inter, sans-serif" font-size="12">→</text>
+
+    <!-- Resend -->
+    <rect x="770" y="0" width="100" height="48" rx="8" fill="rgba(34,197,94,0.12)" stroke="#22c55e" stroke-width="1"/>
+    <text x="820" y="18" text-anchor="middle" fill="#4ade80" font-family="Inter, sans-serif" font-size="10" font-weight="700">Resend</text>
+    <text x="820" y="34" text-anchor="middle" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Reply-To → Inbox</text>
+
+    <text x="878" y="28" fill="#0891b2" font-family="Inter, sans-serif" font-size="12">→</text>
+
+    <!-- SEO -->
+    <rect x="890" y="0" width="110" height="48" rx="8" fill="rgba(139,92,246,0.12)" stroke="#8b5cf6" stroke-width="1"/>
+    <text x="945" y="18" text-anchor="middle" fill="#a78bfa" font-family="Inter, sans-serif" font-size="10" font-weight="700">SEO Pipeline</text>
+    <text x="945" y="34" text-anchor="middle" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">Metadata · Schema</text>
+
+    <!-- CMS arrow from bottom -->
+    <line x1="510" y1="96" x2="510" y2="120" stroke="#0891b2" stroke-width="1" stroke-dasharray="3,3"/>
+    <text x="510" y="114" text-anchor="middle" fill="#0891b2" font-family="Inter, sans-serif" font-size="9">CMS content drives all pages</text>
+  </g>
+
+  <!-- CMS source -->
+  <g transform="translate(60, 1060)">
+    <rect width="1080" height="30" rx="6" fill="rgba(34,197,94,0.05)" stroke="#22c55e" stroke-width="0.5"/>
+    <text x="16" y="19" fill="#4ade80" font-family="Inter, sans-serif" font-size="9" font-weight="700">CONTENT SOURCE: Decap CMS → GitHub → Markdown → Next.js</text>
+    <text x="1064" y="19" text-anchor="end" fill="#94a3b8" font-family="Inter, sans-serif" font-size="9">4 locales · Git-based · No database · Editorial Workflow</text>
+  </g>
+
+  <!-- Key stats -->
+  <g transform="translate(60, 1110)">
+    <rect width="1080" height="90" rx="12" fill="rgba(8,145,178,0.04)" stroke="#0891b2" stroke-width="0.5"/>
+    <text x="20" y="24" fill="#22d3ee" font-family="Inter, sans-serif" font-size="11" font-weight="800" letter-spacing="1.5">PROJECT STATISTICS</text>
+
+    <!-- Stat 1 -->
+    <rect x="20" y="42" width="240" height="36" rx="8" fill="rgba(239,68,68,0.08)" stroke="#ef4444" stroke-width="0.5"/>
+    <text x="36" y="58" fill="#ef4444" font-family="Inter, sans-serif" font-size="22" font-weight="900">0</text>
+    <text x="68" y="58" fill="#94a3b8" font-family="Inter, sans-serif" font-size="10">of 4 product detail pages exist</text>
+    <text x="36" y="72" fill="#ef4444" font-family="Inter, sans-serif" font-size="9" font-weight="600">100% gap — primary product has no dedicated page</text>
+
+    <!-- Stat 2 -->
+    <rect x="280" y="42" width="240" height="36" rx="8" fill="rgba(239,68,68,0.08)" stroke="#ef4444" stroke-width="0.5"/>
+    <text x="296" y="58" fill="#ef4444" font-family="Inter, sans-serif" font-size="22" font-weight="900">0</text>
+    <text x="328" y="58" fill="#94a3b8" font-family="Inter, sans-serif" font-size="10">of 4 languages have content</text>
+    <text x="296" y="72" fill="#ef4444" font-family="Inter, sans-serif" font-size="9" font-weight="600">FA · RU · VI — 0% translated</text>
+
+    <!-- Stat 3 -->
+    <rect x="540" y="42" width="240" height="36" rx="8" fill="rgba(239,68,68,0.08)" stroke="#ef4444" stroke-width="0.5"/>
+    <text x="556" y="58" fill="#ef4444" font-family="Inter, sans-serif" font-size="22" font-weight="900">0</text>
+    <text x="588" y="58" fill="#94a3b8" font-family="Inter, sans-serif" font-size="10">RFQ infrastructure items built</text>
+    <text x="556" y="72" fill="#ef4444" font-family="Inter, sans-serif" font-size="9" font-weight="600">Form · API · Validation · Resend · All missing</text>
+
+    <!-- Stat 4 -->
+    <rect x="800" y="42" width="260" height="36" rx="8" fill="rgba(234,179,8,0.08)" stroke="#eab308" stroke-width="0.5"/>
+    <text x="816" y="58" fill="#eab308" font-family="Inter, sans-serif" font-size="22" font-weight="900">3</text>
+    <text x="848" y="58" fill="#94a3b8" font-family="Inter, sans-serif" font-size="10">critical conflicts found</text>
+    <text x="816" y="72" fill="#eab308" font-family="Inter, sans-serif" font-size="9" font-weight="600">CTA color · Market pages · Language switcher</text>
+  </g>
+
+  <!-- Footer -->
+  <g transform="translate(60, 1220)">
+    <line x1="0" y1="0" x2="1080" y2="0" stroke="#0891b2" stroke-width="0.5" opacity="0.3"/>
+    <text x="0" y="20" fill="#94a3b8" font-family="Inter, sans-serif" font-size="10">Feiz Food Group · Architecture Roadmap v1.0 · August 10, 2026</text>
+    <text x="0" y="36" fill="#64748b" font-family="Inter, sans-serif" font-size="9">Read-Only Audit · No Code Modified · 6 MD + 2 HTML docs reviewed · github.com/CoraxMuninn/ffg</text>
+    <text x="0" y="54" fill="#0891b2" font-family="Inter, sans-serif" font-size="10" font-weight="600">Most Important Next Step: Lock i18n routing architecture (P0) before building any pages.</text>
+  </g>
+
+  <!-- Decorative corner accents -->
+  <g opacity="0.15">
+    <polyline points="60,115 60,60 115,60" fill="none" stroke="#0891b2" stroke-width="2"/>
+    <polyline points="1140,115 1140,60 1085,60" fill="none" stroke="#0891b2" stroke-width="2"/>
+  </g>
+</svg>
