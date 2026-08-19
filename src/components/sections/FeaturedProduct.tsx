@@ -82,7 +82,7 @@ export default function FeaturedProduct({
               </div>
             )}
 
-            <div className="flex h-25! sm:h-0 flex-col gap-4 sm:flex-row">
+            <div className="flex h-32! sm:h-0 flex-col gap-4 sm:flex-row">
               <Button asChild variant="secondary" size="md" className="flex-1">
                 <Link href={productPath(locale, featured.slug)}>
                   {dictionary.cta.viewFullSpecifications}
