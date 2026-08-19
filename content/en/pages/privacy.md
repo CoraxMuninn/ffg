@@ -4,7 +4,7 @@ slug: privacy
 description: "How Feiz Food Group handles the information you send through this website, including quotation requests."
 seoTitle: "Website & RFQ Privacy Policy"
 seoDescription: "Read how Feiz Food Group handles information submitted through the website and RFQ form, including email delivery, security, retention, and data requests."
-updated: 2026-08-13
+updated: 2026-08-18
 ---
 
 This Privacy Policy explains how Feiz Food Group handles information submitted through this website. It describes how the website is actually built and operated.
@@ -40,7 +40,7 @@ We do not sell your information, and we do not use it for advertising, profiling
 
 When you submit the form, your details are sent to our server, validated, and then delivered to our sales inbox as an email message. Email delivery is handled by Resend, an email delivery provider.
 
-The website does not store your submission in a website database, and this website does not operate a customer relationship management (CRM) system. After delivery, your enquiry exists as an email in our business inbox and is handled by our export team.
+The website does not use a website database and does not operate a customer relationship management (CRM) system. If an email delivery cannot be completed immediately (for example, because of a temporary service interruption), your enquiry is held transiently and securely on our server solely so that delivery can be retried, and it is removed automatically as soon as delivery succeeds. No enquiry details are kept on the server after they have been delivered. After delivery, your enquiry exists as an email in our business inbox and is handled by our export team.
 
 Your business email address is set as the reply address on that email so our team can respond to you directly.
 
@@ -72,6 +72,8 @@ These providers process information only as needed for those functions.
 ## Retention
 
 Quotation requests are received and kept as business correspondence in our email system for as long as needed to respond to the enquiry and to keep a normal commercial record of it. If you would like your enquiry removed, contact us using the details below.
+
+Enquiry details held transiently on the server for delivery retry are removed automatically once delivery succeeds, or after a limited period if delivery cannot be completed.
 
 ## Your requests
 

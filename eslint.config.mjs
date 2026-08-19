@@ -12,12 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // Compiled output of the OAuth regression suite (see tsconfig.test.json).
-    ".test-build/**",
     // Vendored, version-pinned Decap CMS runtime (see SEC-M1). Third-party
     // minified build output: never edited by hand, and its integrity is
     // enforced by `npm run verify:decap`, not by lint.
     "public/admin/vendor/**",
+    "public/admin/blog-quality.js",
   ]),
 ]);
 

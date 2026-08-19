@@ -29,17 +29,17 @@ export function ProductCard({ product, locale, dictionary }: ProductCardProps) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-smoke text-sm text-silver">
+          <div className="flex h-full w-full items-center justify-center bg-smoke text-sm text-ink-soft">
             {product.title}
           </div>
         )}
       </div>
 
       <div className="flex flex-1 flex-col p-6">
-        <h3 className="mb-2 text-lg font-bold text-navy transition-colors group-hover:text-cyan-brand">
+        <h3 className="mb-2 text-lg font-bold text-navy transition-colors group-hover:text-cyan-link">
           {product.title}
         </h3>
-        <p className="mb-4 flex-1 text-sm leading-relaxed text-silver">
+        <p className="mb-4 flex-1 text-sm leading-relaxed text-ink-soft">
           {product.description}
         </p>
 
@@ -50,13 +50,13 @@ export function ProductCard({ product, locale, dictionary }: ProductCardProps) {
                 key={spec.label}
                 className="rounded bg-smoke px-2 py-1 text-xs font-medium text-navy"
               >
-                {spec.value}
+                <bdi>{spec.value}</bdi>
               </span>
             ))}
           </div>
         )}
 
-        <span className="inline-flex items-center gap-1.5 text-sm font-medium text-cyan-brand">
+        <span className="inline-flex items-center gap-1.5 text-sm font-medium text-cyan-link">
           {dictionary.cta.viewDetails}
           <ArrowRight className="h-4 w-4 rtl:rotate-180" />
         </span>

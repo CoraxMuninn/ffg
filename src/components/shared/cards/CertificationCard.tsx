@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 interface CertificationCardProps {
   certification: Certification;
-  /** "dark" is the homepage treatment (navy surface). "light" is the internal page. */
+  /** "dark" is the navy-surface cell. "light" is the inner-page cell. */
   tone?: "dark" | "light";
 }
 
@@ -17,58 +17,34 @@ export function CertificationCard({
   const light = tone === "light";
 
   return (
-    <div
+    <article
       className={cn(
-        "group flex flex-col",
-        light
-          ? "rounded-2xl border border-gray-200 bg-white p-6"
-          : "items-center text-center",
+        "cert-card",
+        light ? "cert-card--light" : "cert-card--dark",
       )}
     >
-      <div
-        className={cn(
-          "flex w-full items-center justify-center",
-          light
-            ? "mb-5 aspect-[4/3] rounded-xl bg-smoke p-6"
-            : "mb-4 aspect-square rounded-xl bg-white p-8 transition-shadow group-hover:shadow-glow-cyan",
-        )}
-      >
+      <div className="cert-seal">
         {certification.image ? (
-          <div className="relative h-full w-full">
-            <Image
-              src={certification.image}
-              alt={`${certification.title} logo`}
-              fill
-              className="object-contain"
-              sizes="(max-width: 768px) 50vw, 25vw"
-            />
-          </div>
+          <Image
+            src={certification.image}
+            alt={`${certification.title} logo`}
+            fill
+            className="object-contain"
+            sizes="(max-width: 640px) 28vw, (max-width: 1280px) 16vw, 140px"
+          />
         ) : (
           <BadgeCheck
-            className={cn("h-12 w-12", light ? "text-cyan-brand/70" : "text-navy/30")}
+            className={cn(
+              "h-10 w-10",
+              light ? "text-cyan-brand/70" : "text-white/35",
+            )}
           />
         )}
       </div>
-      <h3
-        className={cn(
-          "font-bold",
-          light
-            ? "mb-2 text-base text-navy"
-            : "mb-1 text-sm text-white lg:text-base",
-        )}
-      >
-        {certification.title}
-      </h3>
-      <p
-        className={cn(
-          "leading-relaxed",
-          light
-            ? "text-sm text-ink"
-            : "max-w-48 text-xs text-silver lg:text-sm",
-        )}
-      >
-        {certification.description}
-      </p>
-    </div>
+      <h3 className="cert-card-title">{certification.title}</h3>
+      {certification.description ? (
+        <p className="cert-card-copy">{certification.description}</p>
+      ) : null}
+    </article>
   );
 }

@@ -4,7 +4,7 @@ slug: privacy
 description: "Cách Feiz Food Group xử lý thông tin bạn gửi qua trang web này, bao gồm cả yêu cầu báo giá."
 seoTitle: "Bảo mật website và biểu mẫu báo giá"
 seoDescription: "Cách Feiz Food Group xử lý dữ liệu gửi qua website và biểu mẫu RFQ, gồm email, bảo mật, lưu giữ, chỉnh sửa và xóa thông tin."
-updated: 2026-08-13
+updated: 2026-08-18
 ---
 
 Chính sách bảo mật này giải thích cách Feiz Food Group xử lý thông tin được gửi qua trang web này. Nội dung mô tả đúng cách trang web được xây dựng và vận hành trên thực tế.
@@ -40,7 +40,7 @@ Chúng tôi không bán thông tin của bạn và không sử dụng cho quản
 
 Khi bạn gửi biểu mẫu, thông tin được chuyển đến máy chủ của chúng tôi, được kiểm tra hợp lệ, rồi gửi đến hộp thư bán hàng dưới dạng email. Việc gửi email do Resend, một nhà cung cấp dịch vụ gửi email, thực hiện.
 
-Trang web không lưu nội dung bạn gửi vào cơ sở dữ liệu, và trang web này không vận hành hệ thống quản lý quan hệ khách hàng (CRM). Sau khi được gửi đi, yêu cầu của bạn tồn tại dưới dạng email trong hộp thư công việc và được đội ngũ xuất khẩu xử lý.
+Trang web không lưu nội dung bạn gửi vào cơ sở dữ liệu, và trang web này không vận hành hệ thống quản lý quan hệ khách hàng (CRM). Nếu email không thể được gửi ngay lập tức (ví dụ do sự cố dịch vụ tạm thời), yêu cầu của bạn được tạm thời và an toàn lưu trên máy chủ của chúng tôi chỉ nhằm thử lại việc gửi, và được tự động xóa ngay khi gửi thành công. Không có chi tiết yêu cầu nào được lưu trên máy chủ sau khi đã gửi đi. Sau khi được gửi đi, yêu cầu của bạn tồn tại dưới dạng email trong hộp thư công việc và được đội ngũ xuất khẩu xử lý.
 
 Email công việc của bạn được đặt làm địa chỉ trả lời trên email đó để đội ngũ của chúng tôi có thể phản hồi trực tiếp.
 
@@ -72,6 +72,8 @@ Các nhà cung cấp này chỉ xử lý thông tin trong phạm vi cần thiế
 ## Thời gian lưu giữ
 
 Yêu cầu báo giá được lưu như thư từ kinh doanh trong hệ thống email của chúng tôi trong thời gian cần thiết để phản hồi và lưu hồ sơ thương mại thông thường. Nếu bạn muốn xóa yêu cầu của mình, hãy liên hệ theo thông tin bên dưới.
+
+Các chi tiết yêu cầu được tạm thời lưu trên máy chủ để thử lại việc gửi sẽ được tự động xóa sau khi gửi thành công, hoặc sau một khoảng thời gian giới hạn nếu việc gửi không thể hoàn tất.
 
 ## Yêu cầu của bạn
 

@@ -21,7 +21,6 @@ const RfqForm = dynamic(
 
 interface ContactPageProps {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ product?: string | string[] }>;
 }
 
 export async function generateMetadata({ params }: ContactPageProps): Promise<Metadata> {
@@ -39,17 +38,13 @@ export async function generateMetadata({ params }: ContactPageProps): Promise<Me
   });
 }
 
-export default async function ContactPage({ params, searchParams }: ContactPageProps) {
+export default async function ContactPage({ params }: ContactPageProps) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
   const dictionary = getDictionary(locale);
   const page = getPageContent(locale, "contact");
   const products = getProducts(locale);
-  const query = await searchParams;
-  const rawProduct = Array.isArray(query.product) ? query.product[0] : query.product;
-  const selectedProductSlug =
-    rawProduct && products.some((product) => product.slug === rawProduct) ? rawProduct : undefined;
 
   return (
     <>
@@ -90,8 +85,9 @@ export default async function ContactPage({ params, searchParams }: ContactPageP
               <RfqForm
                 products={products}
                 dictionary={dictionary}
+                locale={locale}
                 turnstileSiteKey={RFQ.turnstileSiteKey}
-                selectedProductSlug={selectedProductSlug}
+                turnstileAction={RFQ.turnstileAction}
               />
             </div>
 
@@ -113,6 +109,7 @@ export default async function ContactPage({ params, searchParams }: ContactPageP
                       </div>
                       <a
                         href={`mailto:${dictionary.contact.emailValue}`}
+                        dir="ltr"
                         className="text-sm font-semibold text-navy transition-colors hover:text-cyan-brand"
                       >
                         {dictionary.contact.emailValue}
@@ -125,9 +122,13 @@ export default async function ContactPage({ params, searchParams }: ContactPageP
                       <div className="text-xs font-medium text-label">
                         {dictionary.contact.phoneLabel}
                       </div>
-                      <span className="text-sm font-semibold text-navy">
+                      <a
+                        href={`tel:${dictionary.contact.phoneValue.replace(/\s/g, "")}`}
+                        dir="ltr"
+                        className="text-sm font-semibold text-navy transition-colors hover:text-cyan-brand"
+                      >
                         {dictionary.contact.phoneValue}
-                      </span>
+                      </a>
                     </div>
                   </li>
                 </ul>

@@ -34,6 +34,8 @@ export interface Dictionary {
     toggleMenu: string;
     skipToContent: string;
     scrollToTop: string;
+    /** Accessible name for the language selector (audit UX-M7, Task 4.3). */
+    chooseLanguage: string;
   };
 
   footer: {
@@ -45,8 +47,6 @@ export interface Dictionary {
     phone: string;
     officeHours: string;
     officeHoursValue: string;
-    privacy: string;
-    terms: string;
     rights: string;
     social: string;
     instagram: string;
@@ -76,6 +76,8 @@ export interface Dictionary {
     qualityIntro: string;
     supplyChainHeading: string;
     supplyChainIntro: string;
+    /** Accessible label + instruction for the horizontal supply-chain rail (UX-M6). */
+    supplyRailLabel: string;
     marketsHeading: string;
     marketsIntro: string;
     featuredBadge: string;
@@ -143,7 +145,9 @@ export interface Dictionary {
     backToBlog: string;
     readMore: string;
     published: string;
+    updated: string;
     by: string;
+    relatedHeading: string;
   };
 
   /** Localized, factual descriptions of images used outside CMS records. */
@@ -198,10 +202,21 @@ export interface Dictionary {
     errorEmail: string;
     errorQuantity: string;
     errorMessage: string;
+    /** Heading for the inline validation summary (audit UX-M3, Task 4.4). */
+    errorSummary: string;
+    /** Generic "value too long / invalid" field error (Task 4.4). */
+    errorInvalid: string;
+    /** Product allowlist field error (Task 4.4). */
+    errorProduct: string;
     note: string;
+    /** Concise data-use note shown beside submission with a privacy link (UX-L2). */
+    privacyNote: string;
+    privacyLinkText: string;
     serverError: string;
     rateLimited: string;
     turnstileFailed: string;
+    /** Shown when submission is attempted without a valid Turnstile token (UX-M4). */
+    turnstileRequired: string;
   };
 
   meta: {

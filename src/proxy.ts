@@ -8,9 +8,14 @@ import { defaultLocale, locales } from "@/lib/i18n/config";
  *
  * The URL is the source of truth for the active locale:
  *   - A valid locale prefix (/en, /fa, /ru, /vi) passes through untouched.
- *   - `/` redirects to the default locale (`/en`).
+ *   - `/` redirects permanently (308) to the default locale (`/en`).
  *   - Any other non-locale path is normalized under the default locale so
  *     future routes (e.g. /products → /en/products) remain predictable.
+ *
+ * Redirects are **308 Permanent** (audit SEO-L1, Roadmap Task 5.6) and preserve
+ * the query string, so structural normalization is a one-time permanent signal
+ * rather than a recurring temporary hop, and link equity/share URLs that carry
+ * query parameters (e.g. `?product=`) keep them.
  *
  * Static assets, image optimizations, API routes and public files are excluded
  * via the matcher so this never interferes with them.
@@ -31,13 +36,19 @@ export function proxy(request: NextRequest) {
     return response;
   }
 
+  // Clone the request URL so the query string survives the redirect, then
+  // rewrite only the pathname to the default-locale target.
+  const target = request.nextUrl.clone();
+
   // Root request → default locale.
   if (pathname === "/") {
-    return NextResponse.redirect(new URL(`/${defaultLocale}`, request.url));
+    target.pathname = `/${defaultLocale}`;
+    return NextResponse.redirect(target, { status: 308 });
   }
 
   // Any other non-locale path → default locale, preserving the path.
-  return NextResponse.redirect(new URL(`/${defaultLocale}${pathname}`, request.url));
+  target.pathname = `/${defaultLocale}${pathname}`;
+  return NextResponse.redirect(target, { status: 308 });
 }
 
 export const config = {

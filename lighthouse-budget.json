@@ -1,0 +1,22 @@
+[
+  {
+    "_comment": "Lighthouse resource budget (Roadmap Task 7.7 / PERF-L5). Sizes are KiB transferred. Apply per representative route (/en, /fa) with Lighthouse CI. Limits reflect the post-Phase-7 baseline plus modest headroom; tighten as the site stabilizes.",
+    "resourceSizes": [
+      { "resourceType": "script", "budget": 250 },
+      { "resourceType": "stylesheet", "budget": 90 },
+      { "resourceType": "font", "budget": 360 },
+      { "resourceType": "image", "budget": 1200 },
+      { "resourceType": "total", "budget": 2000 }
+    ],
+    "resourceCounts": [
+      { "resourceType": "script", "budget": 25 },
+      { "resourceType": "font", "budget": 2 },
+      { "resourceType": "third-party", "budget": 2 }
+    ],
+    "timings": [
+      { "metric": "largest-contentful-paint", "budget": 2500 },
+      { "metric": "cumulative-layout-shift", "budget": 0.1 },
+      { "metric": "max-potential-fid", "budget": 200 }
+    ]
+  }
+]

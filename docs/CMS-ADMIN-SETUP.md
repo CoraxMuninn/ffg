@@ -20,12 +20,13 @@ second CMS: articles are commits, and the site rebuilds from them.
 Generate a client secret and keep the page open.
 
 > The callback URL must match the deployment exactly. To also use the CMS on
-> Vercel preview URLs, register a second OAuth App with that preview domain —
+> a preview deployment, register a second OAuth App with that preview domain —
 > GitHub allows only one callback URL per app.
 
-### 1.2 Set the environment variables in Vercel
+### 1.2 Set the environment variables on the server
 
-Project → **Settings → Environment Variables** (Production, and Preview if wanted):
+Set these in the deployment environment (the systemd service environment on
+the VPS — see `DEPLOYMENT.md`):
 
 | Variable | Value | Exposure |
 |---|---|---|
@@ -33,7 +34,7 @@ Project → **Settings → Environment Variables** (Production, and Preview if w
 | `GITHUB_OAUTH_CLIENT_SECRET` | Client secret from 1.1 | **Server-only — never commit** |
 | `OAUTH_ALLOWED_ORIGINS` | *Optional.* Extra approved origins, comma-separated | Server-only |
 
-Redeploy after adding them. Until they are set, `/api/auth` returns a clear
+Restart the service after adding them. Until they are set, `/api/auth` returns a clear
 `500` explaining what is missing, and login will not work.
 
 **Approved OAuth origins.** OAuth destinations come from an exact allowlist,
@@ -51,7 +52,7 @@ This means **preview deployments do not authenticate automatically.** To enable
 one, register its exact full origin (scheme + host, no trailing path):
 
 ```
-OAUTH_ALLOWED_ORIGINS=https://staging.feizfood.com,https://ffg-preview.vercel.app
+OAUTH_ALLOWED_ORIGINS=https://staging.feizfood.com
 ```
 
 Each registered origin must also be added as an authorized callback URL on the
@@ -138,6 +139,17 @@ GitHub App support.
 The popup returns a token to the browser for the session. The client secret
 stays on the server; no token is ever written to the repository.
 
+### Where the SEO & Content Assistant is
+It is **not** a dashboard card, sidebar item, or Workflow tab. It is the
+**first field inside a blog article editor**.
+
+1. Sidebar → **Blog — English** (or فارسی / Русский / Tiếng Việt)
+2. **+ Blog — …** (new) or open an existing article
+3. The top of the form is labeled **SEO & Content Assistant**
+
+It only exists on the four blog collections. Products, pages, markets, and
+the other collections do not have it.
+
 ### Create an article
 1. Pick the language collection in the sidebar — **Blog — English**,
    **Blog — فارسی**, **Blog — Русский**, or **Blog — Tiếng Việt**
@@ -145,27 +157,44 @@ stays on the server; no token is ever written to the repository.
 
 | Field | Notes |
 |---|---|
-| Title | Rendered as the page `H1` |
-| Slug | Lowercase, hyphenated. Becomes `/<locale>/blog/<slug>` |
-| Language | Pre-filled; leave as-is — the collection sets the folder |
-| Publication date | Shown on the article, drives ordering and structured data |
-| Author | Optional |
-| Excerpt / summary | Listing text; also the fallback meta description |
-| Featured image | Upload or pick from the media library |
-| Category | Optional, from a fixed list |
-| Tags | Optional keywords |
-| SEO title | Optional `<title>` override |
-| SEO description | Optional meta-description override |
-| Published | Off = hidden from the site without deleting |
-| Order | Lower numbers appear first |
-| Body | Markdown. Use `##` for sections — `#` is reserved for the title |
+| SEO & Content Assistant | Compact live Persian SEO & content panel (editorial score /100, category bars, keyword field). Not saved to the article. |
+| Title | Required. Rendered as the only page `H1`. |
+| Slug | Required. Shared English kebab-case URL segment. Identical across locales. |
+| Publication date | Required. `datePublished` and sitemap `lastmod` when there is no revision. |
+| Revision date | Optional. Must be on or after the publication date. `dateModified` + sitemap `lastmod`. |
+| Author | Optional team/organization byline. Do not invent a named person. |
+| Excerpt / summary | Required. Listing card; fallback meta description. |
+| Featured image | Required. Wide landscape; default social image. |
+| Featured image alt | Required. Describe what the image shows. |
+| Featured image caption | Optional visible caption. |
+| Category | Optional, from a fixed list. |
+| SEO keywords / tags | Optional. Become schema `keywords`. |
+| Focus keyphrase | Optional editorial target. Not shown on the page. Not a density target. |
+| SEO title | Optional 10–60 character search title. Empty = article title. |
+| Meta description | Optional 70–160 character snippet. Empty = excerpt. |
+| Canonical URL | Optional absolute `https://` URL. Empty = this article URL. |
+| OG title / description / image / alt | Optional social overrides. Empty = SEO/featured values. Twitter/X reuses the same fields. |
+| Related internal pages | Optional list of **existing** root-relative paths. Unknown paths fail the build. |
+| Published | Off hides the article from the site, sitemap, and listing. |
+| Order | Lower numbers appear first. |
+| Article body | Required. Toolbar: H2/H3, paragraphs, bold/italic, lists, links, quotes, images. Do **not** use H1. |
+
+Internal links in the body must use existing root-relative paths (`/products/frozen-chicken-feet`, `/quality-control`, `/markets/vietnam`, `/contact`). The locale prefix is added automatically. Do not invent URLs, certifications, prices, or customer names.
+
+The **SEO & Content Assistant** at the top of the form is a compact live checklist. Required and attention items stay open; passing checks stay collapsed. “How to fix” is hidden until the editor asks. The Persian collection renders the panel RTL. It follows Google Search Central’s 2026 people-first guidance and the official note that visibility in AI Overviews / AI Mode is still SEO — not a separate GEO/AEO project.
+
+- **Required** — genuine contract problems (missing title, excerpt, featured image + alt, invalid slug/date/canonical, unknown internal paths, SEO fields over the length limits, a body H1). These fail the production build.
+- **Needs attention** — writing quality, people-first prompts, keyphrase stuffing, thin introductions, missing next steps, image alt, suggested existing internal links. These never block saving.
+- **Good** — that check looks fine.
+
+There is **no ranking score**, no required word count, and no keyword-density target. Suggested links come only from pages that already exist on this site.
 
 3. **Save** → stored as a *Draft* (a pull request; nothing is live yet)
 
 ### Publish
 Open the **Workflow** tab, drag the entry **Draft → In review → Ready**, then
-**Publish now**. This merges the pull request into `master`, Vercel rebuilds,
-and the article appears within a couple of minutes.
+**Publish now**. This merges the pull request into `master`; rebuild the site (the
+deployment's rebuild step) and the article appears within a couple of minutes.
 
 ### Edit / unpublish / delete
 - **Edit** — open the article, change it, save, publish again.
@@ -185,12 +214,20 @@ and the article appears within a couple of minutes.
 | Vietnamese articles | `content/vi/blog/<slug>.md` |
 | Uploaded images | `public/media/blog/` |
 | Image URL in Markdown | `/media/blog/<file>` |
-| CMS collections & fields | `public/admin/config.yml` |
+| CMS collections & fields | `public/admin/config.yml` *(generated)* |
+| Blog quality analyzer | `src/lib/seo/blog-quality.ts` → `public/admin/blog-quality.js` *(generated)* |
+| Known internal paths | `public/admin/internal-paths.json` *(generated)* |
+| Quality widget | `public/admin/blog-quality-widget.js` |
 | CMS entry point | `public/admin/index.html` |
 | CMS runtime (self-hosted) | `public/admin/vendor/decap-cms/<version>/` |
 | CMS runtime manifest | `public/admin/decap-cms-manifest.json` |
 | Vendoring script | `scripts/vendor-decap.mjs` |
 | OAuth broker | `src/app/api/auth`, `src/app/api/callback` |
+
+> **`config.yml` is generated** by `scripts/generate-cms-config.mjs`
+> (Roadmap Task 5.2): every collection is emitted once per locale. Do not edit
+> it by hand — edit the generator and run `npm run cms:generate`. `prebuild`
+> fails if the committed file drifts from the generator output.
 
 Locales are independent: an article written in one collection appears only on
 that language's site. Translations are separate entries sharing the same slug.
@@ -201,7 +238,7 @@ that language's site. Translations are separate entries sharing the same slug.
 
 ```
 /admin  →  commit to content/<locale>/blog/*.md  (via GitHub)
-        →  Vercel rebuild
+        →  site rebuild (build step on the VPS)
         →  getBlogPosts(locale) reads the folder
         →  /<locale>/blog  and  /<locale>/blog/<slug>
 ```

@@ -1,8 +1,8 @@
 ---
 title: "Санитарный документ"
 slug: health-certificate
-description: "Документ на партию, который может требоваться страной назначения; форма и орган выдачи подтверждаются для заказа."
-image:
+description: "Санитарный документ на партию; подтверждается для заказа."
+image: /media/certifications/health-certificate.png
 enabled: true
 order: 4
 ---

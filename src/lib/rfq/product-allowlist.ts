@@ -42,14 +42,6 @@ function getAllowlist(): ProductAllowlist {
   return cached;
 }
 
-export function getValidProductTitles(): Set<string> {
-  return getAllowlist().titles;
-}
-
-export function isValidProductTitle(title: string): boolean {
-  return isValidProductIdentifier(title);
-}
-
 /** True when `value` is an enabled product slug or a known localized title. */
 export function isValidProductIdentifier(value: string): boolean {
   const { slugs, titles } = getAllowlist();

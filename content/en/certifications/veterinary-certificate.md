@@ -1,8 +1,8 @@
 ---
 title: "Veterinary Certificate"
 slug: veterinary-certificate
-description: "Shipment-specific veterinary document that may be required for poultry imports; destination requirements are confirmed before shipping."
-image:
+description: "Shipment veterinary document, confirmed before shipping."
+image: /media/certifications/veterinary-certificate.png
 enabled: true
 order: 5
 ---

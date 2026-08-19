@@ -1,4 +1,5 @@
 import { PUBLIC_EMAIL, PUBLIC_PHONE } from "@/lib/content/contact";
+import { statusStrings } from "./status";
 import type { Dictionary } from "./types";
 
 export const fa: Dictionary = {
@@ -28,6 +29,7 @@ export const fa: Dictionary = {
   header: {
     toggleMenu: "باز و بسته کردن منو",
     skipToContent: "پرش به محتوا",
+    chooseLanguage: "انتخاب زبان",
     scrollToTop: "بازگشت به بالا",
   },
 
@@ -41,8 +43,6 @@ export const fa: Dictionary = {
     phone: "تلفن",
     officeHours: "ساعات کاری",
     officeHoursValue: "شنبه تا پنجشنبه، ۹:۰۰ تا ۱۸:۰۰ (GMT+3:30)",
-    privacy: "سیاست حفظ حریم خصوصی",
-    terms: "شرایط استفاده",
     rights: "کلیه حقوق محفوظ است.",
     social: "شبکه‌های اجتماعی",
     instagram: "اینستاگرام",
@@ -76,6 +76,7 @@ export const fa: Dictionary = {
       "کنترل‌های محصول، دما، بازرسی و بارگیری را که می‌تواند برای سفارش توافق شود مرور کنید.",
     supplyChainHeading: "زنجیره تأمین طیور منجمد",
     supplyChainIntro: "از تأمین و انجماد IQF تا سردخانه منفی ۱۸ درجه سانتی‌گراد، بارگیری کانتینر یخچالی و مقصد.",
+    supplyRailLabel: "مراحل زنجیره تأمین — برای دیدن بیشتر به‌صورت افقی بکشید",
     marketsHeading: "تمرکز بازارهای تجاری",
     marketsIntro:
       "ویتنام بازار اصلی و امارات، روسیه و تایلند بازارهای هدف بعدی‌اند.",
@@ -184,7 +185,9 @@ export const fa: Dictionary = {
     backToBlog: "بازگشت به وبلاگ",
     readMore: "خواندن مقاله",
     published: "منتشر شده",
+    updated: "به‌روزرسانی",
     by: "نویسنده",
+    relatedHeading: "مطالب مرتبط",
   },
 
   imageAlt: {
@@ -241,12 +244,18 @@ export const fa: Dictionary = {
     errorEmail: "ایمیل کاری معتبر وارد کنید.",
     errorQuantity: "مقدار موردنیاز را وارد کنید.",
     errorMessage: "لطفاً توضیح کوتاهی از نیازمندی‌های خود بنویسید.",
+    errorSummary: "لطفاً فیلدهای مشخص‌شده را بررسی کنید",
+    errorInvalid: "این مقدار خیلی طولانی یا نامعتبر است.",
+    errorProduct: "یک محصول از لیست انتخاب کنید.",
     note: "فیلدهای علامت‌گذاری‌شده به‌عنوان الزامی باید تکمیل شوند. بقیه فیلدها اختیاری‌اند.",
+    privacyNote: "نحوه رسیدگی ما به درخواست شما را در",
+    privacyLinkText: "سیاست حریم خصوصی",
     serverError:
       "امکان ارسال درخواست شما وجود نداشت. لطفاً کمی بعد دوباره تلاش کنید.",
     rateLimited:
       "تعداد درخواست‌ها بیش از حد مجاز است. لطفاً پیش از تلاش مجدد صبر کنید.",
     turnstileFailed: "بررسی امنیتی ناموفق بود. لطفاً دوباره تلاش کنید.",
+    turnstileRequired: "لطفاً بررسی امنیتی را تکمیل کنید.",
   },
 
   meta: {
@@ -255,24 +264,9 @@ export const fa: Dictionary = {
       "Feiz Food Group صادرکننده ایرانی B2B پای مرغ، جگر، سنگدان و دل مرغ منجمد IQF است.",
   },
 
-  notFound: {
-    eyebrow: "۴۰۴",
-    title: "صفحه پیدا نشد",
-    message:
-      "صفحه‌ای که به دنبال آن هستید وجود ندارد یا ممکن است جابه‌جا شده باشد. به صفحه اصلی بازگردید یا محصولات ما را مشاهده کنید.",
-    home: "بازگشت به خانه",
-    secondary: "مشاهده محصولات",
-  },
+  notFound: statusStrings.fa.notFound,
 
-  loading: {
-    label: "در حال بارگذاری",
-  },
+  loading: statusStrings.fa.loading,
 
-  error: {
-    title: "خطایی رخ داد",
-    message:
-      "خطای غیرمنتظره‌ای رخ داد. لطفاً دوباره تلاش کنید یا به صفحه اصلی بازگردید.",
-    retry: "تلاش مجدد",
-    home: "بازگشت به خانه",
-  },
+  error: statusStrings.fa.error,
 };

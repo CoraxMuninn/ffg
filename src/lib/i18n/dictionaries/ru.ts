@@ -1,4 +1,5 @@
 import { PUBLIC_EMAIL, PUBLIC_PHONE } from "@/lib/content/contact";
+import { statusStrings } from "./status";
 import type { Dictionary } from "./types";
 
 export const ru: Dictionary = {
@@ -28,6 +29,7 @@ export const ru: Dictionary = {
   header: {
     toggleMenu: "Открыть меню",
     skipToContent: "Перейти к содержимому",
+    chooseLanguage: "Выбрать язык",
     scrollToTop: "Наверх",
   },
 
@@ -41,8 +43,6 @@ export const ru: Dictionary = {
     phone: "Телефон",
     officeHours: "Часы работы",
     officeHoursValue: "Суббота–четверг, 09:00–18:00 (GMT+3:30)",
-    privacy: "Политика конфиденциальности",
-    terms: "Условия использования",
     rights: "Все права защищены.",
     social: "Социальные сети",
     instagram: "Instagram",
@@ -75,6 +75,7 @@ export const ru: Dictionary = {
       "Проверки продукта, температуры, инспекции и загрузки, которые можно согласовать для заказа.",
     supplyChainHeading: "Цепочка поставок замороженной птицы",
     supplyChainIntro: "От закупки и IQF до хранения при -18°C, загрузки рефконтейнера и доставки.",
+    supplyRailLabel: "Этапы цепочки поставок — прокрутите по горизонтали, чтобы увидеть больше",
     marketsHeading: "Коммерческий фокус рынков",
     marketsIntro: "Вьетнам — основной рынок; ОАЭ, Россия и Таиланд — вторичные целевые рынки.",
     featuredBadge: "Наш основной продукт",
@@ -182,7 +183,9 @@ export const ru: Dictionary = {
     backToBlog: "Назад в блог",
     readMore: "Читать статью",
     published: "Опубликовано",
+    updated: "Обновлено",
     by: "Автор",
+    relatedHeading: "Читать также",
   },
 
   imageAlt: {
@@ -239,10 +242,16 @@ export const ru: Dictionary = {
     errorEmail: "Введите корректную рабочую эл. почту.",
     errorQuantity: "Укажите необходимый объём.",
     errorMessage: "Добавьте краткое описание ваших требований.",
+    errorSummary: "Пожалуйста, проверьте выделенные поля",
+    errorInvalid: "Это значение слишком длинное или недействительное.",
+    errorProduct: "Выберите продукт из списка.",
     note: "Обязательные поля должны быть заполнены. Остальные поля необязательны.",
+    privacyNote: "См. порядок обработки вашего запроса в нашей",
+    privacyLinkText: "Политике конфиденциальности",
     serverError: "Не удалось отправить запрос. Пожалуйста, попробуйте чуть позже.",
     rateLimited: "Слишком много запросов. Пожалуйста, подождите перед повторной попыткой.",
     turnstileFailed: "Проверка безопасности не пройдена. Попробуйте ещё раз.",
+    turnstileRequired: "Пожалуйста, пройдите проверку безопасности.",
   },
 
   meta: {
@@ -251,24 +260,9 @@ export const ru: Dictionary = {
       "Feiz Food Group — иранский B2B-экспортёр куриных лапок, печени, желудков и сердечек IQF.",
   },
 
-  notFound: {
-    eyebrow: "404",
-    title: "Страница не найдена",
-    message:
-      "Страница, которую вы ищете, не существует или была перемещена. Вернитесь на главную или посмотрите нашу продукцию.",
-    home: "Вернуться на главную",
-    secondary: "Продукция",
-  },
+  notFound: statusStrings.ru.notFound,
 
-  loading: {
-    label: "Загрузка",
-  },
+  loading: statusStrings.ru.loading,
 
-  error: {
-    title: "Что-то пошло не так",
-    message:
-      "Произошла непредвиденная ошибка. Попробуйте ещё раз или вернитесь на главную.",
-    retry: "Попробовать снова",
-    home: "Вернуться на главную",
-  },
+  error: statusStrings.ru.error,
 };

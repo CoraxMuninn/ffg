@@ -3,11 +3,11 @@ import { Home, Package } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import type { Locale } from "@/lib/i18n/config";
-import type { Dictionary } from "@/lib/i18n/dictionaries/types";
+import type { NotFoundStrings } from "@/lib/i18n/dictionaries/status";
 
 interface NotFoundContentProps {
   locale: Locale;
-  dictionary: Dictionary;
+  notFound: NotFoundStrings;
 }
 
 /**
@@ -16,8 +16,12 @@ interface NotFoundContentProps {
  * Rendered by both the in-context segment not-found (inside the `[locale]`
  * layout) and the self-contained global not-found (unmatched routes), so the
  * two 404 layers share a single visual implementation.
+ *
+ * Takes only the minimal `NotFoundStrings` contract (not the full dictionary),
+ * so the client segment not-found does not pull the whole dictionary into its
+ * chunk (Roadmap Task 7.2 / PERF-M2).
  */
-export function NotFoundContent({ locale, dictionary }: NotFoundContentProps) {
+export function NotFoundContent({ locale, notFound }: NotFoundContentProps) {
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-navy overflow-hidden">
       {/* Subtle background treatment */}
@@ -37,7 +41,7 @@ export function NotFoundContent({ locale, dictionary }: NotFoundContentProps) {
 
       <div className="relative z-10 max-w-xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <p className="text-sm font-semibold tracking-[0.35em] text-cyan-light uppercase mb-6">
-          {dictionary.notFound.eyebrow}
+          {notFound.eyebrow}
         </p>
 
         <p
@@ -48,24 +52,24 @@ export function NotFoundContent({ locale, dictionary }: NotFoundContentProps) {
         </p>
 
         <h1 className="mb-4 text-2xl font-bold text-white sm:text-3xl">
-          {dictionary.notFound.title}
+          {notFound.title}
         </h1>
 
         <p className="text-silver text-base sm:text-lg leading-relaxed mb-10 max-w-md mx-auto">
-          {dictionary.notFound.message}
+          {notFound.message}
         </p>
 
         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Button asChild size="lg">
             <Link href={`/${locale}`}>
               <Home className="h-5 w-5" />
-              {dictionary.notFound.home}
+              {notFound.home}
             </Link>
           </Button>
           <Button asChild size="lg" variant="outline-inverse">
             <Link href={`/${locale}/products`}>
               <Package className="h-5 w-5" />
-              {dictionary.notFound.secondary}
+              {notFound.secondary}
             </Link>
           </Button>
         </div>

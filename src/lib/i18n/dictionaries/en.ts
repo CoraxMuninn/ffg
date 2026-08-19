@@ -1,4 +1,5 @@
 import { PUBLIC_EMAIL, PUBLIC_PHONE } from "@/lib/content/contact";
+import { statusStrings } from "./status";
 import type { Dictionary } from "./types";
 
 export const en: Dictionary = {
@@ -29,6 +30,7 @@ export const en: Dictionary = {
     toggleMenu: "Toggle menu",
     skipToContent: "Skip to content",
     scrollToTop: "Back to top",
+    chooseLanguage: "Choose language",
   },
 
   footer: {
@@ -41,8 +43,6 @@ export const en: Dictionary = {
     phone: "Phone",
     officeHours: "Office Hours",
     officeHoursValue: "Saturday–Thursday, 09:00–18:00 (GMT+3:30)",
-    privacy: "Privacy Policy",
-    terms: "Terms of Service",
     rights: "All rights reserved.",
     social: "Social media",
     instagram: "Instagram",
@@ -75,6 +75,7 @@ export const en: Dictionary = {
       "Review the product, temperature, inspection, and loading checks that can be agreed for an order.",
     supplyChainHeading: "Frozen Poultry Supply Chain",
     supplyChainIntro: "From sourcing and IQF freezing to -18°C storage, reefer loading, and destination delivery.",
+    supplyRailLabel: "Supply chain stages — scroll horizontally to see more",
     marketsHeading: "Commercial Market Focus",
     marketsIntro: "Vietnam is the primary market; the UAE, Russia, and Thailand are secondary target markets.",
     featuredBadge: "Our Primary Product",
@@ -182,7 +183,9 @@ export const en: Dictionary = {
     backToBlog: "Back to Blog",
     readMore: "Read Article",
     published: "Published",
+    updated: "Updated",
     by: "By",
+    relatedHeading: "Related reading",
   },
 
   imageAlt: {
@@ -239,10 +242,16 @@ export const en: Dictionary = {
     errorEmail: "Enter a valid business email.",
     errorQuantity: "Enter the quantity you need.",
     errorMessage: "Please add a short description of your requirements.",
+    errorSummary: "Please review the highlighted fields",
+    errorInvalid: "This value is too long or invalid.",
+    errorProduct: "Choose a product from the list.",
     note: "Fields marked as required must be completed. All other fields are optional.",
+    privacyNote: "See how we handle your enquiry in our",
+    privacyLinkText: "Privacy Policy",
     serverError: "We could not send your request. Please try again in a moment.",
     rateLimited: "Too many requests. Please wait before trying again.",
     turnstileFailed: "Security check failed. Please try again.",
+    turnstileRequired: "Please complete the security check.",
   },
 
   meta: {
@@ -251,24 +260,9 @@ export const en: Dictionary = {
       "Feiz Food Group is an Iran-based B2B exporter of frozen chicken feet, liver, gizzard, and heart in IQF form.",
   },
 
-  notFound: {
-    eyebrow: "404",
-    title: "Page not found",
-    message:
-      "The page you are looking for does not exist or may have been moved. Return to the homepage or explore our products.",
-    home: "Back to Home",
-    secondary: "View Products",
-  },
+  notFound: statusStrings.en.notFound,
 
-  loading: {
-    label: "Loading",
-  },
+  loading: statusStrings.en.loading,
 
-  error: {
-    title: "Something went wrong",
-    message:
-      "An unexpected error occurred. Please try again, or return to the homepage.",
-    retry: "Try again",
-    home: "Back to Home",
-  },
+  error: statusStrings.en.error,
 };

@@ -1,7 +1,7 @@
 ---
 title: "Bao bì và nhãn theo yêu cầu"
 slug: private-label
-description: "Người mua có thể gửi yêu cầu nhãn riêng, thùng hoặc ký mã hiệu; khả năng thực hiện được xác nhận theo đơn."
+description: "Nhãn riêng, thùng hoặc ký mã hiệu được xác nhận theo đơn dự kiến."
 icon: tag
 enabled: true
 order: 6

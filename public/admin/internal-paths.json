@@ -1,0 +1,129 @@
+{
+  "paths": [
+    {
+      "path": "/",
+      "title": "Home",
+      "collection": "pages"
+    },
+    {
+      "path": "/about",
+      "title": "About",
+      "collection": "pages"
+    },
+    {
+      "path": "/blog",
+      "title": "Blog",
+      "collection": "pages"
+    },
+    {
+      "path": "/blog/building-a-reliable-frozen-poultry-supply-relationship",
+      "title": "How to Build a Repeat Frozen Poultry Supply Programme",
+      "collection": "blog"
+    },
+    {
+      "path": "/blog/cold-chain-in-frozen-poultry-what-importers-should-verify",
+      "title": "Frozen Poultry Cold Chain: Checks for Importers",
+      "collection": "blog"
+    },
+    {
+      "path": "/blog/how-to-source-frozen-poultry-internationally",
+      "title": "How to Source Frozen Poultry Internationally",
+      "collection": "blog"
+    },
+    {
+      "path": "/blog/iqf-versus-block-frozen-poultry",
+      "title": "IQF vs Block-Frozen Poultry: A Buyer’s Comparison",
+      "collection": "blog"
+    },
+    {
+      "path": "/blog/quality-control-in-frozen-poultry-for-buyers",
+      "title": "Frozen Poultry Quality Control: A Buyer Checklist",
+      "collection": "blog"
+    },
+    {
+      "path": "/blog/what-to-check-when-sourcing-frozen-chicken-feet",
+      "title": "What to Check When Buying Frozen Chicken Feet",
+      "collection": "blog"
+    },
+    {
+      "path": "/certifications",
+      "title": "Certifications",
+      "collection": "pages"
+    },
+    {
+      "path": "/contact",
+      "title": "Contact",
+      "collection": "pages"
+    },
+    {
+      "path": "/markets",
+      "title": "Markets",
+      "collection": "pages"
+    },
+    {
+      "path": "/markets/russia",
+      "title": "Russia",
+      "collection": "markets"
+    },
+    {
+      "path": "/markets/thailand",
+      "title": "Thailand",
+      "collection": "markets"
+    },
+    {
+      "path": "/markets/uae",
+      "title": "UAE",
+      "collection": "markets"
+    },
+    {
+      "path": "/markets/vietnam",
+      "title": "Vietnam",
+      "collection": "markets"
+    },
+    {
+      "path": "/privacy",
+      "title": "Privacy",
+      "collection": "pages"
+    },
+    {
+      "path": "/products",
+      "title": "Products",
+      "collection": "pages"
+    },
+    {
+      "path": "/products/chicken-gizzard",
+      "title": "Frozen Chicken Gizzard",
+      "collection": "products"
+    },
+    {
+      "path": "/products/chicken-heart",
+      "title": "Frozen Chicken Heart",
+      "collection": "products"
+    },
+    {
+      "path": "/products/chicken-liver",
+      "title": "Frozen Chicken Liver",
+      "collection": "products"
+    },
+    {
+      "path": "/products/frozen-chicken-feet",
+      "title": "Frozen Chicken Feet",
+      "collection": "products"
+    },
+    {
+      "path": "/quality-control",
+      "title": "Quality control",
+      "collection": "pages"
+    },
+    {
+      "path": "/supply-chain",
+      "title": "Supply chain",
+      "collection": "pages"
+    },
+    {
+      "path": "/terms",
+      "title": "Terms",
+      "collection": "pages"
+    }
+  ]
+}

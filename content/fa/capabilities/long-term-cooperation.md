@@ -1,7 +1,7 @@
 ---
 title: "مشخصات سفارش‌های تکراری"
 slug: long-term-cooperation
-description: "در سفارش‌های تکراری، مشخصات مکتوب محصول و مدارک، مرجع ثابتی برای استعلام‌های بعدی فراهم می‌کند."
+description: "مشخصات مکتوب محصول و مدارک برای سفارش‌های تکراری."
 icon: handshake
 enabled: true
 order: 8

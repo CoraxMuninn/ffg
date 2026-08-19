@@ -158,7 +158,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
                       )}
                       <div className="mb-3 flex items-center gap-2 text-xs font-medium text-label">
                         <Calendar className="h-4 w-4" aria-hidden />
-                        <time dateTime={post.date}>{post.date}</time>
+                        <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
                       </div>
                       <h2 className="mb-2 text-lg font-bold text-navy">
                         <Link
@@ -175,7 +175,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
                       )}
                       <Link
                         href={localizedPath(locale, `/blog/${post.slug}`)}
-                        className="inline-flex items-center gap-1.5 text-sm font-medium text-cyan-brand"
+                        className="inline-flex items-center gap-1.5 text-sm font-medium text-cyan-link"
                       >
                         {dictionary.blog.readMore}
                         <ArrowRight

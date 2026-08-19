@@ -16,16 +16,47 @@ interface RevealProps {
 }
 
 /**
- * Minimal viewport-entrance wrapper.
+ * Minimal viewport-entrance wrapper (Roadmap Task 7.6 / PERF-L4).
  *
- * Deliberately implemented with a single IntersectionObserver + CSS transition
- * instead of an animation library: the project has neither Framer Motion nor
- * GSAP installed, and this effect (fade + small translate, once) does not
- * justify shipping a ~50 kB runtime to every visitor.
+ * Two things changed from the per-instance version:
  *
- * The observer disconnects after the first intersection, so there is no
- * ongoing scroll work. Reduced-motion users skip the transform entirely.
+ *  - **One shared IntersectionObserver** for every Reveal instance, instead of
+ *    one observer per element. The observer is created lazily on first use and
+ *    reused; each instance registers a callback and unobserves after firing, so
+ *    there is no ongoing scroll work.
+ *  - **Progressive enhancement**: content is visible by default and only hidden
+ *    for the entrance animation when JS is active (see the `@media (scripting:
+ *    enabled)` rules in globals.css). Without JS the children are never hidden.
+ *
+ * Reduced motion is handled entirely in CSS, which forces the shown state.
+ * No animation library is shipped: the effect (fade + small translate, once)
+ * does not justify one.
  */
+
+type RevealCallback = () => void;
+const callbacks = new Map<Element, RevealCallback>();
+
+let sharedObserver: IntersectionObserver | null = null;
+function getObserver(): IntersectionObserver {
+  if (sharedObserver) return sharedObserver;
+  sharedObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const cb = callbacks.get(entry.target);
+        if (cb) {
+          // Fire once, then stop watching this element.
+          callbacks.delete(entry.target);
+          sharedObserver?.unobserve(entry.target);
+          cb();
+        }
+      }
+    },
+    { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
+  );
+  return sharedObserver;
+}
+
 export function Reveal({ children, className, from = "up", delay = 0 }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [shown, setShown] = useState(false);
@@ -33,24 +64,13 @@ export function Reveal({ children, className, from = "up", delay = 0 }: RevealPr
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-
-    // Reduced motion is handled entirely in CSS (see globals.css), which forces
-    // the revealed state, so no motion-preference branch is needed here.
-    // Elements already in view fire on the observer's first callback.
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setShown(true);
-            observer.disconnect();
-          }
-        }
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
-    );
-
+    const observer = getObserver();
+    callbacks.set(el, () => setShown(true));
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      callbacks.delete(el);
+      observer.unobserve(el);
+    };
   }, []);
 
   return (

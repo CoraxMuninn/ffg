@@ -81,7 +81,7 @@ export function LegalPage({
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className="group/inline inline-flex min-h-11 items-center gap-2 text-sm font-medium text-cyan-brand transition-colors duration-[var(--btn-duration)] ease-[var(--btn-ease)] hover:text-cyan-hover"
+                      className="group/inline inline-flex min-h-11 items-center gap-2 text-sm font-medium text-cyan-link transition-colors duration-[var(--btn-duration)] ease-[var(--btn-ease)] hover:text-cyan-link-hover"
                     >
                       {item.label}
                       <ArrowRight

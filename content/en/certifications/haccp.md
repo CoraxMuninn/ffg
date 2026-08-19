@@ -1,8 +1,8 @@
 ---
 title: "HACCP"
 slug: haccp
-description: "Food-safety control framework that may be relevant to the product or facility documentation; current evidence is confirmed per enquiry."
-image:
+description: "Food-safety control framework, confirmed per enquiry."
+image: /media/certifications/haccp.png
 enabled: true
 order: 1
 ---

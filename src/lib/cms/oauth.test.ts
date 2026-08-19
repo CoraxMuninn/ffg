@@ -4,19 +4,26 @@
  * Scope: the pure rendering/serialization helpers in `./oauth.ts`, plus the
  * callback's request-handling contract exercised through a transcription of
  * its decision logic (see `decideCallback`). The route module itself imports
- * `next/server`, which needs the Next runtime; Task 2.1 introduces the test
- * runner and HTTP-level integration harness that will cover it directly.
+ * `next/server`, which needs the Next runtime; these suites cover the pure
+ * security primitives it composes.
  *
- * Run with:  npm run test:oauth
+ * Run with:  npm test
  *
- * `node:test` + `node:assert` are used deliberately: they ship with Node, so
- * this suite adds no dependency ahead of the Phase 2 test-runner decision.
+ * Part of the Roadmap Task 2.1 regression foundation. The final section proves
+ * every guard fails against the representative pre-fix fixtures in
+ * `../__fixtures__/pre-fix`.
  */
 
-import assert from "node:assert/strict";
-import test from "node:test";
+import { expect, test } from "vitest";
 
 import {
+  renderPopupPreFix,
+  resolveOriginPreFix,
+  serializeForScriptPreFix,
+} from "../__fixtures__/pre-fix";
+import {
+  OAUTH_POPUP_COOP,
+  OAUTH_POPUP_LOST_OPENER_MESSAGE,
   OAUTH_SCOPE,
   STATE_COOKIE,
   STATE_COOKIE_PATH,
@@ -46,24 +53,24 @@ function countScriptTags(html: string) {
 
 test("serializeForScript escapes the script-closing sequence", () => {
   const out = serializeForScript("</script>");
-  assert.ok(!out.includes("</script>"), "raw </script> must not survive");
-  assert.ok(!out.includes("<"), "no raw < may remain");
-  assert.ok(!out.includes(">"), "no raw > may remain");
-  assert.equal(out, '"\\u003c/script\\u003e"');
+  expect(out.includes("</script>"), "raw </script> must not survive").toBe(false);
+  expect(out.includes("<"), "no raw < may remain").toBe(false);
+  expect(out.includes(">"), "no raw > may remain").toBe(false);
+  expect(out).toBe('"\\u003c/script\\u003e"');
 });
 
 test("serializeForScript escapes ampersands and angle brackets", () => {
-  assert.equal(serializeForScript("<a & b>"), '"\\u003ca \\u0026 b\\u003e"');
+  expect(serializeForScript("<a & b>")).toBe('"\\u003ca \\u0026 b\\u003e"');
 });
 
 test("serializeForScript escapes U+2028 and U+2029 line separators", () => {
-  assert.equal(serializeForScript("a\u2028b"), '"a\\u2028b"');
-  assert.equal(serializeForScript("a\u2029b"), '"a\\u2029b"');
+  expect(serializeForScript("a\u2028b")).toBe('"a\\u2028b"');
+  expect(serializeForScript("a\u2029b")).toBe('"a\\u2029b"');
 });
 
 test("serializeForScript preserves quotes and backslashes safely", () => {
   const value = 'he said "hi" \\ bye';
-  assert.equal(JSON.parse(serializeForScript(value)), value);
+  expect(JSON.parse(serializeForScript(value))).toBe(value);
 });
 
 test("serializeForScript round-trips to the original value", () => {
@@ -75,22 +82,21 @@ test("serializeForScript round-trips to the original value", () => {
     "&amp;<>",
     "",
   ]) {
-    assert.equal(
+    expect(
       JSON.parse(serializeForScript(value)),
-      value,
       `round-trip failed for ${JSON.stringify(value)}`,
-    );
+    ).toBe(value);
   }
 });
 
 test("serializeForScript output is valid JSON for object payloads", () => {
   const payload = { message: BREAKOUT, nested: { u: "\u2028" } };
-  assert.deepEqual(JSON.parse(serializeForScript(payload)), payload);
+  expect(JSON.parse(serializeForScript(payload))).toEqual(payload);
 });
 
 test("serializeForScript maps undefined to null rather than emitting undefined", () => {
   // Bare `undefined` would produce the literal token `undefined` in JSON.
-  assert.equal(serializeForScript(undefined), "null");
+  expect(serializeForScript(undefined)).toBe("null");
 });
 
 /* ── renderPopupResponse ────────────────────────────────────────────────── */
@@ -103,8 +109,8 @@ test("renderPopupResponse contains exactly one script element for a hostile payl
     "test-nonce",
   );
   const { opening, closing } = countScriptTags(html);
-  assert.equal(opening, 1, "expected exactly one opening <script");
-  assert.equal(closing, 1, "expected exactly one closing </script");
+  expect(opening, "expected exactly one opening <script").toBe(1);
+  expect(closing, "expected exactly one closing </script").toBe(1);
 });
 
 test("renderPopupResponse does not emit the executable injected marker", () => {
@@ -114,11 +120,11 @@ test("renderPopupResponse does not emit the executable injected marker", () => {
     "https://example.com",
     "test-nonce",
   );
-  assert.ok(
-    !/<script>window\.__XSS_MARKER__/.test(html),
+  expect(
+    /<script>window\.__XSS_MARKER__/.test(html),
     "injected marker must not appear as live markup",
-  );
-  assert.ok(!html.includes(BREAKOUT), "raw payload must not appear verbatim");
+  ).toBe(false);
+  expect(html.includes(BREAKOUT), "raw payload must not appear verbatim").toBe(false);
 });
 
 test("renderPopupResponse survives a hostile origin value", () => {
@@ -128,7 +134,7 @@ test("renderPopupResponse survives a hostile origin value", () => {
     `https://evil.test/${BREAKOUT}`,
     "test-nonce",
   );
-  assert.deepEqual(countScriptTags(html), { opening: 1, closing: 1 });
+  expect(countScriptTags(html)).toEqual({ opening: 1, closing: 1 });
 });
 
 test("renderPopupResponse escapes U+2028 in the embedded payload", () => {
@@ -138,7 +144,7 @@ test("renderPopupResponse escapes U+2028 in the embedded payload", () => {
     "https://example.com",
     "test-nonce",
   );
-  assert.ok(!html.includes("\u2028"), "raw U+2028 must not reach the script");
+  expect(html.includes("\u2028"), "raw U+2028 must not reach the script").toBe(false);
 });
 
 test("renderPopupResponse tags the inline script with the supplied nonce", () => {
@@ -148,7 +154,7 @@ test("renderPopupResponse tags the inline script with the supplied nonce", () =>
     "https://example.com",
     "abc123",
   );
-  assert.ok(html.includes('<script nonce="abc123">'));
+  expect(html.includes('<script nonce="abc123">')).toBe(true);
 });
 
 test("renderPopupResponse preserves the Decap popup handshake", () => {
@@ -159,21 +165,21 @@ test("renderPopupResponse preserves the Decap popup handshake", () => {
     "n",
   );
   // Two-step handshake: announce, wait for reply, then send credentials.
-  assert.ok(html.includes('"authorizing:github"'), "announce step missing");
-  assert.ok(
+  expect(html.includes('"authorizing:github"'), "announce step missing").toBe(true);
+  expect(
     html.includes("window.opener.postMessage(message, origin)"),
     "credential delivery missing",
-  );
-  assert.ok(
+  ).toBe(true);
+  expect(
     html.includes('window.addEventListener("message"'),
     "reply listener missing",
-  );
-  assert.ok(
+  ).toBe(true);
+  expect(
     html.includes("if (event.origin !== origin) return"),
     "origin check on the reply missing",
-  );
+  ).toBe(true);
   // Origin is pinned, never "*".
-  assert.ok(!html.includes('postMessage(message, "*")'));
+  expect(html.includes('postMessage(message, "*")')).toBe(false);
 });
 
 test("renderPopupResponse delivers the success payload intact to the opener", () => {
@@ -184,10 +190,9 @@ test("renderPopupResponse delivers the success payload intact to the opener", ()
     "n",
   );
   const match = html.match(/var message = (".*?");\n/);
-  assert.ok(match, "message assignment not found");
-  const decoded = JSON.parse(match[1]) as string;
-  assert.equal(
-    decoded,
+  expect(match, "message assignment not found").toBeTruthy();
+  const decoded = JSON.parse((match as RegExpMatchArray)[1]) as string;
+  expect(decoded).toBe(
     'authorization:github:success:{"token":"dummy-token","provider":"github"}',
   );
 });
@@ -200,8 +205,34 @@ test("renderPopupResponse pins the origin the opener is messaged at", () => {
     "n",
   );
   const match = html.match(/var origin = (".*?");\n/);
-  assert.ok(match, "origin assignment not found");
-  assert.equal(JSON.parse(match[1]), "https://cms.example.com");
+  expect(match, "origin assignment not found").toBeTruthy();
+  expect(JSON.parse((match as RegExpMatchArray)[1])).toBe("https://cms.example.com");
+});
+
+test("OAuth broker COOP is unsafe-none so the popup keeps window.opener", () => {
+  // Regression: same-origin / same-origin-allow-popups on /api/callback severs
+  // the opener after GitHub redirects back, and Decap never leaves
+  // "Completing sign-in…".
+  expect(OAUTH_POPUP_COOP).toBe("unsafe-none");
+  expect(OAUTH_POPUP_COOP).not.toBe("same-origin");
+  expect(OAUTH_POPUP_COOP).not.toBe("same-origin-allow-popups");
+});
+
+test("renderPopupResponse surfaces a lost opener instead of hanging", () => {
+  const html = renderPopupResponse(
+    "success",
+    { token: "dummy-token", provider: "github" },
+    "https://cms.example.com",
+    "n",
+  );
+  expect(html.includes("if (!window.opener)")).toBe(true);
+  expect(html.includes(OAUTH_POPUP_LOST_OPENER_MESSAGE)).toBe(true);
+  // Still the Decap two-step handshake, still origin-pinned.
+  expect(
+    html.includes('window.opener.postMessage("authorizing:github", origin)'),
+  ).toBe(true);
+  expect(html.includes('postMessage(message, "*")')).toBe(false);
+  expect(html.includes('postMessage("authorizing:github", "*")')).toBe(false);
 });
 
 /* ── nonce + CSP ────────────────────────────────────────────────────────── */
@@ -209,25 +240,25 @@ test("renderPopupResponse pins the origin the opener is messaged at", () => {
 test("generateScriptNonce returns an unpredictable value each call", () => {
   const seen = new Set<string>();
   for (let i = 0; i < 200; i += 1) seen.add(generateScriptNonce());
-  assert.equal(seen.size, 200, "nonces must not repeat");
+  expect(seen.size, "nonces must not repeat").toBe(200);
 });
 
 test("generateScriptNonce emits base64 with sufficient entropy", () => {
   const nonce = generateScriptNonce();
-  assert.match(nonce, /^[A-Za-z0-9+/]+={0,2}$/);
-  assert.ok(Buffer.from(nonce, "base64").length >= 16);
+  expect(nonce).toMatch(/^[A-Za-z0-9+/]+={0,2}$/);
+  expect(Buffer.from(nonce, "base64").length >= 16).toBe(true);
 });
 
 test("callbackCsp locks the document down to the nonced script", () => {
   const csp = callbackCsp("abc123");
-  assert.ok(csp.includes("default-src 'none'"));
-  assert.ok(csp.includes("script-src 'nonce-abc123'"));
-  assert.ok(csp.includes("base-uri 'none'"));
-  assert.ok(csp.includes("form-action 'none'"));
-  assert.ok(csp.includes("frame-ancestors 'none'"));
+  expect(csp.includes("default-src 'none'")).toBe(true);
+  expect(csp.includes("script-src 'nonce-abc123'")).toBe(true);
+  expect(csp.includes("base-uri 'none'")).toBe(true);
+  expect(csp.includes("form-action 'none'")).toBe(true);
+  expect(csp.includes("frame-ancestors 'none'")).toBe(true);
   // No blanket inline allowance — that would defeat the nonce.
-  assert.ok(!csp.includes("'unsafe-inline'"));
-  assert.ok(!csp.includes("'unsafe-eval'"));
+  expect(csp.includes("'unsafe-inline'")).toBe(false);
+  expect(csp.includes("'unsafe-eval'")).toBe(false);
 });
 
 test("the response nonce authorizes only the rendered script", () => {
@@ -240,17 +271,16 @@ test("the response nonce authorizes only the rendered script", () => {
   );
   const nonced = (html.match(/<script nonce="/g) ?? []).length;
   const total = (html.match(/<script/g) ?? []).length;
-  assert.equal(nonced, 1);
-  assert.equal(total, 1, "an un-nonced script would be blocked, but none exist");
-  assert.ok(callbackCsp(nonce).includes(`'nonce-${nonce}'`));
+  expect(nonced).toBe(1);
+  expect(total, "an un-nonced script would be blocked, but none exist").toBe(1);
+  expect(callbackCsp(nonce).includes(`'nonce-${nonce}'`)).toBe(true);
 });
 
 /* ── callback decision logic ────────────────────────────────────────────── */
 
 /**
  * Transcription of the state/error/code branch order in
- * `src/app/api/callback/route.ts`. Kept in sync by the assertions below; the
- * HTTP-level test arrives with the Task 2.1 harness.
+ * `src/app/api/callback/route.ts`. Kept in sync by the assertions below.
  */
 function decideCallback(params: {
   query: Record<string, string | undefined>;
@@ -292,9 +322,9 @@ test("callback rejects a denial that carries no state", () => {
   const r = decideCallback({
     query: { error: "access_denied", error_description: BREAKOUT },
   });
-  assert.equal(r.status, "error");
-  assert.match(r.message, /Invalid or expired authorization state/);
-  assert.equal(r.exchanged, false);
+  expect(r.status).toBe("error");
+  expect(r.message).toMatch(/Invalid or expired authorization state/);
+  expect(r.exchanged).toBe(false);
 });
 
 test("callback rejects a mismatched state", () => {
@@ -302,8 +332,8 @@ test("callback rejects a mismatched state", () => {
     query: { code: "c", state: "attacker" },
     cookie: `${STATE_COOKIE}=genuine`,
   });
-  assert.match(r.message, /Invalid or expired authorization state/);
-  assert.equal(r.exchanged, false);
+  expect(r.message).toMatch(/Invalid or expired authorization state/);
+  expect(r.exchanged).toBe(false);
 });
 
 test("callback rejects a missing state parameter", () => {
@@ -311,12 +341,12 @@ test("callback rejects a missing state parameter", () => {
     query: { code: "c" },
     cookie: `${STATE_COOKIE}=genuine`,
   });
-  assert.match(r.message, /Invalid or expired authorization state/);
+  expect(r.message).toMatch(/Invalid or expired authorization state/);
 });
 
 test("callback rejects when the state cookie is absent", () => {
   const r = decideCallback({ query: { code: "c", state: "s" } });
-  assert.match(r.message, /Invalid or expired authorization state/);
+  expect(r.message).toMatch(/Invalid or expired authorization state/);
 });
 
 test("callback returns a generic message for a valid denial", () => {
@@ -328,11 +358,11 @@ test("callback returns a generic message for a valid denial", () => {
     },
     cookie: `${STATE_COOKIE}=s`,
   });
-  assert.equal(r.status, "error");
-  assert.equal(r.message, "Authorization was denied.");
+  expect(r.status).toBe("error");
+  expect(r.message).toBe("Authorization was denied.");
   // The provider's text must never be echoed back.
-  assert.ok(!r.message.includes("script"));
-  assert.equal(r.exchanged, false);
+  expect(r.message.includes("script")).toBe(false);
+  expect(r.exchanged).toBe(false);
 });
 
 test("callback reports a missing code only after state passes", () => {
@@ -340,7 +370,7 @@ test("callback reports a missing code only after state passes", () => {
     query: { state: "s" },
     cookie: `${STATE_COOKIE}=s`,
   });
-  assert.equal(r.message, "Missing authorization code.");
+  expect(r.message).toBe("Missing authorization code.");
 });
 
 test("callback proceeds to token exchange for a valid success callback", () => {
@@ -348,8 +378,8 @@ test("callback proceeds to token exchange for a valid success callback", () => {
     query: { code: "good-code", state: "s" },
     cookie: `${STATE_COOKIE}=s`,
   });
-  assert.equal(r.status, "success");
-  assert.equal(r.exchanged, true);
+  expect(r.status).toBe("success");
+  expect(r.exchanged).toBe(true);
 });
 
 test("callback validates state before the denial branch", () => {
@@ -358,8 +388,8 @@ test("callback validates state before the denial branch", () => {
   const hostile = decideCallback({
     query: { error: "x", error_description: BREAKOUT },
   });
-  assert.match(hostile.message, /Invalid or expired authorization state/);
-  assert.notEqual(hostile.message, "Authorization was denied.");
+  expect(hostile.message).toMatch(/Invalid or expired authorization state/);
+  expect(hostile.message).not.toBe("Authorization was denied.");
 });
 
 /* ── end-to-end: hostile input through the real renderer ────────────────── */
@@ -377,9 +407,9 @@ test("a hostile denial cannot produce executable markup end to end", () => {
     nonce,
   );
 
-  assert.deepEqual(countScriptTags(html), { opening: 1, closing: 1 });
-  assert.ok(!html.includes("__XSS_MARKER__"));
-  assert.ok(callbackCsp(nonce).includes(`'nonce-${nonce}'`));
+  expect(countScriptTags(html)).toEqual({ opening: 1, closing: 1 });
+  expect(html.includes("__XSS_MARKER__")).toBe(false);
+  expect(callbackCsp(nonce).includes(`'nonce-${nonce}'`)).toBe(true);
 });
 
 /* ── SEC-M2: OAuth origin allowlist ─────────────────────────────────────── */
@@ -390,10 +420,7 @@ test("a hostile denial cannot produce executable markup end to end", () => {
  * the public origin. These headers are exactly the attacker-controlled input
  * SEC-M2 is about.
  */
-function req(
-  url: string,
-  headers: Record<string, string> = {},
-): Request {
+function req(url: string, headers: Record<string, string> = {}): Request {
   return new Request(url, { headers });
 }
 
@@ -430,46 +457,42 @@ function withExtraOrigins(value: string | undefined, fn: () => void) {
 /* normalizeOrigin */
 
 test("normalizeOrigin keeps a plain https origin unchanged", () => {
-  assert.equal(normalizeOrigin("https://feizfood.com"), "https://feizfood.com");
+  expect(normalizeOrigin("https://feizfood.com")).toBe("https://feizfood.com");
 });
 
 test("normalizeOrigin preserves a non-default port exactly", () => {
   // SEC-L3: the port is part of the identity, not noise to be trimmed.
-  assert.equal(
-    normalizeOrigin("https://feizfood.com:8443"),
+  expect(normalizeOrigin("https://feizfood.com:8443")).toBe(
     "https://feizfood.com:8443",
   );
 });
 
 test("normalizeOrigin rejects userinfo that disguises the real host", () => {
   // `https://feizfood.com@evil.example` resolves to host `evil.example`.
-  assert.equal(normalizeOrigin("https://feizfood.com@evil.example"), null);
+  expect(normalizeOrigin("https://feizfood.com@evil.example")).toBe(null);
 });
 
 test("normalizeOrigin rejects an origin carrying a path, query, or fragment", () => {
-  assert.equal(normalizeOrigin("https://feizfood.com/api/callback"), null);
-  assert.equal(normalizeOrigin("https://feizfood.com/?x=1"), null);
-  assert.equal(normalizeOrigin("https://feizfood.com/#f"), null);
+  expect(normalizeOrigin("https://feizfood.com/api/callback")).toBe(null);
+  expect(normalizeOrigin("https://feizfood.com/?x=1")).toBe(null);
+  expect(normalizeOrigin("https://feizfood.com/#f")).toBe(null);
 });
 
 test("normalizeOrigin rejects non-HTTP schemes", () => {
-  assert.equal(normalizeOrigin("javascript:alert(1)"), null);
-  assert.equal(normalizeOrigin("data:text/html,x"), null);
-  assert.equal(normalizeOrigin("ftp://feizfood.com"), null);
+  expect(normalizeOrigin("javascript:alert(1)")).toBe(null);
+  expect(normalizeOrigin("data:text/html,x")).toBe(null);
+  expect(normalizeOrigin("ftp://feizfood.com")).toBe(null);
 });
 
 test("normalizeOrigin rejects malformed and empty values", () => {
   for (const value of ["", "not a url", "//feizfood.com", "https://"]) {
-    assert.equal(normalizeOrigin(value), null, `expected null for ${value}`);
+    expect(normalizeOrigin(value), `expected null for ${value}`).toBe(null);
   }
 });
 
 test("normalizeOrigin rejects a comma-joined header value", () => {
   // A doubled proxy header must never be interpreted as its first entry.
-  assert.equal(
-    normalizeOrigin("https://feizfood.com,https://evil.example"),
-    null,
-  );
+  expect(normalizeOrigin("https://feizfood.com,https://evil.example")).toBe(null);
 });
 
 /* getAllowedOrigins / isAllowedOAuthOrigin */
@@ -477,7 +500,7 @@ test("normalizeOrigin rejects a comma-joined header value", () => {
 test("production allowlist contains only the canonical domain and www alias", () => {
   withNodeEnv("production", () => {
     withExtraOrigins(undefined, () => {
-      assert.deepEqual(getAllowedOrigins().sort(), [
+      expect(getAllowedOrigins().sort()).toEqual([
         "https://feizfood.com",
         "https://www.feizfood.com",
       ]);
@@ -488,8 +511,8 @@ test("production allowlist contains only the canonical domain and www alias", ()
 test("production allowlist excludes localhost", () => {
   withNodeEnv("production", () => {
     withExtraOrigins(undefined, () => {
-      assert.equal(isAllowedOAuthOrigin("http://localhost:3000"), false);
-      assert.equal(isAllowedOAuthOrigin("https://localhost"), false);
+      expect(isAllowedOAuthOrigin("http://localhost:3000")).toBe(false);
+      expect(isAllowedOAuthOrigin("https://localhost")).toBe(false);
     });
   });
 });
@@ -502,7 +525,7 @@ test("development allows loopback hosts on any port", () => {
       "http://127.0.0.1:8080",
       "http://[::1]:3000",
     ]) {
-      assert.equal(isAllowedOAuthOrigin(origin), true, origin);
+      expect(isAllowedOAuthOrigin(origin), origin).toBe(true);
     }
   });
 });
@@ -510,9 +533,9 @@ test("development allows loopback hosts on any port", () => {
 test("registered extra origins are accepted exactly", () => {
   withNodeEnv("production", () => {
     withExtraOrigins("https://staging.feizfood.com", () => {
-      assert.equal(isAllowedOAuthOrigin("https://staging.feizfood.com"), true);
+      expect(isAllowedOAuthOrigin("https://staging.feizfood.com")).toBe(true);
       // A neighbouring host is not implied by the registration.
-      assert.equal(isAllowedOAuthOrigin("https://staging2.feizfood.com"), false);
+      expect(isAllowedOAuthOrigin("https://staging2.feizfood.com")).toBe(false);
     });
   });
 });
@@ -521,9 +544,9 @@ test("an unparseable registered origin does not widen the allowlist", () => {
   withNodeEnv("production", () => {
     withExtraOrigins("feizfood.com, ,https://ok.example", () => {
       const allowed = getAllowedOrigins();
-      assert.ok(allowed.includes("https://ok.example"));
-      assert.equal(allowed.includes("feizfood.com"), false);
-      assert.equal(allowed.length, 3);
+      expect(allowed.includes("https://ok.example")).toBe(true);
+      expect(allowed.includes("feizfood.com")).toBe(false);
+      expect(allowed.length).toBe(3);
     });
   });
 });
@@ -537,7 +560,7 @@ test("an unapproved subdomain is rejected", () => {
         "https://feizfoodxcom",
         "https://notfeizfood.com",
       ]) {
-        assert.equal(isAllowedOAuthOrigin(origin), false, origin);
+        expect(isAllowedOAuthOrigin(origin), origin).toBe(false);
       }
     });
   });
@@ -546,7 +569,7 @@ test("an unapproved subdomain is rejected", () => {
 test("an approved host on an unexpected port is rejected", () => {
   withNodeEnv("production", () => {
     withExtraOrigins(undefined, () => {
-      assert.equal(isAllowedOAuthOrigin("https://feizfood.com:8443"), false);
+      expect(isAllowedOAuthOrigin("https://feizfood.com:8443")).toBe(false);
     });
   });
 });
@@ -554,7 +577,7 @@ test("an approved host on an unexpected port is rejected", () => {
 test("an approved host over http is rejected in production", () => {
   withNodeEnv("production", () => {
     withExtraOrigins(undefined, () => {
-      assert.equal(isAllowedOAuthOrigin("http://feizfood.com"), false);
+      expect(isAllowedOAuthOrigin("http://feizfood.com")).toBe(false);
     });
   });
 });
@@ -570,7 +593,7 @@ test("resolveOrigin honours a forwarded host that is on the allowlist", () => {
           "x-forwarded-proto": "https",
         }),
       );
-      assert.equal(origin, "https://feizfood.com");
+      expect(origin).toBe("https://feizfood.com");
     });
   });
 });
@@ -584,7 +607,7 @@ test("resolveOrigin rejects a poisoned X-Forwarded-Host", () => {
           "x-forwarded-proto": "https",
         }),
       );
-      assert.equal(origin, null, "attacker host must not become an origin");
+      expect(origin, "attacker host must not become an origin").toBe(null);
     });
   });
 });
@@ -598,7 +621,7 @@ test("resolveOrigin rejects a protocol downgrade on an approved host", () => {
           "x-forwarded-proto": "http",
         }),
       );
-      assert.equal(origin, null);
+      expect(origin).toBe(null);
     });
   });
 });
@@ -612,7 +635,7 @@ test("resolveOrigin rejects an alternate port on an approved host", () => {
           "x-forwarded-proto": "https",
         }),
       );
-      assert.equal(origin, null);
+      expect(origin).toBe(null);
     });
   });
 });
@@ -634,7 +657,7 @@ test("resolveOrigin rejects malformed and hostile forwarded hosts", () => {
             "x-forwarded-proto": "https",
           }),
         );
-        assert.equal(origin, null, `expected null for host "${host}"`);
+        expect(origin, `expected null for host "${host}"`).toBe(null);
       }
     });
   });
@@ -649,7 +672,7 @@ test("resolveOrigin rejects a doubled X-Forwarded-Proto", () => {
           "x-forwarded-proto": "https, http",
         }),
       );
-      assert.equal(origin, null);
+      expect(origin).toBe(null);
     });
   });
 });
@@ -663,7 +686,7 @@ test("resolveOrigin accepts the www alias", () => {
           "x-forwarded-proto": "https",
         }),
       );
-      assert.equal(origin, "https://www.feizfood.com");
+      expect(origin).toBe("https://www.feizfood.com");
     });
   });
 });
@@ -671,19 +694,17 @@ test("resolveOrigin accepts the www alias", () => {
 test("resolveOrigin falls back to the request URL when no headers are sent", () => {
   withNodeEnv("production", () => {
     withExtraOrigins(undefined, () => {
-      assert.equal(
-        resolveOrigin(req("https://feizfood.com/api/auth")),
+      expect(resolveOrigin(req("https://feizfood.com/api/auth"))).toBe(
         "https://feizfood.com",
       );
-      assert.equal(resolveOrigin(req("https://evil.example/api/auth")), null);
+      expect(resolveOrigin(req("https://evil.example/api/auth"))).toBe(null);
     });
   });
 });
 
 test("resolveOrigin allows local development without forwarded headers", () => {
   withNodeEnv("development", () => {
-    assert.equal(
-      resolveOrigin(req("http://localhost:3000/api/auth")),
+    expect(resolveOrigin(req("http://localhost:3000/api/auth"))).toBe(
       "http://localhost:3000",
     );
   });
@@ -699,7 +720,7 @@ test("a rejected origin can never reach the popup renderer", () => {
           "x-forwarded-host": "evil.attacker.com",
         }),
       );
-      assert.equal(origin, null);
+      expect(origin).toBe(null);
     });
   });
 });
@@ -708,51 +729,51 @@ test("a rejected origin can never reach the popup renderer", () => {
 
 test("Secure cookies are mandatory in production", () => {
   withNodeEnv("production", () => {
-    assert.equal(isSecureCookieRequired(), true);
+    expect(isSecureCookieRequired()).toBe(true);
   });
 });
 
 test("Secure cookies are not forced outside production", () => {
   withNodeEnv("development", () => {
-    assert.equal(isSecureCookieRequired(), false);
+    expect(isSecureCookieRequired()).toBe(false);
   });
 });
 
 test("the state cookie is scoped to the callback path only", () => {
-  assert.equal(STATE_COOKIE_PATH, "/api/callback");
+  expect(STATE_COOKIE_PATH).toBe("/api/callback");
   // It must not be broadened back to /api, which would ship the CSRF state to
   // unrelated endpoints such as the RFQ route.
-  assert.notEqual(STATE_COOKIE_PATH as string, "/api");
+  expect(STATE_COOKIE_PATH).not.toBe("/api");
 });
 
 /* ── SEC-M3: least-privilege GitHub authorization ───────────────────────── */
 
 test("the requested scope is public_repo, never the broad repo scope", () => {
-  assert.equal(OAUTH_SCOPE, "public_repo");
+  expect(OAUTH_SCOPE).toBe("public_repo");
   // `repo` reaches every repository the editor can access, including private
   // ones unrelated to this site. Regressing to it must fail loudly.
-  assert.notEqual(OAUTH_SCOPE as string, "repo");
+  expect(OAUTH_SCOPE).not.toBe("repo");
 });
 
 test("the scope grants no private-repository access", () => {
   // Only two scopes are meaningful for Decap's GitHub backend, and only one
   // of them is limited to public repositories.
   const grantsPrivateRepoAccess = new Set(["repo"]);
-  assert.equal(grantsPrivateRepoAccess.has(OAUTH_SCOPE), false);
+  expect(grantsPrivateRepoAccess.has(OAUTH_SCOPE)).toBe(false);
 });
 
 test("the scope stays within what Decap's GitHub backend accepts", () => {
   // Decap 3.15.1 constrains `auth_scope` to this enum; a value outside it
   // would be rejected by the CMS config schema at runtime.
-  assert.ok(["repo", "public_repo"].includes(OAUTH_SCOPE));
+  expect(["repo", "public_repo"].includes(OAUTH_SCOPE)).toBe(true);
 });
 
 test("no additional account-level scopes are requested", () => {
   // A space- or comma-separated list would silently widen authorization.
-  assert.equal(OAUTH_SCOPE.includes(" "), false);
-  assert.equal(OAUTH_SCOPE.includes(","), false);
+  expect(OAUTH_SCOPE.includes(" ")).toBe(false);
+  expect(OAUTH_SCOPE.includes(",")).toBe(false);
   for (const wide of ["admin", "delete_repo", "workflow", "gist", "user"]) {
-    assert.equal(OAUTH_SCOPE.includes(wide), false, `must not request ${wide}`);
+    expect(OAUTH_SCOPE.includes(wide), `must not request ${wide}`).toBe(false);
   }
 });
 
@@ -771,5 +792,49 @@ test("the client's requested scope cannot widen what the broker sends", () => {
   const hostile = buildAuthorizeUrl(
     "https://feizfood.com/api/auth?provider=github&scope=repo,admin:org",
   );
-  assert.equal(hostile.searchParams.get("scope"), "public_repo");
+  expect(hostile.searchParams.get("scope")).toBe("public_repo");
+});
+
+/* ── pre-fix regression proof ───────────────────────────────────────────── */
+//
+// Each guard above passes against the current code. Here we confirm it would
+// FAIL against the representative pre-fix fixture, which is what makes the
+// guard a real regression test rather than a tautology (Roadmap Task 2.1).
+
+test("PRE-FIX: the vulnerable serializer leaves the breakout intact", () => {
+  // The current code escapes </script>; the pre-fix did not.
+  expect(serializeForScriptPreFix(BREAKOUT).includes("</script>")).toBe(true);
+  expect(serializeForScript(BREAKOUT).includes("</script>")).toBe(false);
+});
+
+test("PRE-FIX: the vulnerable origin resolver trusts poisoned headers", () => {
+  // The pre-fix returned the attacker host verbatim; the current code fails
+  // closed and returns null for the same request.
+  const poisoned = req("https://internal.local/api/callback", {
+    "x-forwarded-host": "evil.attacker.com",
+    "x-forwarded-proto": "https",
+  });
+  withNodeEnv("production", () => {
+    expect(resolveOriginPreFix(poisoned)).toBe("https://evil.attacker.com");
+    expect(resolveOrigin(poisoned)).toBe(null);
+  });
+});
+
+test("PRE-FIX: the vulnerable popup renderer reflects the breakout", () => {
+  // The pre-fix reflected error_description into the script as JSON without
+  // HTML-script-context escaping, so the payload's </script> terminates the
+  // element early and introduces additional live <script> markup.
+  const preFix = renderPopupPreFix({ message: BREAKOUT });
+  expect(countScriptTags(preFix).opening).toBeGreaterThan(1);
+
+  // The current renderer escapes the breakout: exactly one script element and
+  // no verbatim payload survives into the document.
+  const current = renderPopupResponse(
+    "error",
+    { message: BREAKOUT },
+    "https://example.com",
+    "n",
+  );
+  expect(current.includes(BREAKOUT)).toBe(false);
+  expect(countScriptTags(current)).toEqual({ opening: 1, closing: 1 });
 });

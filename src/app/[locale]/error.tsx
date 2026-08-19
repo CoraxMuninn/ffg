@@ -8,7 +8,7 @@ import { AlertTriangle, Home, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { defaultLocale, isLocale } from "@/lib/i18n/config";
 import type { Locale } from "@/lib/i18n/config";
-import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { statusStrings } from "@/lib/i18n/dictionaries/status";
 
 interface ErrorPageProps {
   error: Error & { digest?: string };
@@ -18,11 +18,16 @@ interface ErrorPageProps {
 export default function ErrorPage({ error, reset }: ErrorPageProps) {
   const params = useParams<{ locale: string }>();
   const locale: Locale = isLocale(params?.locale) ? params.locale : defaultLocale;
-  const dictionary = getDictionary(locale);
+  const t = statusStrings[locale].error;
 
   useEffect(() => {
-    // Log for diagnostics in development; production must avoid leaking details.
-    console.error(error);
+    // Log the error only in development (audit SEC-L2): production must not
+    // push stack traces to the browser console. Controlled production
+    // telemetry, if ever added, would route through a server endpoint rather
+    // than window.console.
+    if (process.env.NODE_ENV !== "production") {
+      console.error(error);
+    }
   }, [error]);
 
   return (
@@ -43,22 +48,22 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
         </div>
 
         <h1 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-          {dictionary.error.title}
+          {t.title}
         </h1>
 
         <p className="text-silver text-base sm:text-lg leading-relaxed mb-10 max-w-md mx-auto">
-          {dictionary.error.message}
+          {t.message}
         </p>
 
         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Button size="lg" type="button" onClick={reset}>
             <RefreshCw className="h-5 w-5" />
-            {dictionary.error.retry}
+            {t.retry}
           </Button>
           <Button asChild size="lg" variant="outline-inverse">
             <Link href={`/${locale}`}>
               <Home className="h-5 w-5" />
-              {dictionary.error.home}
+              {t.home}
             </Link>
           </Button>
         </div>

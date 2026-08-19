@@ -64,13 +64,43 @@ export function hasExpectedContentType(contentType: string | null): boolean {
 }
 
 /**
- * Verifies a Cloudflare Turnstile token server-side.
+ * The hostnames a legitimate Turnstile token may have been generated on. The
+ * widget renders on the public site, so this is the deployment's canonical
+ * domain plus any registered extras (audit SEC-M5). Defaults to the site domain
+ * and its `www` alias when no explicit list is configured.
+ */
+export function getApprovedTurnstileHostnames(): string[] {
+  const explicit = RFQ.turnstileHostnames;
+  if (explicit.length > 0) return explicit;
+  return [SITE_DOMAIN.toLowerCase(), `www.${SITE_DOMAIN.toLowerCase()}`];
+}
+
+interface TurnstileSiteVerifyResponse {
+  success?: boolean;
+  /** The action the widget was rendered with. */
+  action?: string;
+  /** The hostname the challenge was solved on. */
+  hostname?: string;
+  "error-codes"?: string[];
+}
+
+/**
+ * Verifies a Cloudflare Turnstile token server-side (audit SEC-M5).
+ *
+ * Beyond `success`, the token is bound to a fixed `action` (matching the value
+ * the client widget renders with) and an approved `hostname`, the request is
+ * attributed to the trusted client IP (`remoteip`), and the call is bounded by
+ * a timeout so an unavailable Cloudflare cannot hang the request. Failed,
+ * mismatched, expired, or timed-out verifications fail closed.
  *
  * Development: if the secret is unset, the check is skipped (local RFQ UI).
- * Production: missing secret or missing token fails closed — never silently
- * accept submissions without bot verification. Never returns the secret.
+ * Production: missing secret fails closed — never silently accept submissions
+ * without bot verification. Never returns the secret.
  */
-export async function verifyTurnstile(token: string | undefined): Promise<boolean> {
+export async function verifyTurnstile(
+  token: string | undefined,
+  clientIp?: string | null,
+): Promise<boolean> {
   const secret = RFQ.turnstileSecretKey;
   if (!secret) {
     return process.env.NODE_ENV !== "production";
@@ -78,20 +108,39 @@ export async function verifyTurnstile(token: string | undefined): Promise<boolea
 
   if (!token) return false;
 
+  let data: TurnstileSiteVerifyResponse;
   try {
     const form = new URLSearchParams();
     form.set("secret", secret);
     form.set("response", token);
+    if (clientIp) form.set("remoteip", clientIp);
 
-    const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: form.toString(),
-    });
+    const res = await fetch(
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: form.toString(),
+        signal: AbortSignal.timeout(RFQ.turnstileTimeoutMs),
+      },
+    );
 
-    const data = (await res.json()) as { success?: boolean };
-    return data.success === true;
+    data = (await res.json()) as TurnstileSiteVerifyResponse;
   } catch {
+    // Network error or timeout: fail closed. Coarse rate limits ensure a
+    // legitimate buyer can retry shortly without enumeration risk.
     return false;
   }
+
+  if (data.success !== true) return false;
+
+  const expectedAction = RFQ.turnstileAction;
+  if (expectedAction && data.action !== expectedAction) return false;
+
+  const approved = getApprovedTurnstileHostnames();
+  if (approved.length > 0 && (!data.hostname || !approved.includes(data.hostname.toLowerCase()))) {
+    return false;
+  }
+
+  return true;
 }

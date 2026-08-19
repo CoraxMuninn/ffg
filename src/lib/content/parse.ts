@@ -2,7 +2,6 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 
-import { defaultLocale } from "@/lib/i18n/config";
 import type { Locale } from "@/lib/i18n/config";
 
 /**
@@ -56,22 +55,65 @@ function listMarkdownFiles(dir: string): string[] {
 /**
  * Locale-aware content directory resolution.
  *
- * Requests content for `locale` but falls back to the default (English) locale
- * when the requested locale has no directory/files. This is the explicit
- * fallback strategy: missing translations surface as English rather than
- * silently mixing languages or hiding content.
+ * No transparent wrong-language fallback (audit SEO-M2, Roadmap Task 5.4):
+ * a request for `locale` reads ONLY that locale's directory. Missing localized
+ * content yields an empty collection — detail pages then `notFound()` and
+ * produce a real 404 — so English can never be served under a false FA/RU/VI
+ * URL, canonical, or hreflang cluster. (If a business-required fallback is ever
+ * reintroduced it must mark the actual language and `noindex` until translated.)
  */
-function resolveDir(locale: Locale, subdir: string): { dir: string; isFallback: boolean } {
-  const requested = path.join(CONTENT_ROOT, locale, subdir);
-  if (fs.existsSync(requested)) return { dir: requested, isFallback: false };
-  if (locale !== defaultLocale) {
-    const fallback = path.join(CONTENT_ROOT, defaultLocale, subdir);
-    if (fs.existsSync(fallback)) return { dir: fallback, isFallback: true };
-  }
-  return { dir: requested, isFallback: locale !== defaultLocale };
+function resolveDir(locale: Locale, subdir: string): { dir: string } {
+  return { dir: path.join(CONTENT_ROOT, locale, subdir) };
 }
 
 // ── Field validators ─────────────────────────────────────────────────────────
+
+/** Lowercase kebab-case, the URL-safe slug format shared by every collection
+ *  and enforced by the CMS slug pattern. Centralized so the loader rejects a
+ *  bad slug at build time rather than emitting an unsafe/ambiguous URL. */
+const KEBAB_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+export function validateSlug(file: string, slug: string): void {
+  if (!KEBAB_SLUG.test(slug)) {
+    throw new ContentError(
+      file,
+      `slug "${slug}" must be lowercase kebab-case (a-z, 0-9, hyphens)`,
+    );
+  }
+}
+
+/** Calendar date `YYYY-MM-DD` (the only date format the CMS datetime widget writes). */
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+/**
+ * Reads a CMS date field as `YYYY-MM-DD`.
+ *
+ * Accepts a string or a YAML-parsed `Date`. Invalid values fail loudly with
+ * the field name so an editor can fix the frontmatter.
+ */
+export function parseIsoDate(
+  file: string,
+  value: unknown,
+  key: string,
+  required: boolean,
+): string | undefined {
+  if (value == null || value === "") {
+    if (required) {
+      throw new ContentError(file, `frontmatter field "${key}" must be a valid YYYY-MM-DD date`);
+    }
+    return undefined;
+  }
+  let iso = "";
+  if (typeof value === "string") {
+    iso = value.trim().slice(0, 10);
+  } else if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    iso = value.toISOString().slice(0, 10);
+  }
+  if (!ISO_DATE.test(iso) || Number.isNaN(Date.parse(`${iso}T00:00:00Z`))) {
+    throw new ContentError(file, `frontmatter field "${key}" must be a valid YYYY-MM-DD date`);
+  }
+  return iso;
+}
 
 function str(file: string, data: Record<string, unknown>, key: string, required = true): string {
   const value = data[key];
@@ -124,7 +166,7 @@ export function loadCollection<T>(
   validate: (raw: RawFile) => T,
   opts: { filterEnabled?: boolean } = {},
 ): ParsedItem<T>[] {
-  const { dir, isFallback } = resolveDir(locale, subdir);
+  const { dir } = resolveDir(locale, subdir);
   const files = listMarkdownFiles(dir);
 
   return files
@@ -137,7 +179,10 @@ export function loadCollection<T>(
         const enabled = (item as { enabled?: boolean }).enabled;
         if (enabled === false) return null;
       }
-      return { item, fromFallback: isFallback };
+      // `fromFallback` is always false since the wrong-language fallback was
+      // removed (Task 5.4); the field is retained on the public shape so
+      // callers that guard on it keep compiling.
+      return { item, fromFallback: false };
     })
     .filter((entry): entry is ParsedItem<T> => entry !== null)
     .sort((a, b) => orderOf(a.item) - orderOf(b.item));
@@ -181,9 +226,11 @@ export interface RawLike {
 
 export function parseBase(raw: RawFile, withBody: boolean): Omit<RawLike, "icon" | "image" | "specs"> {
   const { file, data, content } = raw;
+  const slug = str(file, data, "slug");
+  validateSlug(file, slug);
   return {
     title: str(file, data, "title"),
-    slug: str(file, data, "slug"),
+    slug,
     description: str(file, data, "description", false),
     enabled: bool(file, data, "enabled", false),
     order: num(file, data, "order", false),
@@ -215,12 +262,22 @@ export function parseStringList(raw: RawFile, key: string): string[] {
 }
 
 export function parseSpecs(raw: RawFile): { label: string; value: string }[] {
-  return array(raw.file, raw.data, "specs")
-    .filter((s): s is Record<string, unknown> => typeof s === "object" && s !== null)
-    .map((s) => ({
-      label: str(raw.file, s, "label"),
-      value: str(raw.file, s, "value"),
-    }));
+  return array(raw.file, raw.data, "specs").map((entry, index) => {
+    // Stop silently dropping malformed specs (audit ARCH-M3/M4, Roadmap 5.1):
+    // a non-object entry is a real CMS error and must fail loudly with its
+    // position, not be filtered out and quietly lost.
+    if (typeof entry !== "object" || entry === null || Array.isArray(entry)) {
+      throw new ContentError(
+        raw.file,
+        `frontmatter list "specs" entry #${index + 1} must be an object with "label" and "value"`,
+      );
+    }
+    const spec = entry as Record<string, unknown>;
+    return {
+      label: str(raw.file, spec, "label"),
+      value: str(raw.file, spec, "value"),
+    };
+  });
 }
 
 // ── Expose raw file shape for custom validators ──────────────────────────────

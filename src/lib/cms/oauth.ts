@@ -14,10 +14,9 @@
  * All values are read from the environment; nothing is hardcoded.
  */
 
-// Relative rather than the `@/` alias: this module is compiled standalone by
-// `tsconfig.test.json` for the dependency-free `node --test` suite, which has
-// no path-alias resolver. `seo/config` is the site's single source of truth
-// for the canonical domain.
+// Relative import keeps this security module self-contained; the Vitest suite
+// (Roadmap Task 2.1) and the Next bundle both resolve it identically.
+// `seo/config` is the site's single source of truth for the canonical domain.
 import { SITE_DOMAIN, SITE_URL } from "../seo/config";
 
 /** GitHub OAuth App client ID (public — it appears in the authorize URL). */
@@ -63,6 +62,32 @@ export function isOAuthConfigured(): boolean {
  * will fail to load content — see the documented procedure before changing it.
  */
 export const OAUTH_SCOPE = "public_repo";
+
+/**
+ * Cross-Origin-Opener-Policy for the OAuth broker documents only.
+ *
+ * Decap's GitHub login is a popup. After GitHub redirects back to
+ * `/api/callback`, the popup must still have `window.opener` so it can run
+ * the two-step `postMessage` handshake (`authorizing:github` → Decap reply →
+ * `authorization:github:success:…`).
+ *
+ * `same-origin` isolates the popup the moment it returns from github.com.
+ * `same-origin-allow-popups` is the correct value for the *opener* (`/admin`)
+ * but still forces a browsing-context-group swap when it is set on the popup
+ * itself after a cross-origin hop — `window.opener` becomes `null` and the
+ * popup stays on "Completing sign-in…". `unsafe-none` is the documented
+ * value for OAuth redirect documents; it does not widen the origin allowlist,
+ * does not relax state/CSRF, and `postMessage` stays pinned to the approved
+ * origin (never `*`). The public site keeps `same-origin`.
+ */
+export const OAUTH_POPUP_COOP = "unsafe-none";
+
+/**
+ * Shown in the callback popup when `window.opener` is missing, instead of
+ * hanging forever on "Completing sign-in…".
+ */
+export const OAUTH_POPUP_LOST_OPENER_MESSAGE =
+  "Sign-in could not finish because this window lost its opener. Close it and try Login with GitHub again.";
 
 /** Cookie holding the CSRF state between /api/auth and /api/callback. */
 export const STATE_COOKIE = "decap_oauth_state";
@@ -310,6 +335,10 @@ export function callbackCsp(nonce: string): string {
  * The target origin is pinned to this deployment's own origin rather than "*",
  * so the token is never broadcast to an unexpected opener.
  *
+ * If `window.opener` is missing (COOP isolation, the page opened as a top-level
+ * tab, …) the script stops and replaces the spinner with an explicit error
+ * instead of waiting forever for a reply that cannot arrive.
+ *
  * Every interpolated value goes through `serializeForScript`, and the script
  * carries `nonce` so it matches the response's `callbackCsp`.
  */
@@ -338,6 +367,12 @@ export function renderPopupResponse(
           if (!window.opener) return;
           window.opener.postMessage(message, origin);
         }
+        if (!window.opener) {
+          document.body.textContent = ${serializeForScript(
+            OAUTH_POPUP_LOST_OPENER_MESSAGE,
+          )};
+          return;
+        }
         window.addEventListener("message", function handler(event) {
           if (event.origin !== origin) return;
           send();
@@ -345,9 +380,7 @@ export function renderPopupResponse(
           window.setTimeout(function () { window.close(); }, 400);
         });
         // Announce readiness; Decap replies, then we send the credentials.
-        if (window.opener) {
-          window.opener.postMessage("authorizing:github", origin);
-        }
+        window.opener.postMessage("authorizing:github", origin);
       })();
     </script>
   </body>

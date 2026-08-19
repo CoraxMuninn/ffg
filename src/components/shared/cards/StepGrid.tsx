@@ -26,7 +26,7 @@ export function StepGrid({ steps }: StepGridProps) {
           key={step.slug}
           className="grid grid-cols-1 gap-2 py-7 sm:grid-cols-12 sm:items-start sm:gap-8 sm:py-8"
         >
-          <span className="text-xs font-semibold tabular-nums text-cyan-brand sm:col-span-1">
+          <span className="text-xs font-semibold tabular-nums text-cyan-link sm:col-span-1">
             {String(index + 1).padStart(2, "0")}
           </span>
           <h3 className="font-bold text-navy sm:col-span-4">{step.title}</h3>

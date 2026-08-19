@@ -12,7 +12,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { isLocale, locales } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import FinalCTA from "@/components/sections/FinalCTA";
-import { getMarkets } from "@/lib/content";
+import { getMarkets, localesWithMarket } from "@/lib/content";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { breadcrumbSchema, webPageSchema } from "@/lib/seo/schema";
 import { contactPath, marketPath, marketsPath } from "@/lib/i18n/routes";
@@ -54,6 +54,7 @@ export async function generateMetadata({
     path: `/markets/${market.slug}`,
     ogImage: market.panelImage || market.image || undefined,
     ogImageAlt: market.panelImageAlt || market.imageAlt,
+    availableLocales: localesWithMarket(slug),
   });
 }
 
@@ -154,7 +155,7 @@ export default async function MarketDetailPage({ params }: MarketDetailPageProps
                 <div className="mt-8 grid grid-cols-1 gap-6 border-t border-navy/10 pt-8 sm:gap-8 md:grid-cols-2">
                   {market.focus.length > 0 && (
                     <div>
-                      <h2 className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-brand">
+                      <h2 className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-link">
                         {dictionary.markets.focusHeading}
                       </h2>
                       <ul className="space-y-2">
@@ -175,7 +176,7 @@ export default async function MarketDetailPage({ params }: MarketDetailPageProps
 
                   {market.documents.length > 0 && (
                     <div>
-                      <h2 className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-brand">
+                      <h2 className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-link">
                         {dictionary.markets.documentsHeading}
                       </h2>
                       <ul className="flex flex-wrap gap-2">
@@ -216,7 +217,7 @@ export default async function MarketDetailPage({ params }: MarketDetailPageProps
       {others.length > 0 && (
         <section className="bg-smoke py-14 sm:py-16 lg:py-20">
           <Container>
-            <h2 className="mb-6 text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-brand">
+            <h2 className="mb-6 text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-link">
               {dictionary.markets.destinationsHeading}
             </h2>
             <ul className="grid grid-cols-1 gap-4 sm:grid-cols-3">

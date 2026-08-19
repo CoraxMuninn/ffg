@@ -1,3 +1,4 @@
+import { locales } from "@/lib/i18n/config";
 import type { Locale } from "@/lib/i18n/config";
 import type {
   BlogPost,
@@ -9,12 +10,14 @@ import type {
   QualityProcess,
   SupplyChainStep,
 } from "./types";
+import { isHttpsAbsoluteUrl, isKnownInternalPath } from "./internal-paths";
 import {
   loadCollection,
   loadItemBySlug,
   parseBase,
   parseIcon,
   parseImage,
+  parseIsoDate,
   parseSpecs,
   parseStringList,
   ContentError,
@@ -204,20 +207,86 @@ function validateBlogPost(raw: RawFile): BlogPost {
   const base = parseBase(raw, true);
   const { file, data } = raw;
 
-  const excerpt =
-    typeof data.excerpt === "string" && data.excerpt
-      ? data.excerpt
-      : base.description;
+  if (!base.title.trim()) {
+    throw new ContentError(file, 'frontmatter field "title" must not be empty');
+  }
 
-  let date = "";
-  if (typeof data.date === "string") {
-    date = data.date;
-  } else if (data.date instanceof Date && !Number.isNaN(data.date.getTime())) {
-    date = data.date.toISOString().slice(0, 10);
+  const excerpt =
+    typeof data.excerpt === "string" && data.excerpt.trim()
+      ? data.excerpt.trim()
+      : base.description.trim();
+  if (!excerpt) {
+    throw new ContentError(
+      file,
+      'frontmatter field "excerpt" is required (listing text and fallback meta description)',
+    );
   }
+
+  const date = parseIsoDate(file, data.date, "date", true);
   if (!date) {
-    throw new ContentError(file, 'frontmatter field "date" must be a valid date');
+    throw new ContentError(file, 'frontmatter field "date" must be a valid YYYY-MM-DD date');
   }
+  const updated = parseIsoDate(file, data.updated, "updated", false);
+  if (updated && updated < date) {
+    throw new ContentError(
+      file,
+      `frontmatter field "updated" (${updated}) must not be earlier than "date" (${date})`,
+    );
+  }
+
+  const image = parseImage(raw);
+  const imageAlt = optionalString(raw, "imageAlt") ?? "";
+  if (!image) {
+    throw new ContentError(file, 'frontmatter field "image" is required (featured image)');
+  }
+  if (!imageAlt) {
+    throw new ContentError(
+      file,
+      'frontmatter field "imageAlt" is required when a featured image is set',
+    );
+  }
+
+  const seoTitle = optionalString(raw, "seoTitle");
+  if (seoTitle && seoTitle.length > 60) {
+    throw new ContentError(
+      file,
+      `frontmatter field "seoTitle" is ${seoTitle.length} characters; keep it at 60 or fewer`,
+    );
+  }
+  const seoDescription = optionalString(raw, "seoDescription");
+  if (seoDescription && seoDescription.length > 160) {
+    throw new ContentError(
+      file,
+      `frontmatter field "seoDescription" is ${seoDescription.length} characters; keep it at 160 or fewer`,
+    );
+  }
+
+  const canonicalUrl = optionalString(raw, "canonicalUrl");
+  if (canonicalUrl && !isHttpsAbsoluteUrl(canonicalUrl)) {
+    throw new ContentError(
+      file,
+      'frontmatter field "canonicalUrl" must be an absolute https URL',
+    );
+  }
+
+  const related = parseStringList(raw, "related");
+  for (const href of related) {
+    if (!isKnownInternalPath(href)) {
+      throw new ContentError(
+        file,
+        `related path "${href}" is not a known site route — use an existing path such as /products/frozen-chicken-feet`,
+      );
+    }
+  }
+
+  if (/^# /m.test(base.body)) {
+    throw new ContentError(
+      file,
+      "article body must not contain a Markdown H1 (`# `); the title field is the page H1 — use ## / ### for sections",
+    );
+  }
+
+  const ogImage = optionalString(raw, "ogImage");
 
   return {
     title: base.title,
@@ -225,12 +294,21 @@ function validateBlogPost(raw: RawFile): BlogPost {
     excerpt,
     author: optionalString(raw, "author"),
     date,
-    image: parseImage(raw),
-    imageAlt: optionalString(raw, "imageAlt"),
+    ...(updated ? { updated } : {}),
+    image,
+    imageAlt,
+    imageCaption: optionalString(raw, "imageCaption"),
     category: optionalString(raw, "category"),
     tags: parseStringList(raw, "tags"),
-    seoTitle: optionalString(raw, "seoTitle"),
-    seoDescription: optionalString(raw, "seoDescription"),
+    focusKeyphrase: optionalString(raw, "focusKeyphrase"),
+    seoTitle,
+    seoDescription,
+    canonicalUrl,
+    ogTitle: optionalString(raw, "ogTitle"),
+    ogDescription: optionalString(raw, "ogDescription"),
+    ogImage,
+    ogImageAlt: optionalString(raw, "ogImageAlt"),
+    related,
     enabled: base.enabled,
     order: base.order,
     body: base.body,
@@ -245,4 +323,25 @@ export function getBlogPosts(locale: Locale): BlogPost[] {
 
 export function getBlogPost(locale: Locale, slug: string): BlogPost | null {
   return loadItemBySlug("blog", locale, slug, validateBlogPost)?.item ?? null;
+}
+
+// ── Counterpart-aware translation presence (Task 5.3) ────────────────────────
+//
+// These return the locales whose content actually carries a translation of the
+// given slug (no wrong-language fallback — Task 5.4). Detail-page metadata and
+// the sitemap use them to emit hreflang only for existing equivalents.
+
+export function localesWithProduct(slug: string): Locale[] {
+  return locales.filter((locale) => getProduct(locale, slug) !== null);
+}
+
+export function localesWithMarket(slug: string): Locale[] {
+  return locales.filter((locale) => {
+    const market = getMarkets(locale).find((item) => item.slug === slug);
+    return market !== undefined;
+  });
+}
+
+export function localesWithBlogPost(slug: string): Locale[] {
+  return locales.filter((locale) => getBlogPost(locale, slug) !== null);
 }

@@ -54,6 +54,12 @@
       To change versions see docs/CMS-ADMIN-SETUP.md § "Updating the runtime".
     -->
     <script src="/admin/vendor/decap-cms/3.15.1/decap-cms.js"></script>
+    <!--
+      Blog quality assistant: analyzer + widget must register before CMS.init.
+      blog-quality.js is generated from src/lib/seo/blog-quality.ts.
+    -->
+    <script src="/admin/blog-quality.js"></script>
+    <script src="/admin/blog-quality-widget.js"></script>
     <script>
       window.CMS.init({
         config: {

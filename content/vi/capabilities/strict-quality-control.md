@@ -1,7 +1,7 @@
 ---
 title: "Hạng mục kiểm rõ ràng"
 slug: strict-quality-control
-description: "Các bước duyệt mẫu, kiểm sản phẩm, nhiệt độ, giám định và đóng hàng có thể được ghi vào quy cách đơn hàng."
+description: "Duyệt mẫu, kiểm sản phẩm, nhiệt độ, giám định và đóng hàng có thể ghi vào đơn."
 icon: shield-check
 enabled: true
 order: 2

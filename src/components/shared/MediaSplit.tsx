@@ -7,6 +7,8 @@ interface MediaSplitProps {
   /** CMS or media-library path. When empty, only `children` render (single column). */
   src?: string;
   alt: string;
+  /** Optional visible caption under the image. */
+  caption?: string;
   children: ReactNode;
   /** Flip the desktop reading order to CONTENT | IMAGE. Source order stays media-first. */
   reverse?: boolean;
@@ -28,6 +30,7 @@ interface MediaSplitProps {
 export function MediaSplit({
   src,
   alt,
+  caption,
   children,
   reverse = false,
   priority = false,
@@ -47,21 +50,23 @@ export function MediaSplit({
       id={id}
       className={cn("grid grid-cols-1 gap-12 lg:grid-cols-2", className)}
     >
-      <div
-        className={cn(
-          "relative h-80 overflow-hidden rounded-2xl shadow-card lg:h-120",
-          reverse && "lg:order-2",
-        )}
-      >
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          className="object-cover"
-          sizes="(max-width: 1024px) 100vw, 50vw"
-          priority={priority}
-        />
-      </div>
+      <figure className={cn(reverse && "lg:order-2")}>
+        <div className="relative h-80 overflow-hidden rounded-2xl shadow-card lg:h-120">
+          <Image
+            src={src}
+            alt={alt}
+            fill
+            className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            priority={priority}
+          />
+        </div>
+        {caption ? (
+          <figcaption className="mt-3 text-sm leading-relaxed text-label">
+            {caption}
+          </figcaption>
+        ) : null}
+      </figure>
 
       <div className={cn(reverse && "lg:order-1")}>{children}</div>
     </div>

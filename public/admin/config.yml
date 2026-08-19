@@ -1,3 +1,11 @@
+# !! GENERATED FILE — do not edit by hand. !!
+# Regenerate with:  node scripts/generate-cms-config.mjs
+# Source of truth: scripts/generate-cms-config.mjs (Roadmap Task 5.2).
+#
+# Every collection below is emitted once per locale so editors can manage all
+# four locales (en/fa/ru/vi) directly in Decap, not just blog. Shared stable
+# English slugs remain the cross-locale identity; the folder selects the locale.
+
 backend:
   name: github
   repo: CoraxMuninn/ffg
@@ -40,15 +48,12 @@ publish_mode: editorial_workflow
 media_folder: "public/media"
 public_folder: "/media"
 
-# Locale-aware content is organized under content/<locale>/… (see docs).
-# Collections below target the English (source) dataset, which is the
-# content source for all locales pending finalized translations.
-
 collections:
-  - name: "products"
-    label: "Products"
+  - name: "products_en"
+    label: "Products — English"
     label_singular: "Product"
-    description: "Frozen poultry products exported by Feiz Food Group."
+    description: >-
+      Frozen poultry products exported by Feiz Food Group. Saved to content/en/products/ and published at /en/.
     folder: "content/en/products"
     create: true
     slug: "{{slug}}"
@@ -72,11 +77,95 @@ collections:
           - { label: "Label", name: "label", widget: "string" }
           - { label: "Value", name: "value", widget: "string" }
       - { label: "Body", name: "body", widget: "markdown", required: false }
-
-  - name: "certifications"
-    label: "Certifications"
+  - name: "products_fa"
+    label: "Products — فارسی (Persian)"
+    label_singular: "Product"
+    description: >-
+      Frozen poultry products exported by Feiz Food Group. Saved to content/fa/products/ and published at /fa/.
+    folder: "content/fa/products"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", hint: "Stable English slug, shared across locales.", required: true }
+      - { label: "Description", name: "description", widget: "string" }
+      - { label: "SEO title", name: "seoTitle", widget: "string", required: false, hint: "Search title without the brand suffix. Keep the visible product title concise." }
+      - { label: "SEO description", name: "seoDescription", widget: "text", required: false }
+      - { label: "Image", name: "image", widget: "image", required: false }
+      - { label: "Image alt text", name: "imageAlt", widget: "string", required: false, hint: "Describe only what is visibly shown; do not add keywords that are not in the image." }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+      - label: "Specifications"
+        name: "specs"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Label", name: "label", widget: "string" }
+          - { label: "Value", name: "value", widget: "string" }
+      - { label: "Body", name: "body", widget: "markdown", required: false }
+  - name: "products_ru"
+    label: "Products — Русский (Russian)"
+    label_singular: "Product"
+    description: >-
+      Frozen poultry products exported by Feiz Food Group. Saved to content/ru/products/ and published at /ru/.
+    folder: "content/ru/products"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", hint: "Stable English slug, shared across locales.", required: true }
+      - { label: "Description", name: "description", widget: "string" }
+      - { label: "SEO title", name: "seoTitle", widget: "string", required: false, hint: "Search title without the brand suffix. Keep the visible product title concise." }
+      - { label: "SEO description", name: "seoDescription", widget: "text", required: false }
+      - { label: "Image", name: "image", widget: "image", required: false }
+      - { label: "Image alt text", name: "imageAlt", widget: "string", required: false, hint: "Describe only what is visibly shown; do not add keywords that are not in the image." }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+      - label: "Specifications"
+        name: "specs"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Label", name: "label", widget: "string" }
+          - { label: "Value", name: "value", widget: "string" }
+      - { label: "Body", name: "body", widget: "markdown", required: false }
+  - name: "products_vi"
+    label: "Products — Tiếng Việt (Vietnamese)"
+    label_singular: "Product"
+    description: >-
+      Frozen poultry products exported by Feiz Food Group. Saved to content/vi/products/ and published at /vi/.
+    folder: "content/vi/products"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", hint: "Stable English slug, shared across locales.", required: true }
+      - { label: "Description", name: "description", widget: "string" }
+      - { label: "SEO title", name: "seoTitle", widget: "string", required: false, hint: "Search title without the brand suffix. Keep the visible product title concise." }
+      - { label: "SEO description", name: "seoDescription", widget: "text", required: false }
+      - { label: "Image", name: "image", widget: "image", required: false }
+      - { label: "Image alt text", name: "imageAlt", widget: "string", required: false, hint: "Describe only what is visibly shown; do not add keywords that are not in the image." }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+      - label: "Specifications"
+        name: "specs"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Label", name: "label", widget: "string" }
+          - { label: "Value", name: "value", widget: "string" }
+      - { label: "Body", name: "body", widget: "markdown", required: false }
+  - name: "certifications_en"
+    label: "Certifications — English"
     label_singular: "Certification"
-    description: "Certifications and compliance standards."
+    description: >-
+      Certifications and compliance standards. Saved to content/en/certifications/ and published at /en/.
     folder: "content/en/certifications"
     create: true
     slug: "{{slug}}"
@@ -88,11 +177,59 @@ collections:
       - { label: "Logo", name: "image", widget: "image", required: false }
       - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
       - { label: "Order", name: "order", widget: "number", default: 1 }
-
-  - name: "capabilities"
-    label: "Trust / Capabilities"
+  - name: "certifications_fa"
+    label: "Certifications — فارسی (Persian)"
+    label_singular: "Certification"
+    description: >-
+      Certifications and compliance standards. Saved to content/fa/certifications/ and published at /fa/.
+    folder: "content/fa/certifications"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "string" }
+      - { label: "Logo", name: "image", widget: "image", required: false }
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+  - name: "certifications_ru"
+    label: "Certifications — Русский (Russian)"
+    label_singular: "Certification"
+    description: >-
+      Certifications and compliance standards. Saved to content/ru/certifications/ and published at /ru/.
+    folder: "content/ru/certifications"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "string" }
+      - { label: "Logo", name: "image", widget: "image", required: false }
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+  - name: "certifications_vi"
+    label: "Certifications — Tiếng Việt (Vietnamese)"
+    label_singular: "Certification"
+    description: >-
+      Certifications and compliance standards. Saved to content/vi/certifications/ and published at /vi/.
+    folder: "content/vi/certifications"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "string" }
+      - { label: "Logo", name: "image", widget: "image", required: false }
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+  - name: "capabilities_en"
+    label: "Trust / Capabilities — English"
     label_singular: "Capability"
-    description: "Business trust and capability features (distinct from certifications)."
+    description: >-
+      Business trust and capability features (distinct from certifications). Saved to content/en/capabilities/ and published at /en/.
     folder: "content/en/capabilities"
     create: true
     slug: "{{slug}}"
@@ -104,11 +241,59 @@ collections:
       - { label: "Icon", name: "icon", widget: "select", options: [package, shield-check, snowflake, ship, file-text, tag, search, handshake, factory, truck, thermometer, clipboard-check, globe, check-circle] }
       - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
       - { label: "Order", name: "order", widget: "number", default: 1 }
-
-  - name: "markets"
-    label: "Markets"
+  - name: "capabilities_fa"
+    label: "Trust / Capabilities — فارسی (Persian)"
+    label_singular: "Capability"
+    description: >-
+      Business trust and capability features (distinct from certifications). Saved to content/fa/capabilities/ and published at /fa/.
+    folder: "content/fa/capabilities"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Icon", name: "icon", widget: "select", options: [package, shield-check, snowflake, ship, file-text, tag, search, handshake, factory, truck, thermometer, clipboard-check, globe, check-circle] }
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+  - name: "capabilities_ru"
+    label: "Trust / Capabilities — Русский (Russian)"
+    label_singular: "Capability"
+    description: >-
+      Business trust and capability features (distinct from certifications). Saved to content/ru/capabilities/ and published at /ru/.
+    folder: "content/ru/capabilities"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Icon", name: "icon", widget: "select", options: [package, shield-check, snowflake, ship, file-text, tag, search, handshake, factory, truck, thermometer, clipboard-check, globe, check-circle] }
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+  - name: "capabilities_vi"
+    label: "Trust / Capabilities — Tiếng Việt (Vietnamese)"
+    label_singular: "Capability"
+    description: >-
+      Business trust and capability features (distinct from certifications). Saved to content/vi/capabilities/ and published at /vi/.
+    folder: "content/vi/capabilities"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Icon", name: "icon", widget: "select", options: [package, shield-check, snowflake, ship, file-text, tag, search, handshake, factory, truck, thermometer, clipboard-check, globe, check-circle] }
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+  - name: "markets_en"
+    label: "Markets — English"
     label_singular: "Market"
-    description: "Commercial focus markets used by the Markets listing and localized detail pages."
+    description: >-
+      Commercial focus markets used by the Markets listing and localized detail pages. Saved to content/en/markets/ and published at /en/.
     folder: "content/en/markets"
     create: true
     slug: "{{slug}}"
@@ -129,23 +314,134 @@ collections:
       - label: "Buyer focus"
         name: "focus"
         widget: "list"
-        field: { label: "Point", name: "point", widget: "string" }
         required: false
+        default: []
         hint: "What buyers in this market typically evaluate. Short phrases — never volumes, prices, or customer names."
       - label: "Documents in scope"
         name: "documents"
         widget: "list"
-        field: { label: "Document", name: "document", widget: "string" }
         required: false
+        default: []
         hint: "Document TYPES normally requested for this destination. Never certificate numbers or issuing bodies."
       - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
       - { label: "Order", name: "order", widget: "number", default: 1 }
       - { label: "Body", name: "body", widget: "markdown", required: false }
-
-  - name: "supply_chain"
-    label: "Supply Chain"
+  - name: "markets_fa"
+    label: "Markets — فارسی (Persian)"
+    label_singular: "Market"
+    description: >-
+      Commercial focus markets used by the Markets listing and localized detail pages. Saved to content/fa/markets/ and published at /fa/.
+    folder: "content/fa/markets"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Country", name: "title", widget: "string", required: true, hint: "Short label used in cards (e.g. Vietnam)." }
+      - { label: "Detail-page H1", name: "heading", widget: "string", required: false, hint: "Human search-intent heading for the market page; falls back to the country label." }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "string" }
+      - { label: "SEO title", name: "seoTitle", widget: "string", required: false }
+      - { label: "SEO description", name: "seoDescription", widget: "text", required: false }
+      - { label: "Image", name: "image", widget: "image", required: false, hint: "Card image used in the homepage markets grid." }
+      - { label: "Image alt text", name: "imageAlt", widget: "string", required: false }
+      - { label: "Panel image (Markets page)", name: "panelImage", widget: "image", required: false, hint: "Wide landscape image for the Markets page panel. Falls back to the card image when empty." }
+      - { label: "Panel image alt text", name: "panelImageAlt", widget: "string", required: false }
+      - { label: "Primary Market", name: "primary", widget: "boolean", default: false }
+      - { label: "Region", name: "region", widget: "string", required: false, hint: "Geographic region label, e.g. Southeast Asia." }
+      - label: "Buyer focus"
+        name: "focus"
+        widget: "list"
+        required: false
+        default: []
+        hint: "What buyers in this market typically evaluate. Short phrases — never volumes, prices, or customer names."
+      - label: "Documents in scope"
+        name: "documents"
+        widget: "list"
+        required: false
+        default: []
+        hint: "Document TYPES normally requested for this destination. Never certificate numbers or issuing bodies."
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+      - { label: "Body", name: "body", widget: "markdown", required: false }
+  - name: "markets_ru"
+    label: "Markets — Русский (Russian)"
+    label_singular: "Market"
+    description: >-
+      Commercial focus markets used by the Markets listing and localized detail pages. Saved to content/ru/markets/ and published at /ru/.
+    folder: "content/ru/markets"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Country", name: "title", widget: "string", required: true, hint: "Short label used in cards (e.g. Vietnam)." }
+      - { label: "Detail-page H1", name: "heading", widget: "string", required: false, hint: "Human search-intent heading for the market page; falls back to the country label." }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "string" }
+      - { label: "SEO title", name: "seoTitle", widget: "string", required: false }
+      - { label: "SEO description", name: "seoDescription", widget: "text", required: false }
+      - { label: "Image", name: "image", widget: "image", required: false, hint: "Card image used in the homepage markets grid." }
+      - { label: "Image alt text", name: "imageAlt", widget: "string", required: false }
+      - { label: "Panel image (Markets page)", name: "panelImage", widget: "image", required: false, hint: "Wide landscape image for the Markets page panel. Falls back to the card image when empty." }
+      - { label: "Panel image alt text", name: "panelImageAlt", widget: "string", required: false }
+      - { label: "Primary Market", name: "primary", widget: "boolean", default: false }
+      - { label: "Region", name: "region", widget: "string", required: false, hint: "Geographic region label, e.g. Southeast Asia." }
+      - label: "Buyer focus"
+        name: "focus"
+        widget: "list"
+        required: false
+        default: []
+        hint: "What buyers in this market typically evaluate. Short phrases — never volumes, prices, or customer names."
+      - label: "Documents in scope"
+        name: "documents"
+        widget: "list"
+        required: false
+        default: []
+        hint: "Document TYPES normally requested for this destination. Never certificate numbers or issuing bodies."
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+      - { label: "Body", name: "body", widget: "markdown", required: false }
+  - name: "markets_vi"
+    label: "Markets — Tiếng Việt (Vietnamese)"
+    label_singular: "Market"
+    description: >-
+      Commercial focus markets used by the Markets listing and localized detail pages. Saved to content/vi/markets/ and published at /vi/.
+    folder: "content/vi/markets"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Country", name: "title", widget: "string", required: true, hint: "Short label used in cards (e.g. Vietnam)." }
+      - { label: "Detail-page H1", name: "heading", widget: "string", required: false, hint: "Human search-intent heading for the market page; falls back to the country label." }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "string" }
+      - { label: "SEO title", name: "seoTitle", widget: "string", required: false }
+      - { label: "SEO description", name: "seoDescription", widget: "text", required: false }
+      - { label: "Image", name: "image", widget: "image", required: false, hint: "Card image used in the homepage markets grid." }
+      - { label: "Image alt text", name: "imageAlt", widget: "string", required: false }
+      - { label: "Panel image (Markets page)", name: "panelImage", widget: "image", required: false, hint: "Wide landscape image for the Markets page panel. Falls back to the card image when empty." }
+      - { label: "Panel image alt text", name: "panelImageAlt", widget: "string", required: false }
+      - { label: "Primary Market", name: "primary", widget: "boolean", default: false }
+      - { label: "Region", name: "region", widget: "string", required: false, hint: "Geographic region label, e.g. Southeast Asia." }
+      - label: "Buyer focus"
+        name: "focus"
+        widget: "list"
+        required: false
+        default: []
+        hint: "What buyers in this market typically evaluate. Short phrases — never volumes, prices, or customer names."
+      - label: "Documents in scope"
+        name: "documents"
+        widget: "list"
+        required: false
+        default: []
+        hint: "Document TYPES normally requested for this destination. Never certificate numbers or issuing bodies."
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+      - { label: "Body", name: "body", widget: "markdown", required: false }
+  - name: "supply_chain_en"
+    label: "Supply Chain — English"
     label_singular: "Supply Chain Step"
-    description: "Steps of the export supply chain, in order."
+    description: >-
+      Steps of the export supply chain, in order. Saved to content/en/supply-chain/ and published at /en/.
     folder: "content/en/supply-chain"
     create: true
     slug: "{{slug}}"
@@ -153,15 +449,63 @@ collections:
     fields:
       - { label: "Title", name: "title", widget: "string", required: true }
       - { label: "Slug", name: "slug", widget: "string", required: true }
-      - { label: "Description", name: "description", widget: "string" }
+      - { label: "Description", name: "description", widget: "text" }
       - { label: "Icon", name: "icon", widget: "select", options: [package, shield-check, snowflake, ship, file-text, tag, search, handshake, factory, truck, thermometer, clipboard-check, globe, check-circle] }
       - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
       - { label: "Order", name: "order", widget: "number", default: 1 }
-
-  - name: "quality_control"
-    label: "Quality Control"
+  - name: "supply_chain_fa"
+    label: "Supply Chain — فارسی (Persian)"
+    label_singular: "Supply Chain Step"
+    description: >-
+      Steps of the export supply chain, in order. Saved to content/fa/supply-chain/ and published at /fa/.
+    folder: "content/fa/supply-chain"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Icon", name: "icon", widget: "select", options: [package, shield-check, snowflake, ship, file-text, tag, search, handshake, factory, truck, thermometer, clipboard-check, globe, check-circle] }
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+  - name: "supply_chain_ru"
+    label: "Supply Chain — Русский (Russian)"
+    label_singular: "Supply Chain Step"
+    description: >-
+      Steps of the export supply chain, in order. Saved to content/ru/supply-chain/ and published at /ru/.
+    folder: "content/ru/supply-chain"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Icon", name: "icon", widget: "select", options: [package, shield-check, snowflake, ship, file-text, tag, search, handshake, factory, truck, thermometer, clipboard-check, globe, check-circle] }
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+  - name: "supply_chain_vi"
+    label: "Supply Chain — Tiếng Việt (Vietnamese)"
+    label_singular: "Supply Chain Step"
+    description: >-
+      Steps of the export supply chain, in order. Saved to content/vi/supply-chain/ and published at /vi/.
+    folder: "content/vi/supply-chain"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Icon", name: "icon", widget: "select", options: [package, shield-check, snowflake, ship, file-text, tag, search, handshake, factory, truck, thermometer, clipboard-check, globe, check-circle] }
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+  - name: "quality_control_en"
+    label: "Quality Control — English"
     label_singular: "Quality Process"
-    description: "Quality-control processes, in order."
+    description: >-
+      Quality-control processes, in order. Saved to content/en/quality-control/ and published at /en/.
     folder: "content/en/quality-control"
     create: true
     slug: "{{slug}}"
@@ -169,15 +513,63 @@ collections:
     fields:
       - { label: "Title", name: "title", widget: "string", required: true }
       - { label: "Slug", name: "slug", widget: "string", required: true }
-      - { label: "Description", name: "description", widget: "string" }
+      - { label: "Description", name: "description", widget: "text" }
       - { label: "Icon", name: "icon", widget: "select", options: [package, shield-check, snowflake, ship, file-text, tag, search, handshake, factory, truck, thermometer, clipboard-check, globe, check-circle] }
       - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
       - { label: "Order", name: "order", widget: "number", default: 1 }
-
-  - name: "pages"
-    label: "Pages"
+  - name: "quality_control_fa"
+    label: "Quality Control — فارسی (Persian)"
+    label_singular: "Quality Process"
+    description: >-
+      Quality-control processes, in order. Saved to content/fa/quality-control/ and published at /fa/.
+    folder: "content/fa/quality-control"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Icon", name: "icon", widget: "select", options: [package, shield-check, snowflake, ship, file-text, tag, search, handshake, factory, truck, thermometer, clipboard-check, globe, check-circle] }
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+  - name: "quality_control_ru"
+    label: "Quality Control — Русский (Russian)"
+    label_singular: "Quality Process"
+    description: >-
+      Quality-control processes, in order. Saved to content/ru/quality-control/ and published at /ru/.
+    folder: "content/ru/quality-control"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Icon", name: "icon", widget: "select", options: [package, shield-check, snowflake, ship, file-text, tag, search, handshake, factory, truck, thermometer, clipboard-check, globe, check-circle] }
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+  - name: "quality_control_vi"
+    label: "Quality Control — Tiếng Việt (Vietnamese)"
+    label_singular: "Quality Process"
+    description: >-
+      Quality-control processes, in order. Saved to content/vi/quality-control/ and published at /vi/.
+    folder: "content/vi/quality-control"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Icon", name: "icon", widget: "select", options: [package, shield-check, snowflake, ship, file-text, tag, search, handshake, factory, truck, thermometer, clipboard-check, globe, check-circle] }
+      - { label: "Enabled", name: "enabled", widget: "boolean", default: true }
+      - { label: "Order", name: "order", widget: "number", default: 1 }
+  - name: "pages_en"
+    label: "Pages — English"
     label_singular: "Page"
-    description: "CMS-managed page content."
+    description: >-
+      CMS-managed page content. Saved to content/en/pages/ and published at /en/.
     folder: "content/en/pages"
     create: true
     slug: "{{slug}}"
@@ -190,13 +582,62 @@ collections:
       - { label: "SEO description", name: "seoDescription", widget: "text", required: false }
       - { label: "Last updated", name: "updated", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, required: false, hint: "Shown as the revision date on legal pages (privacy, terms). Leave empty on other pages." }
       - { label: "Body", name: "body", widget: "markdown", required: false }
-
+  - name: "pages_fa"
+    label: "Pages — فارسی (Persian)"
+    label_singular: "Page"
+    description: >-
+      CMS-managed page content. Saved to content/fa/pages/ and published at /fa/.
+    folder: "content/fa/pages"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "string" }
+      - { label: "SEO title", name: "seoTitle", widget: "string", required: false, hint: "Search title without the brand suffix; may differ from the visible H1." }
+      - { label: "SEO description", name: "seoDescription", widget: "text", required: false }
+      - { label: "Last updated", name: "updated", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, required: false, hint: "Shown as the revision date on legal pages (privacy, terms). Leave empty on other pages." }
+      - { label: "Body", name: "body", widget: "markdown", required: false }
+  - name: "pages_ru"
+    label: "Pages — Русский (Russian)"
+    label_singular: "Page"
+    description: >-
+      CMS-managed page content. Saved to content/ru/pages/ and published at /ru/.
+    folder: "content/ru/pages"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "string" }
+      - { label: "SEO title", name: "seoTitle", widget: "string", required: false, hint: "Search title without the brand suffix; may differ from the visible H1." }
+      - { label: "SEO description", name: "seoDescription", widget: "text", required: false }
+      - { label: "Last updated", name: "updated", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, required: false, hint: "Shown as the revision date on legal pages (privacy, terms). Leave empty on other pages." }
+      - { label: "Body", name: "body", widget: "markdown", required: false }
+  - name: "pages_vi"
+    label: "Pages — Tiếng Việt (Vietnamese)"
+    label_singular: "Page"
+    description: >-
+      CMS-managed page content. Saved to content/vi/pages/ and published at /vi/.
+    folder: "content/vi/pages"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: slug
+    fields:
+      - { label: "Title", name: "title", widget: "string", required: true }
+      - { label: "Slug", name: "slug", widget: "string", required: true }
+      - { label: "Description", name: "description", widget: "string" }
+      - { label: "SEO title", name: "seoTitle", widget: "string", required: false, hint: "Search title without the brand suffix; may differ from the visible H1." }
+      - { label: "SEO description", name: "seoDescription", widget: "text", required: false }
+      - { label: "Last updated", name: "updated", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, required: false, hint: "Shown as the revision date on legal pages (privacy, terms). Leave empty on other pages." }
+      - { label: "Body", name: "body", widget: "markdown", required: false }
   - name: "blog_en"
     label: "Blog — English"
     label_singular: "Article"
     description: >-
-      Blog articles for the English site (en). Saved to
-      content/en/blog/ and published at /en/blog/<slug>.
+      Blog articles for the English site (en). Saved to content/en/blog/ and published at /en/blog/<slug>.
     folder: "content/en/blog"
     create: true
     delete: true
@@ -214,31 +655,22 @@ collections:
     editor:
       preview: false
     fields:
+      - label: "SEO & Content Assistant"
+        name: "qualityAssistant"
+        widget: "blog-quality"
+        required: false
+        hint: "Live Persian SEO & content panel at the top of every blog article editor. The score is an editorial heuristic, not a Google ranking score. Required items match the site build contract. Recommendations never block saving. Not shown on the Collections dashboard — open New Article or an existing article."
       - label: "Title"
         name: "title"
         widget: "string"
         required: true
-        hint: "Article headline. Rendered as the page H1."
-
+        hint: "Article headline. Rendered as the only page H1. Do not start the body with #."
       - label: "Slug"
         name: "slug"
         widget: "string"
         required: true
         pattern: ["^[a-z0-9]+(?:-[a-z0-9]+)*$", "Lowercase letters, numbers and hyphens only (e.g. sourcing-frozen-chicken-feet)."]
-        hint: "URL segment: /en/blog/<slug>. Keep it stable — changing it changes the article URL."
-
-      - label: "Language"
-        name: "language"
-        widget: "select"
-        options:
-          - { label: "English", value: "en" }
-          - { label: "فارسی (Persian)", value: "fa" }
-          - { label: "Русский (Russian)", value: "ru" }
-          - { label: "Tiếng Việt (Vietnamese)", value: "vi" }
-        default: "en"
-        required: true
-        hint: "Must stay 'en' for this collection — the folder determines the site language."
-
+        hint: "Shared English URL segment: /en/blog/<slug>. Keep it identical across locales. Changing it changes the article URL."
       - label: "Publication date"
         name: "date"
         widget: "datetime"
@@ -246,35 +678,44 @@ collections:
         time_format: false
         picker_utc: true
         required: true
-        hint: "Shown on the article and used for ordering and structured data."
-
+        hint: "Shown on the article. Used as datePublished and as sitemap lastmod when there is no revision date."
+      - label: "Revision date"
+        name: "updated"
+        widget: "datetime"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        picker_utc: true
+        required: false
+        hint: "Optional. Must be on or after the publication date. Used as dateModified, Open Graph modifiedTime, and sitemap lastmod."
       - label: "Author"
         name: "author"
         widget: "string"
         required: false
         default: "Feiz Food Group Export Team"
-
+        hint: "Team or organization byline only. Do not invent a named person."
       - label: "Excerpt / summary"
         name: "excerpt"
         widget: "text"
         required: true
-        hint: "1–2 sentences. Used on the blog listing, and as the meta description when no SEO description is set."
-
+        hint: "1–2 sentences for the listing card. Also the meta description when SEO description is empty."
       - label: "Featured image"
         name: "image"
         widget: "image"
-        required: false
+        required: true
         media_folder: "/public/media/blog"
         public_folder: "/media/blog"
         choose_url: false
-        hint: "Wide landscape image (≥1600px). Also used as the social share image."
-
-      - label: "Image alt text"
+        hint: "Required. Wide landscape (≥1600px). Used on the article, listing, and as the default social image."
+      - label: "Featured image alt text"
         name: "imageAlt"
         widget: "string"
+        required: true
+        hint: "Required. Describe what the image shows in the article language. Do not stuff keywords that are not visible."
+      - label: "Featured image caption"
+        name: "imageCaption"
+        widget: "string"
         required: false
-        hint: "Describe what the image shows in the article language; do not repeat the article title unless it is an exact description."
-
+        hint: "Optional visible caption under the featured image. Leave empty if the image needs no caption."
       - label: "Category"
         name: "category"
         widget: "select"
@@ -286,52 +727,97 @@ collections:
           - "Logistics"
           - "Markets"
           - "Documentation"
-
-      - label: "Tags"
+      - label: "SEO keywords / tags"
         name: "tags"
         widget: "list"
         required: false
         default: []
-        field: { label: "Tag", name: "tag", widget: "string" }
-        hint: "Optional keywords. Press Enter after each tag."
-
+        hint: "Optional keywords the article actually covers. Press Enter after each tag. Used as schema keywords."
+      - label: "Focus keyphrase"
+        name: "focusKeyphrase"
+        widget: "string"
+        required: false
+        pattern: ["^$|^.{2,80}$", "Keep the focus keyphrase between 2 and 80 characters, or leave it empty."]
+        hint: "Optional editorial target phrase (e.g. frozen chicken feet specification). Not shown on the page. Folded into structured-data keywords when set."
       - label: "SEO title"
         name: "seoTitle"
         widget: "string"
         required: false
-        hint: "Overrides the browser/search title. Leave empty to use the article title."
-
-      - label: "SEO description"
+        pattern: ["^$|^.{10,60}$", "SEO title should be 10–60 characters, or left empty to use the article title."]
+        hint: "Search-result title without the brand suffix. Leave empty to use the article title. Aim for ~50–60 characters."
+      - label: "Meta description"
         name: "seoDescription"
         widget: "text"
         required: false
-        hint: "Overrides the meta description (aim for ~155 characters). Leave empty to use the excerpt."
-
+        pattern: ["^$|^.{70,160}$", "Meta description should be 70–160 characters, or left empty to use the excerpt."]
+        hint: "Search-result snippet. Leave empty to use the excerpt. Aim for ~150–160 characters."
+      - label: "Canonical URL"
+        name: "canonicalUrl"
+        widget: "string"
+        required: false
+        pattern: ["^$|^https://.+$", "Must be an absolute https URL, or left empty to use this article URL."]
+        hint: "Leave empty unless this article is a syndicated copy or an explicit duplicate. Empty = this locale URL is canonical. Hreflang is still generated for real translations."
+      - label: "OG title"
+        name: "ogTitle"
+        widget: "string"
+        required: false
+        hint: "Optional social title. Leave empty to reuse the SEO title (or the article title)."
+      - label: "OG description"
+        name: "ogDescription"
+        widget: "text"
+        required: false
+        hint: "Optional social description. Leave empty to reuse the meta description (or the excerpt)."
+      - label: "OG / Twitter image"
+        name: "ogImage"
+        widget: "image"
+        required: false
+        media_folder: "/public/media/blog"
+        public_folder: "/media/blog"
+        choose_url: false
+        hint: "Optional. Leave empty to reuse the featured image. Use a 1200×630 crop when the featured image is not social-shaped."
+      - label: "OG / Twitter image alt"
+        name: "ogImageAlt"
+        widget: "string"
+        required: false
+        hint: "Optional. Leave empty to reuse the featured-image alt text."
+      - label: "Related internal pages"
+        name: "related"
+        widget: "list"
+        required: false
+        default: []
+        hint: "Existing root-relative paths only — no locale prefix, no invented URLs. Examples: /products/frozen-chicken-feet, /quality-control, /markets/vietnam, /contact, /blog/iqf-versus-block-frozen-poultry. Unknown paths fail the build."
       - label: "Published"
         name: "enabled"
         widget: "boolean"
         default: true
-        hint: "Off hides the article from the site without deleting it."
-
+        hint: "Off hides the article from the site, sitemap, and listing without deleting it."
       - label: "Order"
         name: "order"
         widget: "number"
         default: 1
         value_type: "int"
         hint: "Lower numbers appear first in the listing."
-
-      - label: "Body"
+      - label: "Article body"
         name: "body"
         widget: "markdown"
         required: true
-        hint: "Article content. Use ## for section headings — the H1 comes from the title."
-
+        buttons:
+          - bold
+          - italic
+          - link
+          - heading-two
+          - heading-three
+          - quote
+          - bulleted-list
+          - numbered-list
+        editor_components:
+          - image
+        hint: "Write in the article language. The title is the H1 — start sections with Heading 2, then Heading 3. Link to existing pages with root-relative paths (/products/frozen-chicken-feet, /quality-control, /contact). Insert images via the + menu; they upload to /media/blog. Do not invent URLs, certifications, prices, or customer names."
   - name: "blog_fa"
     label: "Blog — فارسی (Persian)"
     label_singular: "Article"
     description: >-
-      Blog articles for the Persian site (fa). Saved to
-      content/fa/blog/ and published at /fa/blog/<slug>.
+      Blog articles for the فارسی (Persian) site (fa). Saved to content/fa/blog/ and published at /fa/blog/<slug>.
     folder: "content/fa/blog"
     create: true
     delete: true
@@ -349,31 +835,22 @@ collections:
     editor:
       preview: false
     fields:
+      - label: "SEO & Content Assistant"
+        name: "qualityAssistant"
+        widget: "blog-quality"
+        required: false
+        hint: "Live Persian SEO & content panel at the top of every blog article editor. The score is an editorial heuristic, not a Google ranking score. Required items match the site build contract. Recommendations never block saving. Not shown on the Collections dashboard — open New Article or an existing article."
       - label: "Title"
         name: "title"
         widget: "string"
         required: true
-        hint: "Article headline. Rendered as the page H1."
-
+        hint: "Article headline. Rendered as the only page H1. Do not start the body with #."
       - label: "Slug"
         name: "slug"
         widget: "string"
         required: true
         pattern: ["^[a-z0-9]+(?:-[a-z0-9]+)*$", "Lowercase letters, numbers and hyphens only (e.g. sourcing-frozen-chicken-feet)."]
-        hint: "URL segment: /fa/blog/<slug>. Keep it stable — changing it changes the article URL."
-
-      - label: "Language"
-        name: "language"
-        widget: "select"
-        options:
-          - { label: "English", value: "en" }
-          - { label: "فارسی (Persian)", value: "fa" }
-          - { label: "Русский (Russian)", value: "ru" }
-          - { label: "Tiếng Việt (Vietnamese)", value: "vi" }
-        default: "fa"
-        required: true
-        hint: "Must stay 'fa' for this collection — the folder determines the site language."
-
+        hint: "Shared English URL segment: /fa/blog/<slug>. Keep it identical across locales. Changing it changes the article URL."
       - label: "Publication date"
         name: "date"
         widget: "datetime"
@@ -381,35 +858,44 @@ collections:
         time_format: false
         picker_utc: true
         required: true
-        hint: "Shown on the article and used for ordering and structured data."
-
+        hint: "Shown on the article. Used as datePublished and as sitemap lastmod when there is no revision date."
+      - label: "Revision date"
+        name: "updated"
+        widget: "datetime"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        picker_utc: true
+        required: false
+        hint: "Optional. Must be on or after the publication date. Used as dateModified, Open Graph modifiedTime, and sitemap lastmod."
       - label: "Author"
         name: "author"
         widget: "string"
         required: false
         default: "تیم صادرات Feiz Food Group"
-
+        hint: "Team or organization byline only. Do not invent a named person."
       - label: "Excerpt / summary"
         name: "excerpt"
         widget: "text"
         required: true
-        hint: "1–2 sentences. Used on the blog listing, and as the meta description when no SEO description is set."
-
+        hint: "1–2 sentences for the listing card. Also the meta description when SEO description is empty."
       - label: "Featured image"
         name: "image"
         widget: "image"
-        required: false
+        required: true
         media_folder: "/public/media/blog"
         public_folder: "/media/blog"
         choose_url: false
-        hint: "Wide landscape image (≥1600px). Also used as the social share image."
-
-      - label: "Image alt text"
+        hint: "Required. Wide landscape (≥1600px). Used on the article, listing, and as the default social image."
+      - label: "Featured image alt text"
         name: "imageAlt"
         widget: "string"
+        required: true
+        hint: "Required. Describe what the image shows in the article language. Do not stuff keywords that are not visible."
+      - label: "Featured image caption"
+        name: "imageCaption"
+        widget: "string"
         required: false
-        hint: "Describe what the image shows in the article language; do not repeat the article title unless it is an exact description."
-
+        hint: "Optional visible caption under the featured image. Leave empty if the image needs no caption."
       - label: "Category"
         name: "category"
         widget: "select"
@@ -421,52 +907,97 @@ collections:
           - "لجستیک"
           - "بازارها"
           - "مدارک"
-
-      - label: "Tags"
+      - label: "SEO keywords / tags"
         name: "tags"
         widget: "list"
         required: false
         default: []
-        field: { label: "Tag", name: "tag", widget: "string" }
-        hint: "Optional keywords. Press Enter after each tag."
-
+        hint: "Optional keywords the article actually covers. Press Enter after each tag. Used as schema keywords."
+      - label: "Focus keyphrase"
+        name: "focusKeyphrase"
+        widget: "string"
+        required: false
+        pattern: ["^$|^.{2,80}$", "Keep the focus keyphrase between 2 and 80 characters, or leave it empty."]
+        hint: "Optional editorial target phrase (e.g. frozen chicken feet specification). Not shown on the page. Folded into structured-data keywords when set."
       - label: "SEO title"
         name: "seoTitle"
         widget: "string"
         required: false
-        hint: "Overrides the browser/search title. Leave empty to use the article title."
-
-      - label: "SEO description"
+        pattern: ["^$|^.{10,60}$", "SEO title should be 10–60 characters, or left empty to use the article title."]
+        hint: "Search-result title without the brand suffix. Leave empty to use the article title. Aim for ~50–60 characters."
+      - label: "Meta description"
         name: "seoDescription"
         widget: "text"
         required: false
-        hint: "Overrides the meta description (aim for ~155 characters). Leave empty to use the excerpt."
-
+        pattern: ["^$|^.{70,160}$", "Meta description should be 70–160 characters, or left empty to use the excerpt."]
+        hint: "Search-result snippet. Leave empty to use the excerpt. Aim for ~150–160 characters."
+      - label: "Canonical URL"
+        name: "canonicalUrl"
+        widget: "string"
+        required: false
+        pattern: ["^$|^https://.+$", "Must be an absolute https URL, or left empty to use this article URL."]
+        hint: "Leave empty unless this article is a syndicated copy or an explicit duplicate. Empty = this locale URL is canonical. Hreflang is still generated for real translations."
+      - label: "OG title"
+        name: "ogTitle"
+        widget: "string"
+        required: false
+        hint: "Optional social title. Leave empty to reuse the SEO title (or the article title)."
+      - label: "OG description"
+        name: "ogDescription"
+        widget: "text"
+        required: false
+        hint: "Optional social description. Leave empty to reuse the meta description (or the excerpt)."
+      - label: "OG / Twitter image"
+        name: "ogImage"
+        widget: "image"
+        required: false
+        media_folder: "/public/media/blog"
+        public_folder: "/media/blog"
+        choose_url: false
+        hint: "Optional. Leave empty to reuse the featured image. Use a 1200×630 crop when the featured image is not social-shaped."
+      - label: "OG / Twitter image alt"
+        name: "ogImageAlt"
+        widget: "string"
+        required: false
+        hint: "Optional. Leave empty to reuse the featured-image alt text."
+      - label: "Related internal pages"
+        name: "related"
+        widget: "list"
+        required: false
+        default: []
+        hint: "Existing root-relative paths only — no locale prefix, no invented URLs. Examples: /products/frozen-chicken-feet, /quality-control, /markets/vietnam, /contact, /blog/iqf-versus-block-frozen-poultry. Unknown paths fail the build."
       - label: "Published"
         name: "enabled"
         widget: "boolean"
         default: true
-        hint: "Off hides the article from the site without deleting it."
-
+        hint: "Off hides the article from the site, sitemap, and listing without deleting it."
       - label: "Order"
         name: "order"
         widget: "number"
         default: 1
         value_type: "int"
         hint: "Lower numbers appear first in the listing."
-
-      - label: "Body"
+      - label: "Article body"
         name: "body"
         widget: "markdown"
         required: true
-        hint: "Article content. Use ## for section headings — the H1 comes from the title."
-
+        buttons:
+          - bold
+          - italic
+          - link
+          - heading-two
+          - heading-three
+          - quote
+          - bulleted-list
+          - numbered-list
+        editor_components:
+          - image
+        hint: "Write in the article language. The title is the H1 — start sections with Heading 2, then Heading 3. Link to existing pages with root-relative paths (/products/frozen-chicken-feet, /quality-control, /contact). Insert images via the + menu; they upload to /media/blog. Do not invent URLs, certifications, prices, or customer names."
   - name: "blog_ru"
     label: "Blog — Русский (Russian)"
     label_singular: "Article"
     description: >-
-      Blog articles for the Russian site (ru). Saved to
-      content/ru/blog/ and published at /ru/blog/<slug>.
+      Blog articles for the Русский (Russian) site (ru). Saved to content/ru/blog/ and published at /ru/blog/<slug>.
     folder: "content/ru/blog"
     create: true
     delete: true
@@ -484,31 +1015,22 @@ collections:
     editor:
       preview: false
     fields:
+      - label: "SEO & Content Assistant"
+        name: "qualityAssistant"
+        widget: "blog-quality"
+        required: false
+        hint: "Live Persian SEO & content panel at the top of every blog article editor. The score is an editorial heuristic, not a Google ranking score. Required items match the site build contract. Recommendations never block saving. Not shown on the Collections dashboard — open New Article or an existing article."
       - label: "Title"
         name: "title"
         widget: "string"
         required: true
-        hint: "Article headline. Rendered as the page H1."
-
+        hint: "Article headline. Rendered as the only page H1. Do not start the body with #."
       - label: "Slug"
         name: "slug"
         widget: "string"
         required: true
         pattern: ["^[a-z0-9]+(?:-[a-z0-9]+)*$", "Lowercase letters, numbers and hyphens only (e.g. sourcing-frozen-chicken-feet)."]
-        hint: "URL segment: /ru/blog/<slug>. Keep it stable — changing it changes the article URL."
-
-      - label: "Language"
-        name: "language"
-        widget: "select"
-        options:
-          - { label: "English", value: "en" }
-          - { label: "فارسی (Persian)", value: "fa" }
-          - { label: "Русский (Russian)", value: "ru" }
-          - { label: "Tiếng Việt (Vietnamese)", value: "vi" }
-        default: "ru"
-        required: true
-        hint: "Must stay 'ru' for this collection — the folder determines the site language."
-
+        hint: "Shared English URL segment: /ru/blog/<slug>. Keep it identical across locales. Changing it changes the article URL."
       - label: "Publication date"
         name: "date"
         widget: "datetime"
@@ -516,35 +1038,44 @@ collections:
         time_format: false
         picker_utc: true
         required: true
-        hint: "Shown on the article and used for ordering and structured data."
-
+        hint: "Shown on the article. Used as datePublished and as sitemap lastmod when there is no revision date."
+      - label: "Revision date"
+        name: "updated"
+        widget: "datetime"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        picker_utc: true
+        required: false
+        hint: "Optional. Must be on or after the publication date. Used as dateModified, Open Graph modifiedTime, and sitemap lastmod."
       - label: "Author"
         name: "author"
         widget: "string"
         required: false
         default: "Экспортная команда Feiz Food Group"
-
+        hint: "Team or organization byline only. Do not invent a named person."
       - label: "Excerpt / summary"
         name: "excerpt"
         widget: "text"
         required: true
-        hint: "1–2 sentences. Used on the blog listing, and as the meta description when no SEO description is set."
-
+        hint: "1–2 sentences for the listing card. Also the meta description when SEO description is empty."
       - label: "Featured image"
         name: "image"
         widget: "image"
-        required: false
+        required: true
         media_folder: "/public/media/blog"
         public_folder: "/media/blog"
         choose_url: false
-        hint: "Wide landscape image (≥1600px). Also used as the social share image."
-
-      - label: "Image alt text"
+        hint: "Required. Wide landscape (≥1600px). Used on the article, listing, and as the default social image."
+      - label: "Featured image alt text"
         name: "imageAlt"
         widget: "string"
+        required: true
+        hint: "Required. Describe what the image shows in the article language. Do not stuff keywords that are not visible."
+      - label: "Featured image caption"
+        name: "imageCaption"
+        widget: "string"
         required: false
-        hint: "Describe what the image shows in the article language; do not repeat the article title unless it is an exact description."
-
+        hint: "Optional visible caption under the featured image. Leave empty if the image needs no caption."
       - label: "Category"
         name: "category"
         widget: "select"
@@ -556,52 +1087,97 @@ collections:
           - "Логистика"
           - "Рынки"
           - "Документы"
-
-      - label: "Tags"
+      - label: "SEO keywords / tags"
         name: "tags"
         widget: "list"
         required: false
         default: []
-        field: { label: "Tag", name: "tag", widget: "string" }
-        hint: "Optional keywords. Press Enter after each tag."
-
+        hint: "Optional keywords the article actually covers. Press Enter after each tag. Used as schema keywords."
+      - label: "Focus keyphrase"
+        name: "focusKeyphrase"
+        widget: "string"
+        required: false
+        pattern: ["^$|^.{2,80}$", "Keep the focus keyphrase between 2 and 80 characters, or leave it empty."]
+        hint: "Optional editorial target phrase (e.g. frozen chicken feet specification). Not shown on the page. Folded into structured-data keywords when set."
       - label: "SEO title"
         name: "seoTitle"
         widget: "string"
         required: false
-        hint: "Overrides the browser/search title. Leave empty to use the article title."
-
-      - label: "SEO description"
+        pattern: ["^$|^.{10,60}$", "SEO title should be 10–60 characters, or left empty to use the article title."]
+        hint: "Search-result title without the brand suffix. Leave empty to use the article title. Aim for ~50–60 characters."
+      - label: "Meta description"
         name: "seoDescription"
         widget: "text"
         required: false
-        hint: "Overrides the meta description (aim for ~155 characters). Leave empty to use the excerpt."
-
+        pattern: ["^$|^.{70,160}$", "Meta description should be 70–160 characters, or left empty to use the excerpt."]
+        hint: "Search-result snippet. Leave empty to use the excerpt. Aim for ~150–160 characters."
+      - label: "Canonical URL"
+        name: "canonicalUrl"
+        widget: "string"
+        required: false
+        pattern: ["^$|^https://.+$", "Must be an absolute https URL, or left empty to use this article URL."]
+        hint: "Leave empty unless this article is a syndicated copy or an explicit duplicate. Empty = this locale URL is canonical. Hreflang is still generated for real translations."
+      - label: "OG title"
+        name: "ogTitle"
+        widget: "string"
+        required: false
+        hint: "Optional social title. Leave empty to reuse the SEO title (or the article title)."
+      - label: "OG description"
+        name: "ogDescription"
+        widget: "text"
+        required: false
+        hint: "Optional social description. Leave empty to reuse the meta description (or the excerpt)."
+      - label: "OG / Twitter image"
+        name: "ogImage"
+        widget: "image"
+        required: false
+        media_folder: "/public/media/blog"
+        public_folder: "/media/blog"
+        choose_url: false
+        hint: "Optional. Leave empty to reuse the featured image. Use a 1200×630 crop when the featured image is not social-shaped."
+      - label: "OG / Twitter image alt"
+        name: "ogImageAlt"
+        widget: "string"
+        required: false
+        hint: "Optional. Leave empty to reuse the featured-image alt text."
+      - label: "Related internal pages"
+        name: "related"
+        widget: "list"
+        required: false
+        default: []
+        hint: "Existing root-relative paths only — no locale prefix, no invented URLs. Examples: /products/frozen-chicken-feet, /quality-control, /markets/vietnam, /contact, /blog/iqf-versus-block-frozen-poultry. Unknown paths fail the build."
       - label: "Published"
         name: "enabled"
         widget: "boolean"
         default: true
-        hint: "Off hides the article from the site without deleting it."
-
+        hint: "Off hides the article from the site, sitemap, and listing without deleting it."
       - label: "Order"
         name: "order"
         widget: "number"
         default: 1
         value_type: "int"
         hint: "Lower numbers appear first in the listing."
-
-      - label: "Body"
+      - label: "Article body"
         name: "body"
         widget: "markdown"
         required: true
-        hint: "Article content. Use ## for section headings — the H1 comes from the title."
-
+        buttons:
+          - bold
+          - italic
+          - link
+          - heading-two
+          - heading-three
+          - quote
+          - bulleted-list
+          - numbered-list
+        editor_components:
+          - image
+        hint: "Write in the article language. The title is the H1 — start sections with Heading 2, then Heading 3. Link to existing pages with root-relative paths (/products/frozen-chicken-feet, /quality-control, /contact). Insert images via the + menu; they upload to /media/blog. Do not invent URLs, certifications, prices, or customer names."
   - name: "blog_vi"
     label: "Blog — Tiếng Việt (Vietnamese)"
     label_singular: "Article"
     description: >-
-      Blog articles for the Vietnamese site (vi). Saved to
-      content/vi/blog/ and published at /vi/blog/<slug>.
+      Blog articles for the Tiếng Việt (Vietnamese) site (vi). Saved to content/vi/blog/ and published at /vi/blog/<slug>.
     folder: "content/vi/blog"
     create: true
     delete: true
@@ -619,31 +1195,22 @@ collections:
     editor:
       preview: false
     fields:
+      - label: "SEO & Content Assistant"
+        name: "qualityAssistant"
+        widget: "blog-quality"
+        required: false
+        hint: "Live Persian SEO & content panel at the top of every blog article editor. The score is an editorial heuristic, not a Google ranking score. Required items match the site build contract. Recommendations never block saving. Not shown on the Collections dashboard — open New Article or an existing article."
       - label: "Title"
         name: "title"
         widget: "string"
         required: true
-        hint: "Article headline. Rendered as the page H1."
-
+        hint: "Article headline. Rendered as the only page H1. Do not start the body with #."
       - label: "Slug"
         name: "slug"
         widget: "string"
         required: true
         pattern: ["^[a-z0-9]+(?:-[a-z0-9]+)*$", "Lowercase letters, numbers and hyphens only (e.g. sourcing-frozen-chicken-feet)."]
-        hint: "URL segment: /vi/blog/<slug>. Keep it stable — changing it changes the article URL."
-
-      - label: "Language"
-        name: "language"
-        widget: "select"
-        options:
-          - { label: "English", value: "en" }
-          - { label: "فارسی (Persian)", value: "fa" }
-          - { label: "Русский (Russian)", value: "ru" }
-          - { label: "Tiếng Việt (Vietnamese)", value: "vi" }
-        default: "vi"
-        required: true
-        hint: "Must stay 'vi' for this collection — the folder determines the site language."
-
+        hint: "Shared English URL segment: /vi/blog/<slug>. Keep it identical across locales. Changing it changes the article URL."
       - label: "Publication date"
         name: "date"
         widget: "datetime"
@@ -651,35 +1218,44 @@ collections:
         time_format: false
         picker_utc: true
         required: true
-        hint: "Shown on the article and used for ordering and structured data."
-
+        hint: "Shown on the article. Used as datePublished and as sitemap lastmod when there is no revision date."
+      - label: "Revision date"
+        name: "updated"
+        widget: "datetime"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        picker_utc: true
+        required: false
+        hint: "Optional. Must be on or after the publication date. Used as dateModified, Open Graph modifiedTime, and sitemap lastmod."
       - label: "Author"
         name: "author"
         widget: "string"
         required: false
         default: "Đội ngũ xuất khẩu Feiz Food Group"
-
+        hint: "Team or organization byline only. Do not invent a named person."
       - label: "Excerpt / summary"
         name: "excerpt"
         widget: "text"
         required: true
-        hint: "1–2 sentences. Used on the blog listing, and as the meta description when no SEO description is set."
-
+        hint: "1–2 sentences for the listing card. Also the meta description when SEO description is empty."
       - label: "Featured image"
         name: "image"
         widget: "image"
-        required: false
+        required: true
         media_folder: "/public/media/blog"
         public_folder: "/media/blog"
         choose_url: false
-        hint: "Wide landscape image (≥1600px). Also used as the social share image."
-
-      - label: "Image alt text"
+        hint: "Required. Wide landscape (≥1600px). Used on the article, listing, and as the default social image."
+      - label: "Featured image alt text"
         name: "imageAlt"
         widget: "string"
+        required: true
+        hint: "Required. Describe what the image shows in the article language. Do not stuff keywords that are not visible."
+      - label: "Featured image caption"
+        name: "imageCaption"
+        widget: "string"
         required: false
-        hint: "Describe what the image shows in the article language; do not repeat the article title unless it is an exact description."
-
+        hint: "Optional visible caption under the featured image. Leave empty if the image needs no caption."
       - label: "Category"
         name: "category"
         widget: "select"
@@ -691,42 +1267,89 @@ collections:
           - "Logistics"
           - "Thị trường"
           - "Chứng từ"
-
-      - label: "Tags"
+      - label: "SEO keywords / tags"
         name: "tags"
         widget: "list"
         required: false
         default: []
-        field: { label: "Tag", name: "tag", widget: "string" }
-        hint: "Optional keywords. Press Enter after each tag."
-
+        hint: "Optional keywords the article actually covers. Press Enter after each tag. Used as schema keywords."
+      - label: "Focus keyphrase"
+        name: "focusKeyphrase"
+        widget: "string"
+        required: false
+        pattern: ["^$|^.{2,80}$", "Keep the focus keyphrase between 2 and 80 characters, or leave it empty."]
+        hint: "Optional editorial target phrase (e.g. frozen chicken feet specification). Not shown on the page. Folded into structured-data keywords when set."
       - label: "SEO title"
         name: "seoTitle"
         widget: "string"
         required: false
-        hint: "Overrides the browser/search title. Leave empty to use the article title."
-
-      - label: "SEO description"
+        pattern: ["^$|^.{10,60}$", "SEO title should be 10–60 characters, or left empty to use the article title."]
+        hint: "Search-result title without the brand suffix. Leave empty to use the article title. Aim for ~50–60 characters."
+      - label: "Meta description"
         name: "seoDescription"
         widget: "text"
         required: false
-        hint: "Overrides the meta description (aim for ~155 characters). Leave empty to use the excerpt."
-
+        pattern: ["^$|^.{70,160}$", "Meta description should be 70–160 characters, or left empty to use the excerpt."]
+        hint: "Search-result snippet. Leave empty to use the excerpt. Aim for ~150–160 characters."
+      - label: "Canonical URL"
+        name: "canonicalUrl"
+        widget: "string"
+        required: false
+        pattern: ["^$|^https://.+$", "Must be an absolute https URL, or left empty to use this article URL."]
+        hint: "Leave empty unless this article is a syndicated copy or an explicit duplicate. Empty = this locale URL is canonical. Hreflang is still generated for real translations."
+      - label: "OG title"
+        name: "ogTitle"
+        widget: "string"
+        required: false
+        hint: "Optional social title. Leave empty to reuse the SEO title (or the article title)."
+      - label: "OG description"
+        name: "ogDescription"
+        widget: "text"
+        required: false
+        hint: "Optional social description. Leave empty to reuse the meta description (or the excerpt)."
+      - label: "OG / Twitter image"
+        name: "ogImage"
+        widget: "image"
+        required: false
+        media_folder: "/public/media/blog"
+        public_folder: "/media/blog"
+        choose_url: false
+        hint: "Optional. Leave empty to reuse the featured image. Use a 1200×630 crop when the featured image is not social-shaped."
+      - label: "OG / Twitter image alt"
+        name: "ogImageAlt"
+        widget: "string"
+        required: false
+        hint: "Optional. Leave empty to reuse the featured-image alt text."
+      - label: "Related internal pages"
+        name: "related"
+        widget: "list"
+        required: false
+        default: []
+        hint: "Existing root-relative paths only — no locale prefix, no invented URLs. Examples: /products/frozen-chicken-feet, /quality-control, /markets/vietnam, /contact, /blog/iqf-versus-block-frozen-poultry. Unknown paths fail the build."
       - label: "Published"
         name: "enabled"
         widget: "boolean"
         default: true
-        hint: "Off hides the article from the site without deleting it."
-
+        hint: "Off hides the article from the site, sitemap, and listing without deleting it."
       - label: "Order"
         name: "order"
         widget: "number"
         default: 1
         value_type: "int"
         hint: "Lower numbers appear first in the listing."
-
-      - label: "Body"
+      - label: "Article body"
         name: "body"
         widget: "markdown"
         required: true
-        hint: "Article content. Use ## for section headings — the H1 comes from the title."
+        buttons:
+          - bold
+          - italic
+          - link
+          - heading-two
+          - heading-three
+          - quote
+          - bulleted-list
+          - numbered-list
+        editor_components:
+          - image
+        hint: "Write in the article language. The title is the H1 — start sections with Heading 2, then Heading 3. Link to existing pages with root-relative paths (/products/frozen-chicken-feet, /quality-control, /contact). Insert images via the + menu; they upload to /media/blog. Do not invent URLs, certifications, prices, or customer names."

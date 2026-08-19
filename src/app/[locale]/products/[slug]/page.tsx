@@ -12,7 +12,7 @@ import { isLocale, locales } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { contactPath, productsPath } from "@/lib/i18n/routes";
 import FinalCTA from "@/components/sections/FinalCTA";
-import { getProduct, getProducts } from "@/lib/content";
+import { getProduct, getProducts, localesWithProduct } from "@/lib/content";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { breadcrumbSchema, productSchema, webPageSchema } from "@/lib/seo/schema";
 
@@ -45,6 +45,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     path: `/products/${product.slug}`,
     ogImage: product.image || undefined,
     ogImageAlt: product.imageAlt,
+    availableLocales: localesWithProduct(slug),
   });
 }
 
@@ -113,7 +114,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                       <div>
                         <div className="mb-1 text-xs font-medium text-label">{spec.label}</div>
                         <div className="text-sm font-semibold text-navy">
-                          {spec.value}
+                          <bdi>{spec.value}</bdi>
                         </div>
                       </div>
                     </div>

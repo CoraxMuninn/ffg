@@ -11,9 +11,19 @@ import { isLocale, localeConfig, locales } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { localizedPath } from "@/lib/i18n/routes";
 import FinalCTA from "@/components/sections/FinalCTA";
-import { getBlogPost, getBlogPosts } from "@/lib/content";
+import {
+  getBlogPost,
+  getBlogPosts,
+  getMarkets,
+  getPageContent,
+  getProduct,
+  localesWithBlogPost,
+} from "@/lib/content";
+import { resolveBlogSeo } from "@/lib/seo/blog-meta";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { articleSchema, breadcrumbSchema, webPageSchema } from "@/lib/seo/schema";
+import type { Dictionary } from "@/lib/i18n/dictionaries/types";
+import type { Locale } from "@/lib/i18n/config";
 
 interface BlogPostPageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -39,20 +49,24 @@ export async function generateMetadata({
   if (!isLocale(locale)) return {};
   const post = getBlogPost(locale, slug);
   if (!post) return {};
-  // The CMS SEO fields are optional overrides; the article's own title and
-  // excerpt remain the default so a post is never left without metadata.
+  const seo = resolveBlogSeo(post);
   return buildPageMetadata({
     locale,
-    title: post.seoTitle ?? post.title,
-    description: post.seoDescription ?? post.excerpt,
+    title: seo.title,
+    description: seo.description,
     path: `/blog/${post.slug}`,
-    ogImage: post.image || undefined,
-    ogImageAlt: post.imageAlt,
+    ogImage: seo.ogImage || undefined,
+    ogImageAlt: seo.ogImageAlt,
+    ogTitle: seo.ogTitle,
+    ogDescription: seo.ogDescription,
+    canonical: seo.canonical,
     article: {
-      publishedTime: post.date,
-      authors: post.author ? [post.author] : undefined,
-      tags: post.tags,
+      publishedTime: seo.publishedTime,
+      modifiedTime: seo.modifiedTime,
+      authors: seo.authors,
+      tags: seo.tags,
     },
+    availableLocales: localesWithBlogPost(slug),
   });
 }
 
@@ -63,10 +77,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const dictionary = getDictionary(locale);
   const post = getBlogPost(locale, slug);
   if (!post) notFound();
+  const seo = resolveBlogSeo(post);
   const publishedDate = new Intl.DateTimeFormat(localeConfig[locale].language, {
     dateStyle: "long",
     timeZone: "UTC",
   }).format(new Date(`${post.date}T00:00:00Z`));
+  const updatedDate = post.updated
+    ? new Intl.DateTimeFormat(localeConfig[locale].language, {
+        dateStyle: "long",
+        timeZone: "UTC",
+      }).format(new Date(`${post.updated}T00:00:00Z`))
+    : null;
+  const related = relatedLinks(locale, dictionary, post.related);
 
   return (
     <>
@@ -75,10 +97,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           articleSchema(locale, post),
           webPageSchema(
             locale,
-            post.seoTitle ?? post.title,
-            post.seoDescription ?? post.excerpt,
+            seo.title,
+            seo.description,
             `/blog/${post.slug}`,
-            post.image,
+            seo.ogImage,
           ),
           breadcrumbSchema(locale, [
             { name: dictionary.nav.home, path: "" },
@@ -105,6 +127,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <span className="sr-only">{dictionary.blog.published}: </span>
               <time dateTime={post.date}>{publishedDate}</time>
             </span>
+            {updatedDate && (
+              <>
+                <span aria-hidden className="text-white/25">•</span>
+                <span>
+                  {dictionary.blog.updated}{" "}
+                  <time dateTime={post.updated}>{updatedDate}</time>
+                </span>
+              </>
+            )}
             {post.author && (
               <>
                 <span aria-hidden className="text-white/25">•</span>
@@ -122,7 +153,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           {post.image ? (
             <MediaSplit
               src={post.image}
-              alt={post.imageAlt ?? post.title}
+              alt={post.imageAlt}
+              caption={post.imageCaption}
               priority
               className="mb-14"
             >
@@ -141,10 +173,70 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           )}
           <article className="max-w-3xl">
             <Prose content={post.body} locale={locale} />
+            {related.length > 0 && (
+              <aside className="mt-12 border-t border-navy/10 pt-8">
+                <h2 className="mb-4 text-xl font-bold text-navy">
+                  {dictionary.blog.relatedHeading}
+                </h2>
+                <ul className="space-y-2">
+                  {related.map((item) => (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        className="font-medium text-cyan-link underline-offset-2 hover:underline hover:text-cyan-link-hover"
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </aside>
+            )}
           </article>
         </Container>
       </section>
       <FinalCTA locale={locale} dictionary={dictionary} />
     </>
   );
+}
+
+const NAV_BY_PATH: Record<string, keyof Dictionary["nav"]> = {
+  "/products": "products",
+  "/markets": "markets",
+  "/about": "about",
+  "/quality-control": "qualityControl",
+  "/supply-chain": "supplyChain",
+  "/certifications": "certifications",
+  "/contact": "contact",
+  "/blog": "blog",
+};
+
+/** Resolves editor-supplied internal paths to localized hrefs and real titles. */
+function relatedLinks(
+  locale: Locale,
+  dictionary: Dictionary,
+  paths: string[],
+): { href: string; label: string }[] {
+  return paths.map((path) => {
+    const href = localizedPath(locale, path);
+    if (path === "/") return { href, label: dictionary.nav.home };
+    const navKey = NAV_BY_PATH[path];
+    if (navKey) return { href, label: dictionary.nav[navKey] };
+    if (path === "/privacy") return { href, label: dictionary.legal.privacy };
+    if (path === "/terms") return { href, label: dictionary.legal.terms };
+
+    const [collection, slug] = path.split("/").filter(Boolean);
+    if (collection === "products" && slug) {
+      return { href, label: getProduct(locale, slug)?.title ?? slug };
+    }
+    if (collection === "markets" && slug) {
+      const market = getMarkets(locale).find((item) => item.slug === slug);
+      return { href, label: market?.title ?? slug };
+    }
+    if (collection === "blog" && slug) {
+      return { href, label: getBlogPost(locale, slug)?.title ?? slug };
+    }
+    const page = getPageContent(locale, path.replace(/^\//, ""));
+    return { href, label: page?.title ?? path };
+  });
 }

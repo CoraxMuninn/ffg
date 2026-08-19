@@ -13,7 +13,7 @@ import { Reveal } from "@/components/shared/Reveal";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { StepGrid } from "@/components/shared/cards/StepGrid";
 import { SupplyChainFlow } from "@/components/supply-chain/SupplyChainFlow";
-import { CertificationCard } from "@/components/shared/cards/CertificationCard";
+import { CertificationGrid } from "@/components/shared/CertificationGrid";
 import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import FinalCTA from "@/components/sections/FinalCTA";
@@ -247,15 +247,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
               intro={dictionary.about.documentsIntro}
               className="mb-10 sm:mb-14"
             />
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-              {certifications.map((certification) => (
-                <CertificationCard
-                  key={certification.slug}
-                  certification={certification}
-                  tone="light"
-                />
-              ))}
-            </div>
+            <CertificationGrid certifications={certifications} tone="light" />
             <div className="mt-10 text-center">
               <SectionLink
                 href={localizedPath(locale, "/certifications")}

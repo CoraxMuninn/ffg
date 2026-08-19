@@ -1,4 +1,5 @@
 import { PUBLIC_EMAIL, PUBLIC_PHONE } from "@/lib/content/contact";
+import { statusStrings } from "./status";
 import type { Dictionary } from "./types";
 
 export const vi: Dictionary = {
@@ -28,6 +29,7 @@ export const vi: Dictionary = {
   header: {
     toggleMenu: "Mở menu",
     skipToContent: "Chuyển đến nội dung",
+    chooseLanguage: "Chọn ngôn ngữ",
     scrollToTop: "Lên đầu trang",
   },
 
@@ -41,8 +43,6 @@ export const vi: Dictionary = {
     phone: "Điện thoại",
     officeHours: "Giờ làm việc",
     officeHoursValue: "Thứ Bảy–Thứ Năm, 09:00–18:00 (GMT+3:30)",
-    privacy: "Chính sách bảo mật",
-    terms: "Điều khoản dịch vụ",
     rights: "Bảo lưu mọi quyền.",
     social: "Mạng xã hội",
     instagram: "Instagram",
@@ -75,6 +75,7 @@ export const vi: Dictionary = {
       "Xem các bước kiểm sản phẩm, nhiệt độ, giám định và đóng hàng có thể thống nhất theo đơn.",
     supplyChainHeading: "Chuỗi cung ứng hàng gà đông lạnh",
     supplyChainIntro: "Từ thu mua và IQF đến kho -18°C, đóng container lạnh và giao tại điểm đến.",
+    supplyRailLabel: "Các khâu chuỗi cung ứng — cuộn ngang để xem thêm",
     marketsHeading: "Thị trường thương mại trọng tâm",
     marketsIntro: "Việt Nam là thị trường chính; UAE, Nga và Thái Lan là các thị trường mục tiêu thứ cấp.",
     featuredBadge: "Sản phẩm chủ lực",
@@ -182,7 +183,9 @@ export const vi: Dictionary = {
     backToBlog: "Quay lại Blog",
     readMore: "Đọc bài viết",
     published: "Đăng ngày",
+    updated: "Cập nhật",
     by: "Tác giả",
+    relatedHeading: "Bài liên quan",
   },
 
   imageAlt: {
@@ -239,10 +242,16 @@ export const vi: Dictionary = {
     errorEmail: "Vui lòng nhập email công việc hợp lệ.",
     errorQuantity: "Vui lòng nhập số lượng bạn cần.",
     errorMessage: "Vui lòng thêm mô tả ngắn về yêu cầu của bạn.",
+    errorSummary: "Vui lòng kiểm tra các trường được đánh dấu",
+    errorInvalid: "Giá trị này quá dài hoặc không hợp lệ.",
+    errorProduct: "Chọn một sản phẩm từ danh sách.",
     note: "Các trường bắt buộc phải được điền. Các trường còn lại là tùy chọn.",
+    privacyNote: "Xem cách chúng tôi xử lý yêu cầu của bạn trong",
+    privacyLinkText: "Chính sách bảo mật",
     serverError: "Chúng tôi không thể gửi yêu cầu của bạn. Vui lòng thử lại sau.",
     rateLimited: "Quá nhiều yêu cầu. Vui lòng đợi trước khi thử lại.",
     turnstileFailed: "Kiểm tra bảo mật thất bại. Vui lòng thử lại.",
+    turnstileRequired: "Vui lòng hoàn tất kiểm tra bảo mật.",
   },
 
   meta: {
@@ -251,24 +260,9 @@ export const vi: Dictionary = {
       "Feiz Food Group là doanh nghiệp xuất khẩu B2B từ Iran với chân gà, gan, mề và tim gà đông lạnh IQF.",
   },
 
-  notFound: {
-    eyebrow: "404",
-    title: "Không tìm thấy trang",
-    message:
-      "Trang bạn đang tìm không tồn tại hoặc có thể đã được di chuyển. Vui lòng quay về trang chủ hoặc xem các sản phẩm của chúng tôi.",
-    home: "Về trang chủ",
-    secondary: "Xem sản phẩm",
-  },
+  notFound: statusStrings.vi.notFound,
 
-  loading: {
-    label: "Đang tải",
-  },
+  loading: statusStrings.vi.loading,
 
-  error: {
-    title: "Đã có lỗi xảy ra",
-    message:
-      "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại hoặc quay về trang chủ.",
-    retry: "Thử lại",
-    home: "Về trang chủ",
-  },
+  error: statusStrings.vi.error,
 };

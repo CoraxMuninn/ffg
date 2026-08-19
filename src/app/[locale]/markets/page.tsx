@@ -94,10 +94,10 @@ export default async function MarketsPage({ params }: MarketsPageProps) {
           <Container>
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-16">
               <div className="lg:col-span-4">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-brand">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-link">
                   {dictionary.markets.overviewHeading}
                 </p>
-                <div className="mt-6 grid grid-cols-2 gap-6 border-t border-navy/10 pt-6 lg:mt-8">
+                <dl className="mt-6 grid grid-cols-2 gap-6 border-t border-navy/10 pt-6 lg:mt-8">
                   <div>
                     <dt className="text-2xl font-bold text-navy">{markets.length}</dt>
                     <dd className="mt-1 text-[11px] uppercase tracking-[0.12em] text-label">
@@ -112,7 +112,7 @@ export default async function MarketsPage({ params }: MarketsPageProps) {
                       {dictionary.homepage.statColdChainLabel}
                     </dd>
                   </div>
-                </div>
+                </dl>
               </div>
               <div className="lg:col-span-8">
                 <Prose content={page.body} locale={locale} />

@@ -1,8 +1,8 @@
 ---
 title: "مدارک حلال"
 slug: halal
-description: "دسته مدرک برای مقصد یا خریداری که مستندات حلال می‌خواهد؛ دامنه، مرجع صدور و اعتبار برای محموله تأیید می‌شود."
-image:
+description: "مستندات حلال، در صورت نیاز برای محموله تأیید می‌شود."
+image: /media/certifications/halal.png
 enabled: true
 order: 3
 ---

@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/shared/Container";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { MediaSplit } from "@/components/shared/MediaSplit";
-import { CertificationCard } from "@/components/shared/cards/CertificationCard";
+import { CertificationGrid } from "@/components/shared/CertificationGrid";
 import { JsonLd } from "@/components/shared/JsonLd";
 import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
@@ -80,14 +80,8 @@ export default async function CertificationsPage({ params }: CertificationsPageP
           </MediaSplit>
 
           {certifications.length > 0 && (
-            <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-20 lg:grid-cols-3 lg:gap-8">
-              {certifications.map((certification) => (
-                <CertificationCard
-                  key={certification.slug}
-                  certification={certification}
-                  tone="light"
-                />
-              ))}
+            <div className="mt-14 lg:mt-16">
+              <CertificationGrid certifications={certifications} tone="light" />
             </div>
           )}
         </Container>

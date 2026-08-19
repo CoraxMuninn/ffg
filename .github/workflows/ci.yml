@@ -1,0 +1,61 @@
+name: CI
+
+# Production quality gate. Runs install, production-dependency audit, lint,
+# typecheck, unit tests, build, and the client-bundle budget on every push and
+# pull request so security-sensitive and CMS-integrity code cannot change
+# without regression coverage.
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+# Cancel a superseded run on the same ref when a new push arrives.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint, typecheck, tests, build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Fresh install (npm ci)
+        run: npm ci
+
+      - name: Production dependency audit
+        # Shipped dependencies must be clean. Dev-only advisories (Decap CMS,
+        # tooling) are surfaced separately and do not fail the pipeline.
+        run: npm audit --omit=dev
+
+      - name: Full dependency audit (informational)
+        # Reports dev-only advisories without failing the pipeline.
+        continue-on-error: true
+        run: npm audit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Tests
+        run: npm run test
+
+      - name: Build
+        run: npm run build
+
+      - name: Client bundle budget
+        # Fails if shared client JS/CSS regresses past perf-budget.json.
+        run: npm run perf:budget

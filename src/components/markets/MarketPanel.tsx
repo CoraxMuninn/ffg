@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, FileText } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Prose } from "@/components/shared/Prose";
+import { MarketAttributes } from "@/components/markets/MarketAttributes";
 import { contactPath, marketPath } from "@/lib/i18n/routes";
 import { cn } from "@/lib/utils";
 import type { Locale } from "@/lib/i18n/config";
@@ -24,10 +25,11 @@ interface MarketPanelProps {
 /**
  * One destination market, rendered as an editorial panel.
  *
- * Every market uses the same structure. Vietnam retains the primary midnight
- * treatment, while the three secondary destinations use a light surface.
- * Content (region, buyer focus, document types, body copy) still comes from the
- * `markets` collection, so the CMS stays the single source of truth.
+ * Every market uses the same structure. The primary market keeps the midnight
+ * treatment, while secondary destinations use a light surface. Which is which
+ * is content-driven from the `primary` flag (Roadmap 5.5/6.3) — there are no
+ * hardcoded slugs, so adding a market gives it the correct default (light)
+ * treatment automatically.
  *
  * The only thing that varies between panels is the horizontal order of image
  * and content, derived from `index`:
@@ -41,8 +43,8 @@ interface MarketPanelProps {
  *
  * Note on RTL: `order` is physical, but a grid in `dir="rtl"` lays its tracks
  * right-to-left, so the image lands on the reading-start side in both
- * directions. The image scrim is direction-aware to match
- * (see `.market-panel-scrim` in globals.css).
+ * directions. The image hover sheen is applied inline via Tailwind gradient
+ * utilities (direction-agnostic).
  */
 export function MarketPanel({
   market,
@@ -55,7 +57,11 @@ export function MarketPanel({
   // Prefer the wide editorial image; fall back to the card image so a market
   // without `panelImage` set in the CMS still renders.
   const panelImage = market.panelImage || market.image;
-  const hasLightTreatment = ["uae", "russia", "thailand"].includes(market.slug);
+  // Content-driven presentation (Task 5.5/6.3): the primary market gets the
+  // midnight panel; every other market gets the light card. Equivalent to the
+  // previous slug list for current content, and correct by default for any
+  // market added later.
+  const tone = market.primary ? "dark" : "light";
 
   return (
     <article
@@ -67,7 +73,7 @@ export function MarketPanel({
         // drop the movement for users who ask for it.
         "group scroll-mt-24 overflow-hidden rounded-2xl transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] sm:rounded-3xl",
         "hover:-translate-y-1 transition-all duration-500 motion-reduce:hover:translate-y-0 motion-reduce:transition-none",
-        hasLightTreatment
+        tone === "light"
           ? "border border-navy/10 shadow-card hover:border-cyan-brand/40 hover:shadow-[0_28px_60px_-24px_rgba(10,22,40,0.28)] motion-reduce:hover:scale-100"
           : "border border-cyan-brand/25 bg-navy shadow-card-hover hover:border-cyan-brand/60 hover:shadow-[0_28px_60px_-24px_rgba(8,145,178,0.45)]",
       )}
@@ -94,10 +100,6 @@ export function MarketPanel({
               {market.title}
             </div>
           )}
-
-          {/* Blends the image into the navy content panel. Vertical on mobile
-              (content sits below); horizontal from `lg`, fading toward
-              whichever side the content is on. */}
 
           {/* Hover-only glass sheen. A very low-opacity white wash plus a cyan
               edge tint — enough to register as a state change without lifting
@@ -132,7 +134,7 @@ export function MarketPanel({
             <h2
               className={cn(
                 "text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl",
-                hasLightTreatment ? "text-navy" : "text-white",
+                tone === "light" ? "text-navy" : "text-white",
               )}
             >
               {/* Links to the market's own page. Kept inside the heading so the
@@ -142,7 +144,7 @@ export function MarketPanel({
                 href={marketPath(locale, market.slug)}
                 className={cn(
                   "rounded transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-4",
-                  hasLightTreatment
+                  tone === "light"
                     ? "hover:text-cyan-brand focus-visible:ring-cyan-brand focus-visible:ring-offset-white"
                     : "hover:text-cyan-light focus-visible:ring-cyan-light focus-visible:ring-offset-navy",
                 )}
@@ -154,7 +156,7 @@ export function MarketPanel({
               <span
                 className={cn(
                   "text-[10px] font-semibold uppercase tracking-[0.18em]",
-                  hasLightTreatment ? "text-cyan-brand" : "text-cyan-light",
+                  tone === "light" ? "text-cyan-brand" : "text-cyan-light",
                 )}
               >
                 {market.region}
@@ -169,7 +171,7 @@ export function MarketPanel({
             <p
               className={cn(
                 "mt-2.5 max-w-2xl text-base leading-relaxed",
-                hasLightTreatment ? "text-ink" : "text-silver",
+                tone === "light" ? "text-ink" : "text-silver",
               )}
             >
               {market.description}
@@ -182,87 +184,17 @@ export function MarketPanel({
                 content={market.body}
                 locale={locale}
                 demoteHeadings
-                className={hasLightTreatment ? undefined : "markets-prose-dark"}
+                className={tone === "light" ? undefined : "markets-prose-dark"}
               />
             </div>
           )}
 
-          {(market.focus.length > 0 || market.documents.length > 0) && (
-            <div
-              className={cn(
-                "mt-5 grid grid-cols-1 gap-5 border-t pt-5 sm:gap-6 md:grid-cols-2",
-                hasLightTreatment ? "border-navy/10" : "border-white/12",
-              )}
-            >
-              {market.focus.length > 0 && (
-                <div>
-                  <h3
-                    className={cn(
-                      "mb-3 text-[10px] font-semibold uppercase tracking-[0.2em]",
-                      hasLightTreatment ? "text-cyan-brand" : "text-cyan-light",
-                    )}
-                  >
-                    {dictionary.markets.focusHeading}
-                  </h3>
-                  <ul className="space-y-2">
-                    {market.focus.map((point) => (
-                      <li key={point} className="flex items-start gap-2.5">
-                        <Check
-                          aria-hidden
-                          className={cn(
-                            "mt-0.5 h-4 w-4 shrink-0",
-                            hasLightTreatment
-                              ? "text-cyan-brand"
-                              : "text-cyan-light",
-                          )}
-                        />
-                        <span
-                          className={cn(
-                            "text-sm leading-relaxed",
-                            hasLightTreatment ? "text-ink" : "text-silver",
-                          )}
-                        >
-                          {point}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {market.documents.length > 0 && (
-                <div>
-                  <h3
-                    className={cn(
-                      "mb-3 text-[10px] font-semibold uppercase tracking-[0.2em]",
-                      hasLightTreatment ? "text-cyan-brand" : "text-cyan-light",
-                    )}
-                  >
-                    {dictionary.markets.documentsHeading}
-                  </h3>
-                  <ul className="flex flex-wrap gap-2">
-                    {market.documents.map((document) => (
-                      <li
-                        key={document}
-                        className={cn(
-                          "inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium",
-                          hasLightTreatment
-                            ? "border-navy/10 bg-smoke text-navy"
-                            : "border-white/15 bg-white/8 text-white/85",
-                        )}
-                      >
-                        <FileText
-                          aria-hidden
-                          className="h-3.5 w-3.5 shrink-0 opacity-70"
-                        />
-                        {document}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
+          <MarketAttributes
+            market={market}
+            dictionary={dictionary}
+            tone={tone}
+            className={tone === "light" ? "border-navy/10" : "border-white/12"}
+          />
 
           <Button asChild size="sm" className="mt-5">
             <Link href={contactPath(locale)}>

@@ -14,10 +14,6 @@ export function localizedPath(locale: Locale, path: string): string {
   return `/${locale}${normalized}`;
 }
 
-export function homePath(locale: Locale): string {
-  return `/${locale}`;
-}
-
 export function productsPath(locale: Locale): string {
   return `/${locale}/products`;
 }

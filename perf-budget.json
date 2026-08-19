@@ -1,0 +1,5 @@
+{
+  "_comment": "Client bundle budget (Roadmap Task 7.7 / PERF-L5). Calibrated to the post-Phase-7 production build with modest headroom. Enforced by scripts/check-bundle-budget.mjs in CI (after build) and via `npm run perf:budget`. Raise only when growth is intentional and reviewed; a regression (new dependency, accidental client boundary, duplicated bundle) should fail.",
+  "maxChunkJsBytes": 793600,
+  "maxChunkCssBytes": 97280
+}

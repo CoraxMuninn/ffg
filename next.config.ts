@@ -10,6 +10,15 @@ import type { NextConfig } from "next";
  * inlined bootstrap in production, so `script-src` allows it only where
  * needed. This is documented and should be revisited if Next.js changes its
  * inline-script strategy.
+ *
+ * CSP note (audit SEC-L1, Roadmap Task 3.5): the public-site `script-src`
+ * `unsafe-inline` is a verified framework constraint — Next.js 16 inlines its
+ * RSC/bootstrap scripts without nonces in the static output, so removing it
+ * breaks hydration. It is intentionally NOT applied where it is avoidable
+ * (the OAuth callback uses a per-response nonce CSP; the admin needs
+ * `unsafe-eval` for Decap's AJV). A regression test in
+ * `security-headers.test.ts` pins this posture so the relaxation cannot
+ * silently widen.
  */
 const baseSecurityHeaders = [
   {
@@ -89,6 +98,9 @@ const adminCsp = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  // Disable the X-Powered-By header (audit SEC-L1): it needlessly advertises
+  // the framework and version to fingerprinters.
+  poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],
     // 75 is the default used site-wide. 90 is allowed for the Markets export
@@ -150,15 +162,40 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // OAuth broker endpoints: same popup/opener requirement as /admin.
-        source: "/api/(auth|callback)",
+        // Direct / social / OG media (Roadmap Task 7.5 / PERF-L3). These are
+        // stable assets (CMS uploads create new filenames), so a long cache
+        // lets social crawlers and repeat visitors reuse them without a
+        // re-fetch. Not `immutable`: a same-name replacement revalidates.
+        source: "/media/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=2592000" }],
+      },
+      {
+        // OAuth broker: the popup must keep `window.opener` after GitHub
+        // redirects back. `same-origin-allow-popups` is correct on /admin
+        // (the opener) but isolates the *popup* on the return hop and leaves
+        // Decap stuck on "Completing sign-in…". Exact paths, not a regex
+        // group, so these never inherit the public-site `same-origin` COOP.
+        source: "/api/auth",
         headers: [
           ...baseSecurityHeaders.filter(
             (header) => header.key !== "Cross-Origin-Opener-Policy",
           ),
           {
             key: "Cross-Origin-Opener-Policy",
-            value: "same-origin-allow-popups",
+            value: "unsafe-none",
+          },
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        ],
+      },
+      {
+        source: "/api/callback",
+        headers: [
+          ...baseSecurityHeaders.filter(
+            (header) => header.key !== "Cross-Origin-Opener-Policy",
+          ),
+          {
+            key: "Cross-Origin-Opener-Policy",
+            value: "unsafe-none",
           },
           { key: "X-Robots-Tag", value: "noindex, nofollow" },
         ],

@@ -1,8 +1,8 @@
 ---
 title: "گواهی دامپزشکی"
 slug: veterinary-certificate
-description: "مدرک دامپزشکی مربوط به محموله که ممکن است برای واردات طیور لازم باشد؛ نیاز مقصد پیش از حمل تأیید می‌شود."
-image:
+description: "مدرک دامپزشکی محموله؛ پیش از حمل تأیید می‌شود."
+image: /media/certifications/veterinary-certificate.png
 enabled: true
 order: 5
 ---

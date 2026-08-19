@@ -1,8 +1,29 @@
 @import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+/* ── Self-hosted variable fonts (Roadmap Task 7.1 / PERF-M1) ──
+   Both families are declared, but a @font-face file is only fetched when its
+   family is actually applied to rendered text. The layout applies Inter
+   (var(--font-sans)) to the LTR locales and Vazirmatn (var(--font-fa)) to the
+   Persian (RTL) locale, so EN/RU/VI fetch Inter alone and FA fetches Vazirmatn
+   alone — eliminating the reported 463 KB forced dual-font preload. The layout
+   emits a single conditional <link rel="preload"> for the active family. Inter
+   is not unicode-range-limited so it keeps covering Cyrillic for Russian. */
+@font-face {
+  font-family: "Inter Variable";
+  src: url("/fonts/Inter-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Vazirmatn Variable";
+  src: url("/fonts/Vazirmatn-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 
 @theme inline {
   /* ── Brand Colors ── */
@@ -27,7 +48,19 @@
   /* Body / label ink on light surfaces — darker and more readable than silver. */
   --color-ink: #2d3d4f;
   --color-label: #5c6d80;
-  --color-stone-300: #d6d3d1;
+
+  /* ── Accessible text/surface tokens (audit UX-M1, Roadmap Task 4.1) ──
+     No single neutral or cyan clears WCAG AA on BOTH white and navy, so each
+     context gets its own token. `silver` stays reserved for dark surfaces
+     (it passes there); the tokens below are the light-surface equivalents. */
+  /* Muted secondary/body text on LIGHT surfaces (≥4.5:1 on white). */
+  --color-ink-soft: #56606e;
+  /* Cyan text & links on LIGHT surfaces (≥4.5:1 on white). */
+  --color-cyan-link: #0e7490;
+  --color-cyan-link-hover: #0b5a70;
+  /* Primary button surface — white text reaches ≥4.5:1 on it. */
+  --color-cyan-btn: #0e7490;
+  --color-cyan-btn-hover: #0c5f76;
 
   /* ── Typography ── */
   --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -160,29 +193,39 @@ html[dir="rtl"] body {
 }
 
 /* ── Scroll Reveal (see components/shared/Reveal.tsx) ──
-   Entrance state is toggled by a single IntersectionObserver that disconnects
-   after firing, so scrolling stays free of JS work. Only opacity/transform
-   animate, keeping the effect on the compositor. */
+   Progressively enhanced (Roadmap Task 7.6 / PERF-L4): content is visible by
+   default and the hidden entrance state is applied ONLY when scripting is
+   enabled (`@media (scripting: enabled)`). Browsers without JS (or without
+   support for the `scripting` media feature) render content visible
+   immediately, so nothing is hidden pending JS. Only opacity/transform animate,
+   keeping the effect on the compositor. Reduced motion forces the shown state.
+   One shared IntersectionObserver (in Reveal.tsx) drives every instance. */
 .reveal {
-  opacity: 0;
   transition:
     opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
 }
-.reveal[data-reveal-from="up"] {
-  transform: translate3d(0, 20px, 0);
-}
-/* Mobile-first: sideways offsets would push full-bleed media past the viewport
-   edge, so below `lg` every direction animates vertically. */
-.reveal[data-reveal-from="start"],
-.reveal[data-reveal-from="end"] {
-  transform: translate3d(0, 20px, 0);
+
+/* Hidden entrance state — applied only when JavaScript is available. */
+@media (scripting: enabled) {
+  .reveal {
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+  .reveal[data-reveal-from="up"] {
+    transform: translate3d(0, 20px, 0);
+  }
+  /* Mobile-first: sideways offsets would push full-bleed media past the
+     viewport edge, so below `lg` every direction animates vertically. */
+  .reveal[data-reveal-from="start"],
+  .reveal[data-reveal-from="end"] {
+    transform: translate3d(0, 20px, 0);
+  }
 }
 
 /* From `lg` up there is gutter room for horizontal motion.
    Logical directions: flipped automatically under dir="rtl". */
-@media (min-width: 1024px) {
+@media (scripting: enabled) and (min-width: 1024px) {
   .reveal[data-reveal-from="start"] {
     transform: translate3d(-24px, 0, 0);
   }
@@ -196,6 +239,9 @@ html[dir="rtl"] body {
     transform: translate3d(-24px, 0, 0);
   }
 }
+
+/* Revealed state (sourced after the hidden rules so equal-specificity ties
+   resolve to "shown"). */
 .reveal[data-reveal="shown"] {
   opacity: 1;
   transform: translate3d(0, 0, 0);
@@ -256,115 +302,6 @@ html[dir="rtl"] body {
   }
 }
 
-/* ── Markets page: destination panel image scrim ────────────────────────────
-   Blends the panel image into the navy content surface. Mobile stacks
-   (image above content) so the fade runs upward; from `lg` the panel is a
-   two-column grid and the fade runs horizontally toward whichever side the
-   content occupies.
-
-   Written as a plain rule rather than Tailwind utilities because a single
-   element cannot carry two opposing `bg-gradient-to-*` directions, and the
-   direction depends on both `data-side` and text direction. */
-.market-panel-scrim {
-  background: linear-gradient(
-    to top,
-    rgba(10, 22, 40, 0.85) 0%,
-    rgba(10, 22, 40, 0.2) 55%,
-    rgba(10, 22, 40, 0) 100%
-  );
-}
-
-@media (min-width: 1024px) {
-  /* Image on the reading-start side → content sits to its right in LTR. */
-  .market-panel-scrim[data-side="start"] {
-    background: linear-gradient(
-      to right,
-      rgba(10, 22, 40, 0) 0%,
-      rgba(10, 22, 40, 0.1) 55%,
-      rgba(10, 22, 40, 0.7) 100%
-    );
-  }
-
-  .market-panel-scrim[data-side="end"] {
-    background: linear-gradient(
-      to left,
-      rgba(10, 22, 40, 0) 0%,
-      rgba(10, 22, 40, 0.1) 55%,
-      rgba(10, 22, 40, 0.7) 100%
-    );
-  }
-
-  /* A grid in RTL lays its columns right-to-left, so the physical side of the
-     image flips while `data-side` (logical) stays the same. Mirror the fade so
-     it still points at the content. */
-  html[dir="rtl"] .market-panel-scrim[data-side="start"] {
-    background: linear-gradient(
-      to left,
-      rgba(10, 22, 40, 0) 0%,
-      rgba(10, 22, 40, 0.1) 55%,
-      rgba(10, 22, 40, 0.7) 100%
-    );
-  }
-
-  html[dir="rtl"] .market-panel-scrim[data-side="end"] {
-    background: linear-gradient(
-      to right,
-      rgba(10, 22, 40, 0) 0%,
-      rgba(10, 22, 40, 0.1) 55%,
-      rgba(10, 22, 40, 0.7) 100%
-    );
-  }
-}
-
-/* Secondary destination panels use the same image-to-content blend as the
-   primary panel, retinted to meet their white content surface. */
-.market-panel-scrim-light {
-  background: linear-gradient(
-    to top,
-    rgba(255, 255, 255, 0.92) 0%,
-    rgba(255, 255, 255, 0.16) 55%,
-    rgba(255, 255, 255, 0) 100%
-  );
-}
-
-@media (min-width: 1024px) {
-  .market-panel-scrim-light[data-side="start"] {
-    background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.08) 55%,
-      rgb(81, 79, 102) 100%
-    );
-  }
-
-  .market-panel-scrim-light[data-side="end"] {
-    background: linear-gradient(
-      to left,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.08) 55%,
-      rgb(81, 79, 102) 100%
-    );
-  }
-
-  html[dir="rtl"] .market-panel-scrim-light[data-side="start"] {
-    background: linear-gradient(
-      to left,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.08) 55%,
-      rgb(81, 79, 102) 100%
-    );
-  }
-
-  html[dir="rtl"] .market-panel-scrim-light[data-side="end"] {
-    background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.08) 55%,
-      rgb(81, 79, 102) 100%
-    );
-  }
-}
-
 /* Prose rendered on a navy surface (primary-market panel).
    `Prose` hard-codes light-surface ink colours, which is right for 95% of the
    site; rather than threading a tone prop through every call site, this class
@@ -414,37 +351,399 @@ html[dir="rtl"] .markets-hero-scrim {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.glass-2xl {
-  background: rgba(10, 22, 40, 0.55);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+/* Fixed-header glass (Roadmap Task 7.4 / PERF-M4): same translucent surface as
+   `.glass` but a far smaller blur. The header is `position: fixed` and
+   re-paints on every scroll frame, so a 50 px blur there is disproportionately
+   expensive on mobile/low-power devices; 18 px keeps the glass aesthetic at a
+   fraction of the cost. Section glass (`.glass`) is untouched so the approved
+   design is preserved. */
+.glass-nav {
+  background: var(--color-navy-glass);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-xl);
 }
 
-/* ── Shadcn overrides ── */
-:root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0.017 285.82);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0.017 285.82);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0.017 285.82);
-  --primary: #0891b2;
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0.001 286.38);
-  --secondary-foreground: oklch(0.21 0.015 285.94);
-  --muted: oklch(0.97 0.001 286.38);
-  --muted-foreground: oklch(0.552 0.014 286.07);
-  --accent: oklch(0.97 0.001 286.38);
-  --accent-foreground: oklch(0.21 0.015 285.94);
-  --destructive: oklch(0.577 0.245 27.33);
-  --destructive-foreground: oklch(0.577 0.245 27.33);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: #0891b2;
-  --radius: 0.75rem;
+/* ── Trust trays: certifications + export capabilities ──────────────────
+   One glass surface, many cells. Seals / icons stay the focus; copy is
+   short. Cert hover is a 240ms lift + hairline cyan edge + seal glow —
+   no scale. Motion is CSS-only, RTL-safe, and off for coarse pointers
+   and prefers-reduced-motion. */
+.trust-tray {
+  --trust-duration: 260ms;
+  --trust-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem;
+  display: grid;
+  border-radius: 20px;
 }
+
+.trust-tray:not(.trust-tray--light) {
+  background: rgba(21, 34, 56, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.trust-tray--light {
+  background: #ffffff;
+  border: 1px solid rgba(10, 22, 40, 0.08);
+  box-shadow: var(--shadow-card);
+}
+
+.cert-tray {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.15rem;
+}
+
+@media (min-width: 768px) {
+  .cert-tray {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .cert-tray {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    padding: 0.55rem;
+  }
+}
+
+.cert-card {
+  --cert-duration: 240ms;
+  --cert-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.95rem 0.55rem 0.85rem;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  background: transparent;
+  transition:
+    transform var(--cert-duration) var(--cert-ease),
+    border-color var(--cert-duration) var(--cert-ease),
+    background-color var(--cert-duration) var(--cert-ease),
+    box-shadow var(--cert-duration) var(--cert-ease);
+}
+
+.cert-seal {
+  position: relative;
+  width: 5.5rem;
+  height: 5.5rem;
+  flex-shrink: 0;
+  margin-bottom: 0.55rem;
+  transition:
+    transform var(--cert-duration) var(--cert-ease),
+    filter var(--cert-duration) var(--cert-ease);
+}
+
+@media (min-width: 640px) {
+  .cert-seal {
+    width: 6.25rem;
+    height: 6.25rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .cert-card {
+    padding: 1.1rem 0.45rem 0.95rem;
+  }
+  .cert-seal {
+    width: 6.75rem;
+    height: 6.75rem;
+    margin-bottom: 0.65rem;
+  }
+}
+
+.cert-card-title {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+}
+
+.cert-card--dark .cert-card-title {
+  color: #ffffff;
+}
+
+.cert-card--light .cert-card-title {
+  color: var(--color-navy);
+}
+
+.cert-card-copy {
+  display: none;
+  margin: 0.3rem 0 0;
+  max-width: 14rem;
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+.cert-card--dark .cert-card-copy {
+  color: var(--color-silver);
+}
+
+.cert-card--light .cert-card-copy {
+  color: var(--color-ink-soft);
+}
+
+/* Short line under the name from tablet up — mobile stays seal + title. */
+@media (min-width: 768px) {
+  .cert-card-copy {
+    display: block;
+  }
+  .cert-card-title {
+    font-size: 0.8125rem;
+  }
+}
+
+/* Export Capabilities tray.
+   Mobile: stacked full-width rows with 48px+ touch targets.
+   Landscape phones / large mobiles: two columns when width allows.
+   Tablet: two balanced columns.
+   Desktop (lg+): original 4-column compact tray — visual design unchanged. */
+.cap-tray {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem;
+  padding: 0.55rem;
+}
+
+.cap-tray > li {
+  min-width: 0;
+}
+
+@media (min-width: 480px) and (orientation: landscape) {
+  .cap-tray {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .cap-tray {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
+    padding: 0.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cap-tray {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.1rem;
+    padding: 0.5rem;
+  }
+}
+
+.cap-card {
+  display: flex;
+  align-items: center;
+  gap: 0.95rem;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 5rem;
+  height: 100%;
+  padding: 1.15rem 1.2rem;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  background: transparent;
+  transition:
+    transform var(--trust-duration) var(--trust-ease),
+    border-color var(--trust-duration) var(--trust-ease),
+    background-color var(--trust-duration) var(--trust-ease),
+    box-shadow var(--trust-duration) var(--trust-ease);
+}
+
+.cap-icon {
+  display: inline-flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(8, 145, 178, 0.1);
+  color: var(--color-cyan-link);
+  transition:
+    transform var(--trust-duration) var(--trust-ease),
+    background-color var(--trust-duration) var(--trust-ease),
+    color var(--trust-duration) var(--trust-ease);
+}
+
+.cap-icon svg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.cap-copy {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.cap-card-title {
+  margin: 0;
+  font-size: 1.03125rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--color-navy);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.cap-card-text {
+  margin: 0.3rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--color-ink-soft);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (min-width: 768px) {
+  .cap-card {
+    min-height: 5.25rem;
+    padding: 1.15rem 1.15rem;
+  }
+
+  .cap-card-title {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cap-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+    min-height: 0;
+    padding: 1.1rem 1rem 1rem;
+  }
+
+  .cap-icon {
+    height: 2.25rem;
+    width: 2.25rem;
+  }
+
+  .cap-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .cap-card-title {
+    font-size: 0.9375rem;
+  }
+
+  .cap-card-text {
+    margin: 0.25rem 0 0;
+    font-size: 0.78rem;
+  }
+}
+
+/* Certifications: quiet 240ms enhancement. Hover is fine-pointer only
+   so touch does not stick; :focus-visible is always available. */
+@media (hover: hover) and (pointer: fine) {
+  .cert-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .cert-card--dark:hover {
+    border-color: rgba(34, 211, 238, 0.2);
+    background: rgba(255, 255, 255, 0.03);
+    box-shadow:
+      0 8px 18px -14px rgba(8, 145, 178, 0.42),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  .cert-card--light:hover {
+    border-color: rgba(8, 145, 178, 0.2);
+    background: rgba(8, 145, 178, 0.028);
+    box-shadow: 0 8px 18px -14px rgba(10, 22, 40, 0.14);
+  }
+
+  .cert-card--dark:hover .cert-seal {
+    transform: translateY(-1px);
+    filter: drop-shadow(0 4px 8px rgba(34, 211, 238, 0.2));
+  }
+
+  .cert-card--light:hover .cert-seal {
+    transform: translateY(-1px);
+    filter: drop-shadow(0 4px 8px rgba(8, 145, 178, 0.18));
+  }
+
+  .cap-card:hover,
+  .cap-card:focus-visible {
+    transform: translateY(-3px);
+    border-color: rgba(8, 145, 178, 0.28);
+    background: rgba(8, 145, 178, 0.035);
+    box-shadow: 0 10px 24px -16px rgba(10, 22, 40, 0.18);
+  }
+
+  .cap-card:hover .cap-icon,
+  .cap-card:focus-visible .cap-icon {
+    transform: translateY(-2px);
+    background: rgba(8, 145, 178, 0.16);
+    color: var(--color-cyan-btn);
+  }
+}
+
+.cert-card:focus-visible {
+  transform: translateY(-2px);
+}
+
+.cert-card--dark:focus-visible {
+  border-color: rgba(34, 211, 238, 0.2);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow:
+    0 8px 18px -14px rgba(8, 145, 178, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.cert-card--light:focus-visible {
+  border-color: rgba(8, 145, 178, 0.2);
+  background: rgba(8, 145, 178, 0.028);
+  box-shadow: 0 8px 18px -14px rgba(10, 22, 40, 0.14);
+}
+
+.cert-card--dark:focus-visible .cert-seal {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 4px 8px rgba(34, 211, 238, 0.2));
+}
+
+.cert-card--light:focus-visible .cert-seal {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 4px 8px rgba(8, 145, 178, 0.18));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cert-card,
+  .cert-seal,
+  .cap-card,
+  .cap-icon {
+    transition: none;
+  }
+
+  .cert-card:hover,
+  .cert-card:focus-visible,
+  .cap-card:hover,
+  .cap-card:focus-visible,
+  .cert-card:hover .cert-seal,
+  .cert-card:focus-visible .cert-seal,
+  .cap-card:hover .cap-icon,
+  .cap-card:focus-visible .cap-icon {
+    transform: none;
+  }
+
+  .cert-card:hover .cert-seal,
+  .cert-card:focus-visible .cert-seal {
+    filter: none;
+  }
+}
+
 
 /* ── Supply-chain flow connectors ──
    The dashed segment drifts toward the arrowhead so the connector reads as

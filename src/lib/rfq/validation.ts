@@ -1,4 +1,4 @@
-import { LIMITS, MESSAGE_MIN_LENGTH } from "./constants";
+import { LIMITS, MESSAGE_MIN_LENGTH, RFQ_EMAIL_RE } from "./constants";
 import { isValidProductIdentifier, resolveProductLabel } from "./product-allowlist";
 import type { RfqPayload } from "./types";
 
@@ -16,8 +16,6 @@ interface ValidationResult {
   /** Generic client-facing error (no internals). */
   error?: string;
 }
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function clean(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
@@ -48,7 +46,7 @@ export function validateRfqInput(input: unknown): ValidationResult {
   // Required fields.
   if (!name) return { valid: false, error: "REQUIRED" };
   if (!company) return { valid: false, error: "REQUIRED" };
-  if (!email || !EMAIL_RE.test(email)) return { valid: false, error: "EMAIL" };
+  if (!email || !RFQ_EMAIL_RE.test(email)) return { valid: false, error: "EMAIL" };
   if (!country) return { valid: false, error: "REQUIRED" };
   if (!product) return { valid: false, error: "REQUIRED" };
   if (!quantity) return { valid: false, error: "QUANTITY" };

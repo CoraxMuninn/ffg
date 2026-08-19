@@ -159,7 +159,7 @@ export function ProductShowcaseItem({
                       {spec.label}
                     </dt>
                     <dd className="mt-1 text-sm font-semibold text-navy">
-                      {spec.value}
+                      <bdi>{spec.value}</bdi>
                     </dd>
                   </div>
                 ))}

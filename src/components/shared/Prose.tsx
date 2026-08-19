@@ -66,10 +66,28 @@ export function Prose({ content, className, locale, demoteHeadings = false }: Pr
     ),
     li: ({ children }) => <li className="leading-[1.75]">{children}</li>,
     strong: ({ children }) => <strong className="font-semibold text-navy">{children}</strong>,
+    em: ({ children }) => <em className="italic">{children}</em>,
+    blockquote: ({ children }) => (
+      <blockquote className="my-6 border-s-2 border-cyan-brand/40 ps-4 text-ink">
+        {children}
+      </blockquote>
+    ),
+    hr: () => <hr className="my-8 border-navy/10" />,
+    img: ({ src, alt }) =>
+      src ? (
+        // Markdown body images have no known width/height at compile time.
+        // eslint-disable-next-line @next/next/no-img-element -- CMS markdown <img>
+        <img
+          src={src}
+          alt={alt ?? ""}
+          className="my-6 h-auto w-full rounded-2xl"
+          loading="lazy"
+        />
+      ) : null,
     a: ({ children, href }) => (
       <a
         href={localizeMarkdownHref(href, locale)}
-        className="font-medium text-cyan-brand underline-offset-2 hover:underline"
+        className="font-medium text-cyan-link underline-offset-2 hover:underline hover:text-cyan-link-hover"
       >
         {children}
       </a>

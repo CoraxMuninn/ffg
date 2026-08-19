@@ -1,8 +1,8 @@
 ---
 title: "گواهی بهداشت"
 slug: health-certificate
-description: "مدرک بهداشتی مربوط به محموله که ممکن است مقصد درخواست کند؛ قالب و مرجع صدور برای سفارش تأیید می‌شود."
-image:
+description: "مدرک بهداشت محموله؛ برای سفارش تأیید می‌شود."
+image: /media/certifications/health-certificate.png
 enabled: true
 order: 4
 ---

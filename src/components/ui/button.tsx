@@ -108,13 +108,13 @@ const buttonVariants = cva(
       variant: {
         /** Brand CTA — cyan surface, subtle elevation, cyan glow on hover. */
         primary:
-          "border border-transparent bg-cyan-brand text-white shadow-btn hover:bg-cyan-hover hover:shadow-btn-hover",
+          "border border-transparent bg-cyan-btn text-white shadow-btn hover:bg-cyan-btn-hover hover:shadow-btn-hover",
         /** Solid midnight navy — secondary emphasis on light surfaces. */
         secondary:
           "border border-transparent bg-navy text-white hover:bg-navy-light hover:shadow-btn-navy",
         /** Bordered companion on light surfaces — white with navy ink. */
         outline:
-          "border border-navy/15 bg-white text-navy hover:border-cyan-brand/40 hover:bg-cyan-brand/5 hover:text-cyan-brand",
+          "border border-navy/15 bg-white text-navy hover:border-cyan-link/40 hover:bg-cyan-link/5 hover:text-cyan-link",
         /** Bordered companion on navy/dark surfaces. */
         "outline-inverse":
           "border border-white/25 bg-white/10 text-white hover:border-white/40 hover:bg-white/20",

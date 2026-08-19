@@ -21,7 +21,12 @@ export function SectionHeading({
   return (
     <div className={cn("mb-14 text-center", className)}>
       {eyebrow && (
-        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-cyan-brand">
+        <p
+          className={cn(
+            "mb-3 text-xs font-semibold uppercase tracking-[0.2em]",
+            dark ? "text-cyan-light" : "text-cyan-link",
+          )}
+        >
           {eyebrow}
         </p>
       )}
@@ -37,7 +42,7 @@ export function SectionHeading({
         <p
           className={cn(
             "mx-auto mt-4 max-w-2xl text-base leading-relaxed sm:text-lg",
-            dark ? "text-silver" : "text-silver"
+            dark ? "text-silver" : "text-ink-soft"
           )}
         >
           {intro}

@@ -21,6 +21,7 @@ cp .env.example .env.local   # fill Resend + Turnstile for RFQ
 npm run dev
 npm run lint
 npm run typecheck
+npm run test
 npm run build
 ```
 
@@ -43,4 +44,4 @@ These are operator steps — they cannot be completed in git:
 6. Point DNS at the host; HTTPS; submit `https://feizfood.com/sitemap.xml` in Search Console.
 7. Send one test RFQ per locale after deploy.
 
-`docs/audit/DEEP-AUDIT-*.md` describes an older scaffold and is **not** current.
+Operational docs: `docs/DEPLOYMENT.md`, `docs/CMS-ADMIN-SETUP.md`.

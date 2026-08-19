@@ -116,13 +116,25 @@ export default function Footer({ locale, dictionary }: FooterProps) {
                 <strong className="text-white block mb-1">
                   {dictionary.footer.email}
                 </strong>
-                {dictionary.contact.emailValue}
+                <a
+                  href={`mailto:${dictionary.contact.emailValue}`}
+                  dir="ltr"
+                  className="inline-block transition-colors duration-[var(--btn-duration)] ease-[var(--btn-ease)] hover:text-white"
+                >
+                  {dictionary.contact.emailValue}
+                </a>
               </li>
               <li>
                 <strong className="text-white block mb-1">
                   {dictionary.footer.phone}
                 </strong>
-                {dictionary.contact.phoneValue}
+                <a
+                  href={`tel:${dictionary.contact.phoneValue.replace(/\s/g, "")}`}
+                  dir="ltr"
+                  className="inline-block transition-colors duration-[var(--btn-duration)] ease-[var(--btn-ease)] hover:text-white"
+                >
+                  {dictionary.contact.phoneValue}
+                </a>
               </li>
               <li>
                 <strong className="text-white block mb-1">
@@ -205,10 +217,11 @@ function SocialLinks({ dictionary }: { dictionary: Dictionary }) {
               </Button>
             ) : (
               <span
+                role="img"
                 aria-label={label}
                 title={label}
                 className={cn(
-                  "inline-flex size-11 items-center justify-center rounded-lg border border-white/15 text-silver opacity-70",
+                  "inline-flex size-11 items-center justify-center rounded-lg border border-white/15 text-silver opacity-50",
                 )}
               >
                 <Icon className="h-4 w-4" aria-hidden />

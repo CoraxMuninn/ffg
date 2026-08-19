@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>گزارش نهایی اصلاح پروژه — Feiz Food Group</title>
+  <style>
+    @font-face {
+      font-family: "Vazirmatn Variable";
+      src: url("../public/fonts/Vazirmatn-Variable.woff2") format("woff2");
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    :root {
+      --navy: #0a1628;
+      --navy-light: #111d33;
+      --navy-card: #152238;
+      --cyan: #0891b2;
+      --cyan-btn: #0e7490;
+      --cyan-light: #22d3ee;
+      --gold: #f59e0b;
+      --emerald: #047857;
+      --smoke: #f8fafc;
+      --silver: #94a3b8;
+      --ink: #2d3d4f;
+      --ink-soft: #56606e;
+      --line: rgba(148, 163, 184, 0.22);
+      --white: #ffffff;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--smoke);
+      font-family: "Vazirmatn Variable", Vazirmatn, Tahoma, "Segoe UI", sans-serif;
+      line-height: 1.85;
+      font-size: 16.5px;
+    }
+    a { color: var(--cyan-btn); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    a:hover { color: #0b5a70; }
+    :focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 6px; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px 80px; }
+    .hero {
+      background:
+        radial-gradient(900px 420px at 100% 0%, rgba(8,145,178,0.22), transparent 55%),
+        linear-gradient(165deg, #071018 0%, var(--navy) 55%, #111d33 100%);
+      color: #fff;
+      padding: 56px 0 48px;
+      border-bottom: 4px solid var(--cyan);
+    }
+    .kicker {
+      display: inline-flex; align-items: center; gap: 8px;
+      letter-spacing: 0.08em; font-size: 12px; font-weight: 700;
+      color: var(--cyan-light); text-transform: uppercase;
+    }
+    .hero h1 { font-size: clamp(1.7rem, 3.4vw, 2.55rem); line-height: 1.35; margin: 12px 0 14px; }
+    .hero p.lead { max-width: 760px; color: #d5dee8; font-size: 1.05rem; margin: 0 0 22px; }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 700;
+      border: 1px solid transparent;
+    }
+    .badge.ok { background: #d1fae5; color: #065f46; }
+    .badge.warn { background: #fef3c7; color: #854d0e; }
+    .badge.info { background: rgba(34,211,238,0.14); color: #a5f3fc; border-color: rgba(34,211,238,0.28); }
+    .badge.neutral { background: #e2e8f0; color: #334155; }
+    .badge.navy { background: rgba(255,255,255,0.08); color: #e2e8f0; border-color: rgba(255,255,255,0.14); }
+    .dash {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 28px;
+    }
+    .stat {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; padding: 14px 16px;
+    }
+    .stat b { display: block; font-size: 1.45rem; color: #fff; font-weight: 800; }
+    .stat span { color: #94a3b8; font-size: 12.5px; }
+    .layout { display: grid; grid-template-columns: 260px 1fr; gap: 28px; margin-top: 28px; }
+    .toc {
+      position: sticky; top: 16px; align-self: start;
+      background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 16px 14px; max-height: calc(100vh - 32px); overflow: auto;
+    }
+    .toc h2 { margin: 0 0 10px; font-size: 13px; color: var(--navy); letter-spacing: 0.04em; }
+    .toc ol { margin: 0; padding: 0 18px 0 0; }
+    .toc li { margin: 0 0 6px; font-size: 13px; }
+    .toc a { color: var(--ink); text-decoration: none; }
+    .toc a:hover { color: var(--cyan-btn); }
+    section.block {
+      background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 28px 26px; margin-bottom: 22px;
+    }
+    section.block h2 {
+      margin: 0 0 8px; color: var(--navy); font-size: 1.45rem;
+      padding-bottom: 10px; border-bottom: 1px solid var(--line);
+    }
+    section.block h3 { color: var(--navy); font-size: 1.08rem; margin: 22px 0 8px; }
+    section.block h4 { color: var(--cyan-btn); font-size: 0.98rem; margin: 16px 0 6px; }
+    .phase-head {
+      display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: flex-start;
+    }
+    .muted { color: var(--ink-soft); }
+    table {
+      width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 12px 0 4px;
+    }
+    th, td {
+      text-align: right; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top;
+    }
+    th { background: #f1f5f9; color: var(--navy); font-weight: 700; }
+    tr:last-child td { border-bottom: 0; }
+    code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.88em; }
+    .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .mini {
+      border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: #f8fafc;
+    }
+    .mini strong { display: block; color: var(--navy); margin-bottom: 4px; }
+    ul.tight { margin: 8px 0; padding-right: 18px; }
+    ul.tight li { margin: 4px 0; }
+    .note {
+      background: #ecfeff; border: 1px solid #a5f3fc; border-radius: 12px;
+      padding: 12px 14px; color: #155e75; margin: 12px 0;
+    }
+    .warnbox {
+      background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px;
+      padding: 12px 14px; color: #854d0e; margin: 12px 0;
+    }
+    footer.doc {
+      margin-top: 12px; color: var(--ink-soft); font-size: 13px; text-align: center;
+    }
+    @media (max-width: 920px) {
+      .layout { grid-template-columns: 1fr; }
+      .toc { position: static; max-height: none; }
+      .dash, .card-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 620px) {
+      .dash, .card-grid { grid-template-columns: 1fr; }
+      section.block { padding: 20px 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="kicker">Feiz Food Group · گزارش اصلاحات</div>
+      <h1>گزارش نهایی اصلاح پروژه وب‌سایت گروه غذایی فیض</h1>
+      <p class="lead">
+        این سند، هشت فاز برنامهٔ اصلاح (۱۷ اوت ۲۰۲۶) را بر اساس وضعیت واقعی مخزن و نتایج آخرین اعتبارسنجی
+        توضیح می‌دهد. هیچ عدد، ادعا یا نتیجه‌ای در آن ساخته نشده است. استقرار روی سرور تولید انجام نشده است.
+      </p>
+      <div class="meta">
+        <span class="badge navy">تاریخ سند: ۱۸ اوت ۲۰۲۶</span>
+        <span class="badge navy">ممیزی مبدأ: ۱۷ اوت ۲۰۲۶ · commit dd58276</span>
+        <span class="badge navy">پشته: Next.js 16.3.0 · React 19.2.8 · TypeScript سخت‌گیر</span>
+        <span class="badge info">وضعیت: اصلاحات مخزن کامل · استقرار نشده</span>
+      </div>
+      <div class="dash" aria-label="خلاصهٔ اعداد تأییدشده">
+        <div class="stat"><b>۸</b><span>فاز برنامهٔ اصلاح</span></div>
+        <div class="stat"><b>۲۱۸</b><span>آزمون Vitest موفق</span></div>
+        <div class="stat"><b>۱۰۵</b><span>صفحه در آخرین build</span></div>
+        <div class="stat"><b>۱۰۰</b><span>نشانی ایندکس‌پذیر در نقشهٔ سایت</span></div>
+        <div class="stat"><b>۲۲۸</b><span>رکورد محتوا در چهار زبان</span></div>
+        <div class="stat"><b>۰</b><span>آسیب‌پذیری در وابستگی‌های تولید</span></div>
+        <div class="stat"><b>۷۱۴</b><span>کیلوبایت JS کلاینت / سقف ۷۷۵</span></div>
+        <div class="stat"><b>۱۶M</b><span>حجم مخزن بدون node_modules و .next و .git</span></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="layout">
+      <nav class="toc" aria-label="فهرست مطالب">
+        <h2>فهرست مطالب</h2>
+        <ol>
+          <li><a href="#overview">چشم‌انداز پروژه</a></li>
+          <li><a href="#phase-1">فاز ۱ — امنیت انتشار و مدیریت</a></li>
+          <li><a href="#phase-2">فاز ۲ — آزمون و CI</a></li>
+          <li><a href="#phase-3">فاز ۳ — استقرار، محیط و RFQ</a></li>
+          <li><a href="#phase-4">فاز ۴ — دسترسی‌پذیری و UX</a></li>
+          <li><a href="#phase-5">فاز ۵ — CMS، محتوا و سئو</a></li>
+          <li><a href="#phase-6">فاز ۶ — معماری و نگهداری</a></li>
+          <li><a href="#phase-7">فاز ۷ — کارایی</a></li>
+          <li><a href="#phase-8">فاز ۸ — اعتبارسنجی نهایی</a></li>
+          <li><a href="#validation">نتایج آخرین آزمون‌ها</a></li>
+          <li><a href="#before-after">قبل ← بعد</a></li>
+          <li><a href="#remaining">موارد باز عملیاتی</a></li>
+        </ol>
+      </nav>
+
+      <main>
+        <section class="block" id="overview">
+          <h2>چشم‌انداز پروژه و مبنای این گزارش</h2>
+          <p>
+            وب‌سایت <strong>گروه غذایی فیض</strong> یک سایت B2B برای صادرات مرغ منجمد IQF است
+            (محصول اصلی: پای مرغ منجمد). چهار زبان پشتیبانی می‌شود:
+            انگلیسی (<span class="mono">/en</span>، پیش‌فرض)، فارسی (<span class="mono">/fa</span>، راست‌به‌چپ)،
+            روسی (<span class="mono">/ru</span>) و ویتنامی (<span class="mono">/vi</span>).
+            ریشهٔ سایت با تغییر مسیر دائمی ۳۰۸ به <span class="mono">/en</span> می‌رود.
+          </p>
+          <p>
+            محتوا Markdown است و در <span class="mono">content/{en,fa,ru,vi}/</span> نگهداری می‌شود.
+            ویرایش از مسیر <span class="mono">/admin</span> با Decap CMS و کارگزار OAuth خودمیزبان گیت‌هاب انجام می‌شود.
+            فرم استعلام (RFQ) به <span class="mono">POST /api/rfq</span> می‌رود و از طریق Resend ایمیل می‌شود.
+            توپولوژی تولید مصوب: <strong>یک فرایند Node پشت Nginx، تحت systemd، روی یک VPS</strong> — نه یک پلتفرم ابری چندنمونه‌ای.
+          </p>
+          <div class="note">
+            مبنای برنامه‌ریزی، سند
+            <span class="mono">Feiz-Food-Group-Remediation-Roadmap-2026-08-17.md</span>
+            و ممیزی
+            <span class="mono">Feiz-Food-Group-Professional-Audit-2026-08-17.md</span>
+            است. آن اسناد تاریخی در مرحلهٔ لاغرسازی مخزن از درخت کاری حذف شدند؛ این گزارش فقط حقایقی را تکرار می‌کند
+            که از خود آن اسناد در تاریخچهٔ git و از کد فعلی قابل راستی‌آزمایی است.
+          </div>
+          <h3>تصمیم‌های معماری که عمداً حفظ شدند</h3>
+          <ul class="tight">
+            <li>Next.js 16 App Router، React 19، TypeScript سخت‌گیر، بدون پایگاه‌داده.</li>
+            <li>چهار زبان و رفتار RTL فارسی.</li>
+            <li>هویت بصری فیض: سرمه‌ای نیمه‌شب، فیروزه‌ای، نقره‌ای.</li>
+            <li>ادعاهای تجاری محدود به آنچه در محتوا اثبات شده؛ بدون قیمت، موجودی، رتبه یا ضمانت ساختگی.</li>
+            <li>Slug انگلیسی پایدار و مشترک میان زبان‌ها (تصمیم Task 5.8).</li>
+          </ul>
+        </section>
+
+        <!-- ═══════════════ PHASE 1 ═══════════════ -->
+        <section class="block" id="phase-1">
+          <div class="phase-head">
+            <h2>فاز ۱ — امنیت انتشار و مدیریت ممتاز</h2>
+            <span class="badge ok">بسته شده در مخزن</span>
+          </div>
+          <p class="muted">اولویت: بحرانی. شرط خروج برنامه: XSS کارگزار OAuth از بین برود؛ اسکریپت مدیریت از CDN متغیر نیاید؛ مبدأ و سطح دسترسی OAuth حداقل امتیاز باشد؛ schema برند تأییدنشده از محصول حذف شود.</p>
+
+          <h3>۱. چرا این فاز لازم بود</h3>
+          <p>
+            ممیزی ۱۷ اوت یک آسیب‌پذیری <strong>بحرانی</strong> (SEC-C1) در پاسخ popup کارگزار OAuth پیدا کرد:
+            پارامتر <span class="mono">error_description</span> پیش از اعتبارسنجی state در یک اسکریپت درون‌خطی بازتاب می‌شد
+            و مقدار حاوی <span class="mono">&lt;/script&gt;</span> می‌توانست اسکریپت را ببندد و نشانگر اجرایی بسازد.
+            همان مسیر، توکن گیت‌هاب ویرایشگر را حمل می‌کند. تا وقتی این مورد بسته نشود، ورود مدیریت نباید در تولید فعال می‌شد.
+          </p>
+
+          <h3>۲. مسائل پوشش‌داده‌شده</h3>
+          <table>
+            <thead><tr><th>شناسه</th><th>مسئله</th></tr></thead>
+            <tbody>
+              <tr><td>SEC-C1</td><td>XSS بازتابی در callback پیکربندی‌شدهٔ OAuth</td></tr>
+              <tr><td>SEC-M1</td><td>جاوااسکریپت مدیریت از unpkg با بازهٔ semver متغیر و بدون SRI</td></tr>
+              <tr><td>SEC-M2</td><td>مبدأ OAuth از سرآیندهای Forwarded غیرقابل‌اعتماد مشتق می‌شد</td></tr>
+              <tr><td>SEC-M3</td><td>دامنهٔ OAuth برابر <span class="mono">repo</span> بود و به مخازن خصوصی نامرتبط هم می‌رسید</td></tr>
+              <tr><td>SEO-M3</td><td>JSON-LD محصول، سازمان را به‌عنوان <span class="mono">brand</span> معرفی می‌کرد بدون مالکیت اثبات‌شده</td></tr>
+            </tbody>
+          </table>
+
+          <h3>۳. دقیقاً چه پیاده‌سازی شد</h3>
+          <ul class="tight">
+            <li>سریالایزر امن برای بستر HTML-script: escape برای <span class="mono">&lt; &gt; &amp;</span> و جداکننده‌های یونیکد U+2028 / U+2029.</li>
+            <li>اعتبارسنجی state در هر دو شاخهٔ موفقیت و خطا/انکار؛ عدم بازتاب متن خطای ارائه‌دهنده.</li>
+            <li>CSP اختصاصی callback با nonce تصادفی در هر پاسخ و <span class="mono">Cache-Control: no-store</span>.</li>
+            <li>پین کردن مبدأ <span class="mono">postMessage</span> به origin تأییدشده، نه <span class="mono">*</span>.</li>
+            <li>میزبانی محلی و پین‌شدهٔ Decap CMS 3.15.1 به‌جای <span class="mono">unpkg.com/decap-cms@^3</span>.</li>
+            <li>فهرست سفید دقیق origin برای OAuth؛ رد host/پروتکل/پورت ناشناس و <span class="mono">X-Forwarded-Host</span> مسموم.</li>
+            <li>دامنهٔ مجوز: <span class="mono">public_repo</span> به‌جای <span class="mono">repo</span>؛ کارگزار scope مرورگر را نادیده می‌گیرد.</li>
+            <li>حذف <span class="mono">brand</span> از Product JSON-LD و قفل سیاست واقعیت با آزمون.</li>
+          </ul>
+
+          <h3>۴. پیاده‌سازی فنی</h3>
+          <p>
+            <span class="mono">serializeForScript</span> خروجی <span class="mono">JSON.stringify</span> را به توالی‌های
+            <span class="mono">\uXXXX</span> تبدیل می‌کند تا پارسر HTML نتواند تگ اسکریپت را زود ببندد.
+            <span class="mono">callbackCsp(nonce)</span> فقط همان یک اسکریپت nonce‌دار را مجاز می‌کند.
+            <span class="mono">resolveOrigin</span> سرآیندهای forwarded را صرفاً به‌عنوان ادعا می‌خواند و فقط اگر در فهرست سفید دقیق باشد برمی‌گرداند.
+            کوکی state فقط روی مسیر <span class="mono">/api/callback</span> است و در تولید صفت Secure می‌گیرد.
+            اسکریپت <span class="mono">scripts/vendor-decap.mjs</span> بایت‌های اجرا را از <span class="mono">node_modules</span>
+            به <span class="mono">public/admin/vendor/decap-cms/3.15.1/</span> کپی می‌کند و SHA-256 هر پرونده را در manifest می‌نویسد.
+            <span class="mono">prebuild</span> این تطابق را اجباری می‌کند.
+          </p>
+
+          <h3>۵. پرونده‌ها و پیکربندی‌های اثرگرفته</h3>
+          <p>
+            <span class="mono">src/lib/cms/oauth.ts</span>،
+            <span class="mono">src/app/api/auth/route.ts</span>،
+            <span class="mono">src/app/api/callback/route.ts</span>،
+            <span class="mono">src/lib/cms/oauth.test.ts</span>،
+            <span class="mono">next.config.ts</span> (CSP ادمین بدون unpkg)،
+            <span class="mono">public/admin/index.html</span>،
+            <span class="mono">public/admin/vendor/decap-cms/3.15.1/</span>،
+            <span class="mono">public/admin/decap-cms-manifest.json</span>،
+            <span class="mono">scripts/vendor-decap.mjs</span>،
+            <span class="mono">src/lib/seo/schema.ts</span>،
+            <span class="mono">src/lib/seo/schema.test.ts</span>،
+            <span class="mono">docs/CMS-ADMIN-SETUP.md</span>.
+          </p>
+
+          <h3>۶. بهبود امنیتی / سئو</h3>
+          <p>
+            XSS تأییدشده بسته شد. اسکریپت ممتازی که توکن ویرایشگر را می‌گیرد دیگر از CDN متغیر نمی‌آید و تحت
+            <span class="mono">npm audit</span> و هش committشده است. مسموم‌سازی redirect و تنزل کوکی Secure ممکن نیست.
+            سرقت توکن دیگر مخازن خصوصی نامرتبط را باز نمی‌کند. داده‌های ساخت‌یافتهٔ محصول دیگر مالکیت برند را ادعا نمی‌کنند.
+          </p>
+
+          <h3>۷. اثر عملی روی وب‌سایت</h3>
+          <p>
+            ورود مدیریت فقط از مبدأهای ثبت‌شده کار می‌کند. بازدیدکنندهٔ عمومی تغییری در ظاهر سایت نمی‌بیند.
+            صفحهٔ محصول همان مشخصات را نشان می‌دهد اما در JSON-LD دیگر «برند فیض» ساخته نمی‌شود.
+          </p>
+
+          <h3>۸. چه چیزی عمداً عوض نشد</h3>
+          <p>
+            دست‌دادن popup دو مرحله‌ای Decap حفظ شد. CSP عمومی همچنان به‌خاطر محدودیت چارچوب Next.js
+            <span class="mono">script-src 'unsafe-inline'</span> دارد (مستند در Task 3.5).
+            GitHub App نصب‌شده روی یک مخزن انتخاب نشد: Decap 3.15.1 پشتیبان توکن نصب ندارد و schema فقط
+            <span class="mono">repo</span> یا <span class="mono">public_repo</span> را می‌پذیرد.
+            این تصمیم در راهنمای مدیریت ثبت شده است.
+          </p>
+
+          <h3>۹. اعتبارسنجی این فاز</h3>
+          <p>
+            پوشش رگرسیون OAuth اکنون ۶۴ آزمون در <span class="mono">oauth.test.ts</span> است
+            (از جمله <span class="mono">&lt;/script&gt;</span>، نقل‌قول، جداکنندهٔ یونیکد، نبود state، state غلط، انکار معتبر، موفقیت معتبر).
+            آزمون سیاست واقعیت Product در همهٔ زبان‌ها <span class="mono">brand</span> را ممنوع می‌کند.
+            <span class="mono">verify:decap</span> نسخهٔ 3.15.1 و ۹۳ پروندهٔ مطابق manifest را تأیید می‌کند.
+          </p>
+
+          <h3>۱۰. وضعیت نهایی فاز</h3>
+          <p><span class="badge ok">کامل در مخزن</span> ورود واقعی OAuth روی دامنهٔ تولید نیازمند تنظیم متغیرهای محیطی توسط اپراتور است و در این محیط اجرا نشده است.</p>
+        </section>
+
+        <!-- ═══════════════ PHASE 2 ═══════════════ -->
+        <section class="block" id="phase-2">
+          <div class="phase-head">
+            <h2>فاز ۲ — تور ایمنی آزمون و CI</h2>
+            <span class="badge ok">بسته شده در مخزن</span>
+          </div>
+          <p class="muted">شرط خروج برنامه: بررسی‌های امنیت، محتوا، سئو، زبان، ساخت و بودجه به‌صورت تکرارپذیر در CI اجرا شوند تا کار بعدی نقص فاز ۱ را بازنگرداند.</p>
+
+          <h3>۱. چرا لازم بود</h3>
+          <p>ممیزی SEC-M7 و ARCH-M1 را ثبت کرد: هیچ دوندهٔ آزمون نگهداری‌شده‌ای برای مسیرهای حساس وجود نداشت. اسکریپت‌های یک‌بارهٔ ممیزی جایگزین رگرسیون دائمی نبودند.</p>
+
+          <h3>۲. مسائل پوشش‌داده‌شده</h3>
+          <p>SEC-M7، هستهٔ ARCH-M1، و پشتوانهٔ ARCH-M3 / M4 و SEO-M1 / M2.</p>
+
+          <h3>۳. چه پیاده‌سازی شد</h3>
+          <ul class="tight">
+            <li>دوندهٔ Vitest 2.1.9 با <span class="mono">npm test</span>.</li>
+            <li>سوئیت‌های واحد/یکپارچه برای OAuth، RFQ، سرآیندهای امنیتی، قرارداد محتوا، تجزیه، محیط، schema، ایندکس/نقشهٔ سایت، و بعداً کیفیت وبلاگ.</li>
+            <li>گردش‌کار GitHub Actions روی <span class="mono">master</span>: <span class="mono">npm ci</span>، ممیزی وابستگی تولید، lint، typecheck، آزمون، build، بودجهٔ باندل.</li>
+            <li>قرارداد محتوا: ۲۲۸ رکورد و ۱۰۰ نشانی به‌عنوان snapshot تعمدی، نه سقف دائمی.</li>
+          </ul>
+
+          <h3>۴. پیاده‌سازی فنی</h3>
+          <p>
+            <span class="mono">vitest.config.mts</span> مسیرهای <span class="mono">@/</span> را مانند TypeScript حل می‌کند.
+            آزمون‌های قرارداد، Markdown واقعی را با <span class="mono">gray-matter</span> می‌خوانند.
+            آزمون ایندکس، توابع واقعی <span class="mono">sitemap.ts</span> و <span class="mono">robots.ts</span> را صدا می‌زند.
+            CI با <span class="mono">actions/setup-node@v4</span> و Node 20 اجرا می‌شود؛ ممیزی کامل dev با
+            <span class="mono">continue-on-error</span> فقط اطلاع‌رسانی است.
+          </p>
+
+          <h3>۵. پرونده‌های اثرگرفته</h3>
+          <p>
+            <span class="mono">vitest.config.mts</span>،
+            <span class="mono">.github/workflows/ci.yml</span>،
+            <span class="mono">src/lib/cms/oauth.test.ts</span>،
+            <span class="mono">src/lib/rfq/rfq.test.ts</span>،
+            <span class="mono">src/lib/rfq/outbox.test.ts</span>،
+            <span class="mono">src/lib/security-headers.test.ts</span>،
+            <span class="mono">src/lib/content/content.contract.test.ts</span>،
+            <span class="mono">src/lib/content/parse.test.ts</span>،
+            <span class="mono">src/lib/config/env.test.ts</span>،
+            <span class="mono">src/lib/seo/indexing.test.ts</span>،
+            <span class="mono">src/lib/seo/schema.test.ts</span>،
+            <span class="mono">package.json</span> (اسکریپت‌های test / typecheck / lint).
+          </p>
+
+          <h3>۶. بهبود قابلیت اطمینان</h3>
+          <p>تغییر در OAuth، RFQ، قرارداد CMS، hreflang یا schema بدون شکست آزمون ممکن نیست. CI همان دروازه را روی هر push و pull request تکرار می‌کند.</p>
+
+          <h3>۷. اثر عملی</h3>
+          <p>تیم می‌تواند محتوا و کد را با اطمینان از اینکه قراردادهای انتشار می‌شکنند نه ساکت می‌مانند، تغییر دهد. خریدار تغییری در ظاهر نمی‌بیند.</p>
+
+          <h3>۸. چه چیزی عوض نشد</h3>
+          <p>
+            دوندهٔ مرورگر جداگانه (Playwright) به <span class="mono">package.json</span> اضافه نشد.
+            <span class="mono">@playwright/test</span> فقط به‌عنوان peer اختیاری Next در lockfile ظاهر می‌شود و در اسکریپت‌های پروژه استفاده نمی‌شود.
+            بررسی دسترسی‌پذیری و RTL در همین سوئیت واحد و قراردادها پوشش داده شده، نه با خزش مرورگر خودکار.
+          </p>
+
+          <h3>۹. اعتبارسنجی</h3>
+          <p>آخرین اجرا: <strong>۱۱ پرونده، ۲۱۸ آزمون، همه موفق</strong> (جزئیات در بخش اعتبارسنجی نهایی).</p>
+
+          <h3>۱۰. وضعیت</h3>
+          <p><span class="badge ok">کامل</span> دروازهٔ کیفیت در مخزن و در تعریف CI برقرار است.</p>
+        </section>
+
+        <!-- ═══════════════ PHASE 3 ═══════════════ -->
+        <section class="block" id="phase-3">
+          <div class="phase-head">
+            <h2>فاز ۳ — استقرار، محیط، امنیت RFQ و تحویل ایمیل</h2>
+            <span class="badge ok">بسته شده در مخزن</span>
+          </div>
+          <p class="muted">شرط خروج: رفتار استقرار تکرارپذیر باشد و هیچ کنترل امنیتی به فرض توپولوژی نانوشته وابسته نماند.</p>
+
+          <h3>۱. چرا لازم بود</h3>
+          <p>
+            محدودکنندهٔ نرخ RFQ وابسته به توپولوژی بود (SEC-M4): بدون پروکسی قابل‌اعتماد همهٔ خریداران در سطل مشترک
+            <span class="mono">untrusted</span> بودند و پنج درخواست همه را برای یک ساعت قفل می‌کرد.
+            بدنه پیش از سقف خوانده می‌شد؛ Turnstile بدون timeout و بدون بستن hostname/action بود (SEC-M5).
+            قرارداد محیط مکتوب و سلامت استقرار وجود نداشت (SEC-M6 / ARCH-M5).
+            شکست گذرای Resend می‌توانست استعلام واجد شرایط را بی‌صدا از دست بدهد یا تکرار کند (ARCH-M9).
+          </p>
+
+          <h3>۲. مسائل پوشش‌داده‌شده</h3>
+          <p>SEC-M4، SEC-M5، SEC-M6، SEC-L1 تا L3، ARCH-M5، ARCH-M9.</p>
+
+          <h3>۳. چه پیاده‌سازی شد</h3>
+          <ul class="tight">
+            <li>تصمیم توپولوژی: یک فرایند Node پشت Nginx + systemd. مستندات و واحدها در <span class="mono">deploy/</span>.</li>
+            <li>قالب <span class="mono">.env.example</span> با برچسب افشا و جفت‌کلیدها.</li>
+            <li><span class="mono">validateEnv()</span> و <span class="mono">GET /api/health</span> (۲۰۰ سالم / ۵۰۳ معیوب، بدون راز).</li>
+            <li>موتور Node ≥ ۲۰.۱۸ و npm ≥ ۱۰؛ <span class="mono">.nvmrc = 20</span>.</li>
+            <li>استخراج IP فقط وقتی <span class="mono">TRUST_PROXY=true</span>؛ در غیر این صورت بدون سطل سراسری.</li>
+            <li>دو لایه محدودیت: پیش‌تأیید ۳۰/ساعت و ارسال پذیرفته‌شده ۵/ساعت، با <span class="mono">Retry-After</span>.</li>
+            <li>سقف بدنه ۱۰۰٬۰۰۰ بایت؛ timeout ارسال و Turnstile؛ بررسی action ثابت و hostname.</li>
+            <li>صندوق خروجی بادوام با کلید یکتایی، تلاش مجدد تنبل و کرون داخلی <span class="mono">/api/cron/rfq-retry</span>.</li>
+            <li>حذف <span class="mono">X-Powered-By</span>؛ لاگ خطای مرورگر فقط در غیرتولید.</li>
+          </ul>
+
+          <h3>۴. پیاده‌سازی فنی</h3>
+          <p>
+            محدودکننده هم‌گام و اتمیک روی event loop تک‌رشته‌ای Node است و فقط برای تک‌نمونه درست است — این محدودیت صریحاً مستند شده.
+            صندوق خروجی یک JSON با نوشتن موقت و rename اتمیک است. payload خریدار فقط تا تحویل موفق نگه داشته می‌شود و سپس پاک می‌شود.
+            رویدادهای عملیاتی غیر-PII هستند. نگهداری پیش‌فرض ۳۰ روز. حداکثر تلاش ۶ با backoff نمایی تا سقف ۳۰ دقیقه.
+          </p>
+
+          <h3>۵. پرونده‌ها</h3>
+          <p>
+            <span class="mono">docs/DEPLOYMENT.md</span>،
+            <span class="mono">deploy/feiz-food.service</span>،
+            <span class="mono">deploy/nginx.example.conf</span>،
+            <span class="mono">.env.example</span>،
+            <span class="mono">src/lib/config/env.ts</span>،
+            <span class="mono">src/app/api/health/route.ts</span>،
+            <span class="mono">src/lib/rfq/*</span>،
+            <span class="mono">src/app/api/rfq/route.ts</span>،
+            <span class="mono">src/app/api/cron/rfq-retry/route.ts</span>،
+            <span class="mono">next.config.ts</span> (<span class="mono">poweredByHeader: false</span>)،
+            <span class="mono">src/app/[locale]/error.tsx</span>.
+          </p>
+
+          <h3>۶. بهبود امنیت و قابلیت اطمینان</h3>
+          <p>
+            پنج استعلام دیگر همهٔ خریداران را قفل نمی‌کند. بدنه و فراخوان بیرونی کران‌دار است. توکن Turnstile به action و hostname بسته می‌شود.
+            استعلام در شکست گذرا گم یا تکرار نمی‌شود. استقرار ناقص از دروازهٔ سلامت رد می‌شود.
+          </p>
+
+          <h3>۷. اثر عملی</h3>
+          <p>
+            خریدار در شلوغی گذرا به‌جای خطای مبهم، وضعیت «در صف» یا تلاش مجدد قابل‌فهم می‌بیند.
+            اپراتور می‌تواند سلامت را با <span class="mono">curl /api/health</span> بسنجد و صندوق خروجی را بین انتشارها در
+            <span class="mono">.data/</span> نگه دارد.
+          </p>
+
+          <h3>۸. چه چیزی عوض نشد</h3>
+          <p>
+            Redis یا محدودکنندهٔ لبهٔ مشترک اضافه نشد؛ توپولوژی تک‌نمونه همان حافظهٔ فرایندی را درست می‌کند.
+            استقرار واقعی سرور (صدور گواهی، DNS، روشن کردن سرویس) تعمداً خارج از تغییر کد است.
+            <span class="mono">unsafe-inline</span> عمومی به‌خاطر بوت‌استرپ Next باقی ماند و با آزمون سرآیند قفل شد.
+          </p>
+
+          <h3>۹. اعتبارسنجی</h3>
+          <p>
+            ۴۰ آزمون RFQ + ۵ آزمون صندوق خروجی + ۱۰ آزمون محیط + ۱۵ آزمون سرآیند.
+            <span class="mono">DEPLOYMENT.md</span> فهرست غیرعملیاتی را ثبت کرده: build، test، <span class="mono">validateEnv</span>، و <span class="mono">npm ci</span>.
+          </p>
+
+          <h3>۱۰. وضعیت</h3>
+          <p><span class="badge ok">کامل در مخزن</span> روشن‌کردن VPS، کلیدهای Resend/Turnstile/OAuth و یک RFQ آزمایشی واقعی کار اپراتور است.</p>
+        </section>
+
+        <!-- ═══════════════ PHASE 4 ═══════════════ -->
+        <section class="block" id="phase-4">
+          <div class="phase-head">
+            <h2>فاز ۴ — دسترسی‌پذیری، تبدیل RFQ، واکنش‌گرایی و RTL</h2>
+            <span class="badge ok">بسته شده در مخزن</span>
+          </div>
+          <p class="muted">شرط خروج: تضاد رنگ اصلاح شود؛ ناوبری موبایل واقعاً مودال باشد؛ خطای RFQ قابل بازیابی باشد؛ مقادیر دوجهته در فارسی خوانا بمانند؛ بدون بازطراحی برند.</p>
+
+          <h3>۱. چرا لازم بود</h3>
+          <p>
+            نقره‌ای <span class="mono">#94a3b8</span> روی سفید تضاد ۲.۵۶:۱ داشت (حداقل AA برای متن عادی ۴.۵:۱ است).
+            فیروزه‌ای برند روی سفید ۳.۶۸:۱ بود. منوی موبایل اسکرول را قفل می‌کرد اما فوکوس را به پشت لایه می‌داد.
+            خطای RFQ بیشتر روی toast کلی بود. اعداد و ایمیل در فارسی می‌توانستند وارونه دیده شوند.
+          </p>
+
+          <h3>۲. مسائل</h3>
+          <p>UX-M1 تا UX-M7 و UX-L1 تا UX-L5.</p>
+
+          <h3>۳. چه پیاده‌سازی شد</h3>
+          <ul class="tight">
+            <li>توکن‌های جدا: <span class="mono">--color-ink-soft</span>، <span class="mono">--color-cyan-link</span>، <span class="mono">--color-cyan-btn</span> برای سطح روشن؛ نقره‌ای برای سطح تیره ماند.</li>
+            <li>مودال موبایل: تلهٔ فوکوس، قفل اسکرول، بازگرداندن فوکوس، بستن با بزرگ شدن ویوپورت به <span class="mono">lg</span>، Escape.</li>
+            <li>انتخاب زبان رومیزی با نام‌گذاری در دسترس و رفتار صفحه‌کلید disclosure.</li>
+            <li>قرارداد مشترک اعتبارسنجی کلاینت/سرور؛ خلاصهٔ خطا؛ فوکوس روی اولین فیلد؛ اعلان در دسترس.</li>
+            <li>بازنشانی ویجت Turnstile پس از شکست قابل‌تلاش مجدد.</li>
+            <li>ایمیل و تلفن با <span class="mono">dir="ltr"</span>؛ متن آزاد با <span class="mono">dir="auto"</span>.</li>
+            <li>ریل زنجیرهٔ تأمین با ناحیهٔ نام‌گذاری‌شده و برچسب جدا از آیکون.</li>
+            <li>تاریخ کارت وبلاگ محلی؛ <span class="mono">mailto:</span> / <span class="mono">tel:</span>؛ پیوند حریم نزدیک ارسال.</li>
+            <li>متن وضعیت بارگذاری محلی برای صفحه‌خوان.</li>
+            <li>پرچم زبان به‌صورت SVG درون‌خطی (نه ایموجی که روی Chrome ویندوز جعبه می‌شود).</li>
+          </ul>
+
+          <h3>۴. فنی</h3>
+          <p>
+            <span class="mono">useMobileNav</span> تلهٔ Tab را روی عناصر قابل‌فوکوسِ واقعاً مرئی اعمال می‌کند و تا پایان گذار visibility با
+            <span class="mono">requestAnimationFrame</span> صبر می‌کند.
+            دکمه از توکن‌های تضاد جدید استفاده می‌کند نه فیروزهٔ تزئینی روی متن کوچک.
+          </p>
+
+          <h3>۵. پرونده‌ها</h3>
+          <p>
+            <span class="mono">src/app/globals.css</span>،
+            <span class="mono">src/components/ui/button.tsx</span>،
+            <span class="mono">src/components/layout/header/*</span>،
+            <span class="mono">src/components/layout/LocaleFlag.tsx</span>،
+            <span class="mono">src/components/rfq/RfqForm.tsx</span>،
+            <span class="mono">src/components/rfq/Field.tsx</span>،
+            <span class="mono">src/components/rfq/use-rfq-form.ts</span>،
+            <span class="mono">src/components/rfq/TurnstileWidget.tsx</span>،
+            <span class="mono">src/components/supply-chain/SupplyChainRail.tsx</span>،
+            فرهنگ‌های چهار زبان، صفحات تماس / وبلاگ / خطا / بارگذاری.
+          </p>
+
+          <h3>۶. بهبود دسترسی‌پذیری و UX</h3>
+          <p>
+            متن عادی روی سطح روشن دیگر با نقره‌ای تزئینی رنگ نمی‌شود. تضاد لینک و دکمهٔ اصلی روی سفید با توکن‌های جداگانه تنظیم شده است.
+            مودال موبایل از نظر صفحه‌کلید با ظاهر تمام‌صفحه یکی است.
+          </p>
+          <h3>۷. اثر عملی روی وب‌سایت</h3>
+          <p>
+            صفحه‌کلید در منوی موبایل پشت لایه گم نمی‌شود. خریدار فارسی ایمیل و عدد را با ترتیب پایدار می‌بیند.
+            ارسال ناموفق RFQ صفحه را قفل نمی‌کند و فیلد مشخص را نشان می‌دهد.
+          </p>
+
+          <h3>۸. چه چیزی عوض نشد</h3>
+          <p>چیدمان، سلسله‌مراتب تایپ، و پالت برند حفظ شد. پرچم به‌عنوان شناسهٔ بصری زبان ماند؛ فقط پیاده‌سازی به SVG تغییر کرد. هیچ انیمیشن کتابخانه‌ای اضافه نشد.</p>
+
+          <h3>۹. اعتبارسنجی</h3>
+          <p>
+            آزمون‌های RFQ حالت‌های اعتبارسنجی و بازیابی را پوشش می‌دهند. آزمون سرآیند CSP/COOP را قفل می‌کند.
+            خزش دستی WCAG سراسری با ابزار مرورگر در این محیط گزارش نشده و ادعا نمی‌شود.
+          </p>
+
+          <h3>۱۰. وضعیت</h3>
+          <p><span class="badge ok">کامل در مخزن</span></p>
+        </section>
+
+        <!-- ═══════════════ PHASE 5 ═══════════════ -->
+        <section class="block" id="phase-5">
+          <div class="phase-head">
+            <h2>فاز ۵ — CMS چهارزبانه، قرارداد محتوا، hreflang و سئو</h2>
+            <span class="badge ok">بسته شده در مخزن</span>
+          </div>
+          <p class="muted">شرط خروج: Decap هر چهار زبان را مدیریت کند؛ loader و CMS یک مدل داشته باشند؛ hreflang فقط به ترجمهٔ واقعی اشاره کند؛ fallback غلط‌زبان ایندکس نشود.</p>
+
+          <h3>۱. چرا لازم بود</h3>
+          <p>
+            مجموعهٔ Decap برای همهٔ انواع محتوا در هر زبان کامل نبود. فیلد <span class="mono">language</span> وبلاگ تکراری بود.
+            hreflang می‌توانست به صفحهٔ ناموجود اشاره کند. محتوای انگلیسی ممکن بود زیر نشانی فارسی/روسی/ویتنامی ایندکس شود (SEO-M2).
+            بازار اصلی در کد سخت بود. تغییر مسیر ریشه موقت بود نه دائمی.
+          </p>
+
+          <h3>۲. مسائل</h3>
+          <p>ARCH-M2 تا M4 و M8؛ SEO-M1، M2، M4؛ SEO-L1 تا L5.</p>
+
+          <h3>۳. چه پیاده‌سازی شد</h3>
+          <ul class="tight">
+            <li>یک schema اجباری برای هر مجموعه: slug کباب‌کیس، تطابق نام پرونده، یکتایی order، تاریخ ISO، وجود رسانه، طول SEO.</li>
+            <li>حذف فیلد تکراری <span class="mono">language</span> وبلاگ؛ پوشه منبع حقیقت زبان است.</li>
+            <li>تولید <span class="mono">config.yml</span> با <span class="mono">scripts/generate-cms-config.mjs</span> — هر مجموعه یک‌بار در هر زبان.</li>
+            <li><span class="mono">buildAlternates</span>: فقط زبان‌هایی که واقعاً همان slug را دارند + <span class="mono">x-default</span>.</li>
+            <li>نبود مجموعه در یک زبان به انگلیسی برنمی‌گردد (آزمون probe).</li>
+            <li>بازار اصلی از فیلد محتوایی <span class="mono">primary</span> می‌آید؛ حداکثر یکی در هر زبان.</li>
+            <li>تغییر مسیر ساختاری ۳۰۸ با حفظ query در <span class="mono">src/proxy.ts</span>.</li>
+            <li><span class="mono">updated</span> وبلاگ و صفحات حقوقی → <span class="mono">dateModified</span> و <span class="mono">lastmod</span>. بدون priority/changefreq ساختگی.</li>
+            <li>تصمیم مکتوب: حفظ slug انگلیسی مشترک (<span class="mono">docs/SLUG-POLICY.md</span>).</li>
+          </ul>
+
+          <h3>۴. فنی</h3>
+          <p>
+            همان تابع <span class="mono">buildAlternates</span> هم metadata HTML و هم <span class="mono">alternates.languages</span> نقشهٔ سایت را می‌سازد.
+            اگر خوشه فقط en+fa باشد، ru/vi تبلیغ نمی‌شوند. اگر en نباشد، x-default به اولین زبان موجود می‌رود نه به صفحهٔ انگلیسی ناموجود.
+          </p>
+
+          <h3>۵. پرونده‌ها</h3>
+          <p>
+            <span class="mono">scripts/generate-cms-config.mjs</span>،
+            <span class="mono">public/admin/config.yml</span>،
+            <span class="mono">src/lib/content/*</span>،
+            <span class="mono">src/lib/seo/hreflang.ts</span>،
+            <span class="mono">src/lib/seo/metadata.ts</span>،
+            <span class="mono">src/app/sitemap.ts</span>،
+            <span class="mono">src/app/robots.ts</span>،
+            <span class="mono">src/proxy.ts</span>،
+            <span class="mono">docs/SLUG-POLICY.md</span>،
+            <span class="mono">docs/CMS-ADMIN-SETUP.md</span>.
+          </p>
+
+          <h3>۶. بهبود CMS و سئو</h3>
+          <p>
+            مدل محتوا و فرم مدیریت یکی است. hreflang فقط به ترجمهٔ موجود اشاره می‌کند.
+            تغییر مسیر ساختاری سیگنال دائمی ۳۰۸ است. freshness از فیلد ویرایشی می‌آید نه از زمان ساخت.
+          </p>
+          <h3>۷. اثر عملی روی وب‌سایت</h3>
+          <p>
+            ویرایشگر می‌تواند محصول، بازار، گواهی، قابلیت، کیفیت، زنجیره و صفحات را در هر چهار زبان بدون Git دستی مدیریت کند.
+            موتور جستجو hreflang به ۴۰۴ یا محتوای غلط‌زبان نمی‌بیند. نشانی‌های موجود حفظ شدند.
+          </p>
+
+          <h3>۸. چه چیزی عوض نشد</h3>
+          <p>
+            مهاجرت به slug محلی انجام نشد؛ شواهد کلیدواژهٔ چندزبانه وجود نداشت و ارزش نشانی‌های فعلی حفظ شد.
+            بدنهٔ مقالات موجود بازنویسی نشد. مدل «یک H1 فقط از عنوان» ماند.
+          </p>
+
+          <h3>۹. اعتبارسنجی</h3>
+          <p>
+            قرارداد محتوا: ۱۸ آزمون شامل ۲۲۸ رکورد، توازن slug، بدون H1 بدنه، پیوند داخلی، فیلدهای CMS.
+            ایندکس: ۱۵ آزمون شامل دقیقاً ۱۰۰ URL، یکتایی، حذف admin/api، hreflang کامل + x-default، تطابق canonical.
+            <span class="mono">cms:generate --check</span> در آخرین اجرا سبز بود.
+          </p>
+
+          <h3>۱۰. وضعیت</h3>
+          <p>
+            <span class="badge ok">کامل</span>
+            پس از این فاز، یک دستیار تحریریهٔ سئو برای فرم وبلاگ اضافه شد (چک‌لیست زنده، بدون نمرهٔ رتبه‌بندی).
+            آن کار فاز نهم برنامهٔ ممیزی نیست؛ در وضعیت فعلی مخزن و در آخرین آزمون‌ها لحاظ شده است.
+          </p>
+        </section>
+
+        <!-- ═══════════════ PHASE 6 ═══════════════ -->
+        <section class="block" id="phase-6">
+          <div class="phase-head">
+            <h2>فاز ۶ — نگهداری و بازآرایی معماری</h2>
+            <span class="badge ok">بسته شده در مخزن</span>
+          </div>
+          <p class="muted">شرط خروج: اجزای بزرگ مسئولیت مشخص داشته باشند؛ قرارداد سرور/کلاینت کوچک باشد؛ کد مرده حذف شود؛ بدون تغییر طراحی مصوب.</p>
+
+          <h3>۱. چرا لازم بود</h3>
+          <p>Header و فرم RFQ منطق حالت، دسترس‌پذیری و رندر را در هم آمیخته بودند (ARCH-M6). وابستگی‌ها و استایل‌های کهنه هزینهٔ نگهداری و باندل را بالا می‌بردند (ARCH-L1 / L2).</p>
+
+          <h3>۲. مسائل</h3>
+          <p>ARCH-M6، ARCH-M7 (مرز کلاینت)، ARCH-L1 تا L3.</p>
+
+          <h3>۳. چه پیاده‌سازی شد</h3>
+          <ul class="tight">
+            <li>Header به پوسته + <span class="mono">DesktopNav</span> + <span class="mono">MobileNav</span> + <span class="mono">LanguageSwitcher</span> + <span class="mono">nav.ts</span> + قلاب‌های اسکرول و مودال تجزیه شد.</li>
+            <li>RFQ به schema/view-model، <span class="mono">use-rfq-form</span>، <span class="mono">Field</span>، آداپتر Turnstile و لایهٔ انتقال جدا شد.</li>
+            <li>زیربخش‌های بازار استخراج شد (<span class="mono">MarketAttributes</span> و همراهان).</li>
+            <li>حذف کد/رسانهٔ بدون مصرف پس از اثبات ارجاع (از جمله دارایی‌های گواهی/لوگوی بلااستفاده در ممیزی‌های بعدی).</li>
+            <li>مستندات عملیاتی باقی‌مانده: استقرار، CMS، کارایی، سیاست slug.</li>
+          </ul>
+
+          <h3>۴. پیاده‌سازی فنی</h3>
+          <p>
+            پوستهٔ Header فقط ترکیب می‌کند؛ قلاب موبایل تلهٔ فوکوس و قفل اسکرول را دارد؛
+            <span class="mono">nav.ts</span> آیتم‌ها را خالص می‌سازد.
+            RFQ یک قرارداد اعتبارسنجی را بین کلاینت و <span class="mono">src/lib/rfq/validation.ts</span> شریک است.
+          </p>
+          <h3>۵. پرونده‌ها و پیکربندی‌های اثرگرفته</h3>
+          <p>
+            پوشهٔ <span class="mono">src/components/layout/header/</span>،
+            <span class="mono">src/components/rfq/</span>،
+            <span class="mono">src/components/markets/MarketAttributes.tsx</span>،
+            <span class="mono">src/lib/utils.ts</span> و دکمه.
+            رفتار عمومی نباید عوض می‌شد؛ آزمون‌های ناوبری/RFQ همان قرارداد را نگه می‌دارند.
+          </p>
+          <h3>۶. بهبود معماری</h3>
+          <p>نگرانی‌ها جدا و قابل آزمون شدند. مرز کلاینت کوچک‌تر شد و دیکشنری کامل از اجزای وضعیت حذف شد (تکمیل در فاز ۷).</p>
+          <h3>۷. اثر عملی روی وب‌سایت</h3>
+          <p>بازدیدکننده همان ظاهر را می‌بیند. بازبینی یک نگرانی — مثلاً فقط تلهٔ فوکوس — دیگر نیازمند خواندن کل Header نیست.</p>
+
+          <h3>۸. چه چیزی عوض نشد</h3>
+          <p>ظاهر مصوب، سفر خریدار، و وابستگی‌های تولیدی که مصرف‌کننده دارند (از جمله <span class="mono">lucide-react</span>، <span class="mono">sonner</span> فقط روی تماس، <span class="mono">cva</span>/<span class="mono">clsx</span>).</p>
+
+          <h3>۹. اعتبارسنجی</h3>
+          <p>سوئیت کامل پس از تجزیه سبز ماند. در گذر لاغرسازی بعدی، <span class="mono">shadcn</span> فقط پس از اثبات اینکه import سی‌اس‌اس و توکن‌هایش مصرف نمی‌شوند حذف شد؛ سپس build دوباره سبز شد.</p>
+
+          <h3>۱۰. وضعیت</h3>
+          <p><span class="badge ok">کامل</span></p>
+        </section>
+
+        <!-- ═══════════════ PHASE 7 ═══════════════ -->
+        <section class="block" id="phase-7">
+          <div class="phase-head">
+            <h2>فاز ۷ — کارایی: فونت، جاوااسکریپت، رندر و رسانه</h2>
+            <span class="badge ok">بسته شده در مخزن</span>
+          </div>
+          <p class="muted">شرط خروج: فقط فونت فعال واکشی شود؛ مرز کلاینت کوچک شود؛ تماس ایستا بماند؛ فیلترهای گران کم شود؛ بودجه تعریف شود.</p>
+
+          <h3>۱. چرا لازم بود</h3>
+          <p>
+            ممیزی پیش‌بارگذاری اجباری هر دو فونت متغیر را ۴۶۳ کیلوبایت گزارش کرد (Inter ۳۵۲٬۲۴۰ بایت + Vazirmatn ۱۱۱٬۱۵۲ بایت)
+            در حالی که هر صفحه فقط یکی را اعمال می‌کند (PERF-M1).
+            صفحات خطا/۴۰۴ کل دیکشنری را به کلاینت می‌کشیدند (PERF-M2).
+            تماس به‌خاطر پیش‌انتخاب query پویا رندر می‌شد (PERF-M3).
+            blur پنجاه پیکسل روی هدر ثابت در اسکرول گران بود (PERF-M4).
+          </p>
+
+          <h3>۲. مسائل</h3>
+          <p>PERF-M1 تا M4 و PERF-L1 تا L5.</p>
+
+          <h3>۳. چه پیاده‌سازی شد</h3>
+          <ul class="tight">
+            <li>یک <span class="mono">&lt;link rel="preload"&gt;</span> شرطی: FA فقط Vazirmatn، بقیه فقط Inter. خانواده با CSS اعمال می‌شود پس فایل دیگر واکشی نمی‌شود.</li>
+            <li>ماژول کوچک <span class="mono">status.ts</span> برای خطا / ۴۰۴ / بارگذاری به‌جای کل دیکشنری.</li>
+            <li>پوستهٔ تماس ایستا؛ فرم با <span class="mono">next/dynamic</span> و <span class="mono">ssr: true</span>.</li>
+            <li>هدر: <span class="mono">.glass-nav</span> با blur ۱۸px؛ بخش‌ها blur ۵۰px را نگه داشتند.</li>
+            <li>۲۷ پروندهٔ رسانه، همه ارجاع‌شده؛ <span class="mono">Cache-Control: public, max-age=2592000</span> روی <span class="mono">/media/*</span>.</li>
+            <li>یک IntersectionObserver مشترک برای Reveal؛ محتوا بدون JS دیده می‌شود (<span class="mono">@media (scripting: enabled)</span>).</li>
+            <li>بودجهٔ باندل و بودجهٔ آزمایشگاهی Lighthouse؛ RUM به تأیید حریم و اپراتور موکول شد.</li>
+          </ul>
+
+          <h3>۴. پیاده‌سازی فنی</h3>
+          <p>
+            layout فقط خانوادهٔ فعال را preload می‌کند. Reveal یک observer مشترک دارد و حالت پنهان فقط داخل
+            <span class="mono">@media (scripting: enabled)</span> است. بودجه پس از build روی
+            <span class="mono">.next/static/chunks</span> جمع می‌زند.
+          </p>
+          <h3>۵. پرونده‌ها و پیکربندی‌های اثرگرفته</h3>
+          <p>
+            <span class="mono">src/app/[locale]/layout.tsx</span>،
+            <span class="mono">src/lib/i18n/dictionaries/status.ts</span>،
+            <span class="mono">src/app/[locale]/contact/page.tsx</span>،
+            <span class="mono">src/components/shared/Reveal.tsx</span>،
+            <span class="mono">src/app/globals.css</span>،
+            <span class="mono">perf-budget.json</span> (سقف JS ۷۹۳٬۶۰۰ بایت / CSS ۹۷٬۲۸۰ بایت)،
+            <span class="mono">lighthouse-budget.json</span> (فونت ۳۶۰ کیبی‌بایت؛ LCP ۲۵۰۰ms؛ CLS ۰.۱)،
+            <span class="mono">scripts/check-bundle-budget.mjs</span>،
+            <span class="mono">docs/PERFORMANCE.md</span>.
+          </p>
+          <h3>۶. بهبود کارایی</h3>
+          <p>پیش‌بارگذاری دوگانهٔ فونت حذف شد. مرز کلاینت خطا/۴۰۴ کوچک شد. تماس دیگر فقط به‌خاطر query پویا نیست. blur هدر اندازه‌گیری‌شده کاهش یافت.</p>
+          <h3>۷. اثر عملی روی وب‌سایت</h3>
+          <p>
+            بازدیدکنندهٔ انگلیسی فونت فارسی را پیش‌بارگذاری نمی‌کند و برعکس.
+            صفحات معمولی دیکشنری کامل را هیدراته نمی‌کنند.
+            تماس می‌تواند از کش ایستا استفاده کند و همچنان <span class="mono">?product=</span> را محترم بشمارد.
+          </p>
+
+          <h3>۸. چه چیزی عوض نشد</h3>
+          <p>
+            کیفیت تصویر AVIF/WebP و <span class="mono">qualities: [75, 90]</span> ماند.
+            RUM اضافه نشد (نیاز به ارائه‌دهندهٔ بررسی‌شده، سیاست نگهداری، به‌روزرسانی حریم خصوصی و امضای اپراتور).
+            Lighthouse CI به خط لوله وصل نشده؛ پروندهٔ بودجه برای وقتی است که وصل شود.
+          </p>
+
+          <h3>۹. اعتبارسنجی</h3>
+          <p>
+            آخرین <span class="mono">npm run perf:budget</span> پس از build:
+            JS کلاینت <strong>۷۱۴.۰ کیلوبایت</strong> از ۱۷ پرونده (سقف ۷۷۵.۰)،
+            CSS کلاینت <strong>۸۰.۲ کیلوبایت</strong> از ۱ پرونده (سقف ۹۵.۰) — داخل بودجه.
+          </p>
+
+          <h3>۱۰. وضعیت</h3>
+          <p><span class="badge ok">کامل در مخزن</span> اندازه‌گیری میدانی Web Vitals هنوز تعویق آگاهانه است.</p>
+        </section>
+
+        <!-- ═══════════════ PHASE 8 ═══════════════ -->
+        <section class="block" id="phase-8">
+          <div class="phase-head">
+            <h2>فاز ۸ — اعتبارسنجی سراسری و بستن ممیزی</h2>
+            <span class="badge ok">دروازهٔ مخزن بسته شد</span>
+          </div>
+          <p class="muted">شرط خروج برنامه: هر یافته به کار تمام‌شده یا تصمیم معماری مستند نگاشته شود؛ بررسی‌های شبه‌تولید در مخزن سبز باشند.</p>
+
+          <h3>۱. چرا لازم بود</h3>
+          <p>فازهای ۱ تا ۷ هر کدام بخشی را درست کردند. فاز ۸ باید ماتریس پوشش ممیزی را ببندد و از بازگشت نقص جلوگیری کند — بدون شروع قابلیت تازه.</p>
+
+          <h3>۲. مسائل پوشش‌داده‌شده</h3>
+          <p>همهٔ شناسه‌های ماتریس برنامه (SEC / UX / ARCH / PERF / SEO) یا با پیاده‌سازی بسته شدند یا با تصمیم مستند (slug، توپولوژی، public_repo، تعویق RUM، محدودیت CSP فریم‌ورک).</p>
+
+          <h3>۳. چه انجام شد</h3>
+          <ul class="tight">
+            <li>اجرای کامل سوئیت امنیت (OAuth، RFQ، سرآیند، CSP، راز، وابستگی).</li>
+            <li>خزش قراردادی ۱۰۰ نشانی، canonical، hreflang، robots، JSON-LD، پیوند داخلی.</li>
+            <li>تأیید چهار زبان، توازن ترجمه، RTL در پیکربندی و CSS منطقی.</li>
+            <li>مقایسه با بودجهٔ کارایی پس از build.</li>
+            <li>یکپارچگی Decap و تولید CMS به‌عنوان <span class="mono">prebuild</span>.</li>
+            <li>لاغرسازی نهایی منبع با حذف فقط پس از اثبات عدم مصرف.</li>
+          </ul>
+
+          <h3>۴. فنی</h3>
+          <p>
+            دروازه همان شغلی است که CI تعریف کرده. استقرار زنده و ارسال RFQ به صندوق واقعی (Task 8.5) تعمداً عملیاتی است و در این محیط اجرا نشد.
+          </p>
+
+          <h3>۵. اثرگرفته</h3>
+          <p>کل درخت کیفیت: آزمون‌ها، CI، <span class="mono">prebuild</span>، بودجه، مستندات عملیاتی باقی‌مانده. بدنهٔ مقالات موجود دست نخورده ماند.</p>
+
+          <h3>۶. بهبود قابلیت اطمینان انتشار</h3>
+          <p>ماتریس ممیزی در مخزن یا با کد یا با تصمیم مکتوب بسته است. CI همان دروازه را روی هر تغییر تکرار می‌کند.</p>
+          <h3>۷. اثر عملی روی وب‌سایت</h3>
+          <p>مخزن آمادهٔ انتشار است به این معنا که کنترل‌های امنیتی، قرارداد محتوا و بودجه در git قابل اثبات‌اند. روشن‌کردن دامنه هنوز کار اپراتور است.</p>
+
+          <h3>۸. چه چیزی عوض نشد / انجام نشد</h3>
+          <ul class="tight">
+            <li>استقرار روی VPS انجام نشد.</li>
+            <li>یک RFQ واقعی به صندوق فروش ارسال نشد.</li>
+            <li>ورود OAuth روی <span class="mono">https://feizfood.com/admin</span> در این محیط آزمایش نشد.</li>
+            <li>Lighthouse CI و RUM اجرا/فعال نشدند.</li>
+          </ul>
+
+          <h3>۹. اعتبارسنجی</h3>
+          <p>همان نتایج بخش بعد — آخرین اجرای کامل پس از دستیار سئو وبلاگ و حذف <span class="mono">shadcn</span>.</p>
+
+          <h3>۱۰. وضعیت</h3>
+          <p>
+            <span class="badge ok">دروازهٔ مخزن بسته</span>
+            <span class="badge warn">Task 8.5 عملیاتی باقی است</span>
+          </p>
+        </section>
+
+        <!-- ═══════════════ VALIDATION ═══════════════ -->
+        <section class="block" id="validation">
+          <h2>اعتبارسنجی و آزمون نهایی (آخرین اجرا)</h2>
+          <p>
+            اعداد زیر از اجرای واقعی روی همین درخت کاری پس از گذر پرداخت دستیار سئو و حذف بستهٔ بلااستفادهٔ
+            <span class="mono">shadcn</span> آمده‌اند. هیچ مقداری تخمین زده نشده است.
+          </p>
+          <table>
+            <thead><tr><th>دروازه</th><th>فرمان / روش</th><th>نتیجه</th></tr></thead>
+            <tbody>
+              <tr><td>نصب تمیز</td><td><span class="mono">npm ci --no-audit --no-fund</span></td><td>خروجی ۰ — ۱۱۰۷ بسته اضافه شد</td></tr>
+              <tr><td>TypeScript سخت‌گیر</td><td><span class="mono">npx tsc --noEmit</span></td><td>خروجی ۰</td></tr>
+              <tr><td>ESLint</td><td><span class="mono">npx eslint</span></td><td>خروجی ۰</td></tr>
+              <tr><td>Vitest</td><td><span class="mono">npx vitest run</span></td><td><strong>۱۱ پرونده، ۲۱۸ آزمون، همه موفق</strong> (مدت ۴.۶۴ ثانیه)</td></tr>
+              <tr><td>ساخت تولید</td><td><span class="mono">npx next build</span></td><td>موفق — <strong>۱۰۵ صفحه</strong> فهرست‌شده؛ چهار زبان SSG</td></tr>
+              <tr><td>یکپارچگی CMS</td><td><span class="mono">node scripts/generate-cms-config.mjs --check</span></td><td>config.yml، internal-paths.json و blog-quality.js به‌روز</td></tr>
+              <tr><td>Decap خودمیزبان</td><td><span class="mono">node scripts/vendor-decap.mjs --check</span></td><td>decap-cms@3.15.1 — ۹۳ پرونده مطابق manifest</td></tr>
+              <tr><td>بودجهٔ باندل</td><td><span class="mono">npm run perf:budget</span></td><td>JS ۷۱۴.۰ کیلوبایت / ۷۷۵.۰ — CSS ۸۰.۲ / ۹۵.۰ — داخل سقف</td></tr>
+              <tr><td>ممیزی وابستگی تولید</td><td><span class="mono">npm audit --omit=dev</span></td><td>info/low/moderate/high/critical همه ۰</td></tr>
+              <tr><td>ممیزی کامل (اطلاعی)</td><td><span class="mono">npm audit</span></td><td>۳۹ مورد: ۱ بحرانی، ۳۵ بالا، ۳ متوسط — هیچ‌کدام در گراف تولید نیستند</td></tr>
+            </tbody>
+          </table>
+
+          <h3>تفکیک ۲۱۸ آزمون</h3>
+          <table>
+            <thead><tr><th>پرونده</th><th>تعداد</th><th>پوشش</th></tr></thead>
+            <tbody>
+              <tr><td><span class="mono">oauth.test.ts</span></td><td>۶۴</td><td>XSS، state، origin، کوکی، سریالایز</td></tr>
+              <tr><td><span class="mono">rfq.test.ts</span></td><td>۴۰</td><td>مبدأ، بدنه، اعتبارسنجی، Turnstile، نرخ</td></tr>
+              <tr><td><span class="mono">content.contract.test.ts</span></td><td>۱۸</td><td>۲۲۸ رکورد، توازن زبان، CMS، رسانه، H1</td></tr>
+              <tr><td><span class="mono">security-headers.test.ts</span></td><td>۱۵</td><td>HSTS، CSP عمومی/ادمین، COOP، noindex</td></tr>
+              <tr><td><span class="mono">indexing.test.ts</span></td><td>۱۵</td><td>نقشهٔ سایت ۱۰۰، robots، hreflang، x-default</td></tr>
+              <tr><td><span class="mono">parse.test.ts</span></td><td>۱۱</td><td>تجزیه و اعتبارسنجی محتوا</td></tr>
+              <tr><td><span class="mono">env.test.ts</span></td><td>۱۰</td><td>جفت‌کلید، HTTPS، نشت NEXT_PUBLIC</td></tr>
+              <tr><td><span class="mono">schema.test.ts</span></td><td>۱۰</td><td>سیاست واقعیت Product / نبود brand</td></tr>
+              <tr><td><span class="mono">blog-seo.test.ts</span></td><td>۱۰</td><td>metadata وبلاگ</td></tr>
+              <tr><td><span class="mono">outbox.test.ts</span></td><td>۵</td><td>یکتایی و تلاش مجدد تحویل</td></tr>
+              <tr><td><span class="mono">blog-quality.test.ts</span></td><td>۲۰</td><td>دستیار تحریریه؛ بدون نمره و بدون چگالی</td></tr>
+            </tbody>
+          </table>
+
+          <h3>ممیزی پرونده / وابستگی استفاده‌نشده</h3>
+          <ul class="tight">
+            <li>۲۷/۲۷ پروندهٔ <span class="mono">public/media</span> ارجاع دارند.</li>
+            <li>هر دو فونت متغیر ارجاع دارند و به‌صورت شرطی پیش‌بارگذاری می‌شوند.</li>
+            <li>وابستگی تولید حذف‌شده در آخرین گذر: فقط <span class="mono">shadcn@4.16.2</span> پس از اثبات اینکه صرفاً CSS بلااستفاده وارد می‌کرد. lockfile از ۷۲۰K به ۶۲۰K رسید.</li>
+            <li>نگاه‌alikeهای نگه‌داشته‌شده با مصرف‌کننده: <span class="mono">pre-fix.ts</span> (آزمون oauth/rfq)، <span class="mono">lighthouse-budget.json</span>، vendor دِکپ، Vitest، deploy، CI، lucide/cva/clsx/sonner.</li>
+          </ul>
+
+          <h3>سئو، نقشهٔ سایت، canonical و hreflang</h3>
+          <ul class="tight">
+            <li>نقشهٔ سایت دقیقاً ۱۰۰ URL ایندکس‌پذیر دارد؛ یکتا؛ همه زیر <span class="mono">https://feizfood.com/{locale}</span>.</li>
+            <li>admin و api در نقشه نیستند. robots آن‌ها را disallow می‌کند و نقشه را اعلام می‌کند.</li>
+            <li>هر ورودی hreflang چهار زبان + x-default به <span class="mono">/en…</span> دارد وقتی en در خوشه باشد.</li>
+            <li>خوشهٔ ناقص فقط همتاهای واقعی را اعلام می‌کند (آزمون Task 5.3).</li>
+            <li>canonical با URL نقشهٔ سایت متقابل است.</li>
+            <li>Product JSON-LD در هیچ زبانی brand/manufacturer ندارد. BlogPosting از تصویر شاخص مرئی استفاده می‌کند نه برش اجتماعی.</li>
+          </ul>
+
+          <h3>چهار زبان و RTL</h3>
+          <p>
+            build برای en/fa/ru/vi صفحهٔ خانه، درباره، محصولات، بازارها، گواهی‌ها، کیفیت، زنجیره، تماس، وبلاگ، حریم و شرایط را SSG کرد.
+            <span class="mono">localeConfig.fa.direction = rtl</span> و فونت Vazirmatn است. پنل دستیار وبلاگ در مجموعهٔ فارسی
+            <span class="mono">dir="rtl"</span> می‌گیرد. آزمون قرارداد مجموعهٔ slug را در چهار زبان یکسان می‌خواهد.
+          </p>
+
+          <h3>دسترسی‌پذیری</h3>
+          <p>
+            توکن‌های تضاد سطح روشن، تلهٔ فوکوس مودال، نام‌گذاری انتخاب زبان، <span class="mono">dir</span> روی فیلدهای RFQ،
+            و متن وضعیت بارگذاری در کد هستند. ادعای عبور کامل WCAG AA از یک خزش مرورگر مستقل در این اجرا وجود ندارد
+            و ساخته نمی‌شود.
+          </p>
+
+          <h3>امنیت سرآیند و OAuth / RFQ</h3>
+          <p>
+            HSTS با preload، nosniff، referrer سخت، Permissions-Policy، X-Frame-Options، COOP، CSP جدا برای سایت و ادمین.
+            ادمین unpkg ندارد و فقط روی <span class="mono">/admin</span> اجازهٔ eval می‌دهد.
+            callback OAuth CSP nonce جدا دارد. نرخ RFQ دولایه است؛ صندوق خروجی یکتاست.
+          </p>
+
+          <h3>رسانه و فونت</h3>
+          <p>
+            ۲۷ تصویر مصرف‌شده. Inter ۳۴۴ کیلوبایت، Vazirmatn ۱۰۹ کیلوبایت. بودجهٔ آزمایشگاهی فونت ۳۶۰ کیبی‌بایت برای یک خانواده در هر زبان است.
+          </p>
+
+          <div class="warnbox">
+            <strong>خواندن ممیزی کامل npm:</strong> مورد بحرانی گزارش‌شده
+            <span class="mono">GHSA-5xrq-8626-4rwp</span> مربوط به سرور UI توسعهٔ Vitest است (وابستگی توسعه).
+            موارد بالا عمدتاً از گراف انتقالی <span class="mono">decap-cms</span> (از جمله immutable / زنجیرهٔ remark) می‌آیند.
+            راهنمای CMS ثبت کرده که همین کد قبلاً از unpkg در مرورگر ویرایشگر اجرا می‌شد و اصلاح آن به انتشار بالادست Decap وابسته است.
+            دروازهٔ CI فقط <span class="mono">npm audit --omit=dev</span> را اجباری می‌کند و آن در این اجرا صفر بود.
+          </div>
+        </section>
+
+        <!-- ═══════════════ BEFORE AFTER ═══════════════ -->
+        <section class="block" id="before-after">
+          <h2>قبل ← بعد</h2>
+          <p class="muted">ستون «قبل» از ممیزی ۱۷ اوت ۲۰۲۶ (commit dd58276) است. ستون «بعد» وضعیت فعلی مخزن پس از هشت فاز و اعتبارسنجی اخیر است.</p>
+          <table>
+            <thead><tr><th>حوزه</th><th>قبل (ممیزی)</th><th>بعد (مخزن فعلی)</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>امنیت</td>
+                <td>XSS تأییدشده در callback؛ Decap از unpkg متغیر؛ origin از Forwarded؛ scope برابر repo؛ محدودکنندهٔ سراسری untrusted؛ بدون آزمون رگرسیون</td>
+                <td>سریالایز + nonce CSP؛ Decap 3.15.1 خودمیزبان با ۹۳ هش؛ فهرست سفید origin؛ public_repo؛ محدودیت دولایه بدون سطل سراسری؛ ۶۴+۴۰+۱۵ آزمون امنیت</td>
+              </tr>
+              <tr>
+                <td>سئو</td>
+                <td>Product با brand تأییدنشده؛ خطر hreflang به ترجمهٔ ناموجود؛ redirect موقت؛ freshness ساختگی</td>
+                <td>سیاست واقعیت schema؛ hreflang همتاآگاه + x-default؛ ۳۰۸ دائمی؛ lastmod محتوایی؛ ۱۰۰ URL قراردادشده</td>
+              </tr>
+              <tr>
+                <td>کارایی</td>
+                <td>پیش‌بارگذاری اجباری هر دو فونت (۴۶۳ کیلوبایت مجموع فایل‌ها)؛ دیکشنری کامل روی خطا/۴۰۴؛ تماس پویا به‌خاطر query</td>
+                <td>یک فونت در هر زبان؛ status کوچک برای کلاینت؛ تماس ایستا؛ بودجه JS ۷۱۴/۷۷۵ و CSS ۸۰.۲/۹۵ برقرار</td>
+              </tr>
+              <tr>
+                <td>دسترسی‌پذیری</td>
+                <td>تضاد نقره‌ای ۲.۵۶:۱ روی سفید؛ منوی موبایل بدون تلهٔ فوکوس؛ خطای RFQ کلی</td>
+                <td>توکن‌های AA برای متن/لینک/دکمه روی سطح روشن؛ مودال کامل؛ خطای فیلدی و بازیابی Turnstile</td>
+              </tr>
+              <tr>
+                <td>CMS</td>
+                <td>پوشش ناقص زبان‌ها؛ config دستی؛ runtime از CDN</td>
+                <td>تولید مجموعه برای هر زبان؛ verify در prebuild؛ دستیار تحریریه وبلاگ بدون نمره</td>
+              </tr>
+              <tr>
+                <td>معماری</td>
+                <td>Header/RFQ یک‌تکه؛ توپولوژی استقرار مبهم بین Vercel و VPS</td>
+                <td>تجزیهٔ Header و RFQ؛ تصمیم صریح VPS + Nginx + systemd</td>
+              </tr>
+              <tr>
+                <td>RFQ / قابلیت اطمینان</td>
+                <td>شکست Resend می‌توانست استعلام را بی‌صدا از دست بدهد یا تکرار کند؛ بدون کران منبع</td>
+                <td>صندوق خروجی یکتا؛ تلاش مجدد تنبل و کرون؛ سقف بدنه و timeout؛ سلامت جفت‌کلید</td>
+              </tr>
+              <tr>
+                <td>پاکیزگی کد / وابستگی</td>
+                <td>بدون دوندهٔ آزمون؛ اسکریپت CDN خارج از lockfile؛ دارایی‌های بدون ارجاع</td>
+                <td>۲۱۸ آزمون؛ Decap داخل lockfile؛ ۲۷/۲۷ رسانه مصرف‌شده؛ shadcn پس از اثبات حذف شد</td>
+              </tr>
+              <tr>
+                <td>حجم مخزن</td>
+                <td>ممیزی حجم snapshot فعلی را به‌عنوان معیار فاز ۸ ثبت نکرده بود</td>
+                <td>۱۶M بدون node_modules و .next و .git؛ lockfile پس از حذف shadcn ۶۲۰K (قبلاً ۷۲۰K در همان گذر)</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="card-grid">
+            <div class="mini">
+              <strong>محتوا</strong>
+              ۲۲۸ رکورد پایدار: ۴ محصول، ۴ بازار، ۶ گواهی، ۸ قابلیت، ۹ گام زنجیره، ۹ فرایند کیفیت، ۶ مقاله، ۱۱ صفحه — در هر چهار زبان.
+            </div>
+            <div class="mini">
+              <strong>ساخت</strong>
+              ممیزی اولیه ۱۰۶ خروجی تولید ایستا گزارش کرد. آخرین <span class="mono">next build</span> ۱۰۵ صفحه فهرست می‌کند. هر دو عدد اندازه‌گیری‌شده‌اند؛ علت اختلاف حدس زده نمی‌شود.
+            </div>
+          </div>
+        </section>
+
+        <section class="block" id="remaining">
+          <h2>موارد باقی‌مانده — غیرمسدودکننده یا عملیاتی</h2>
+          <ul class="tight">
+            <li>تنظیم رازها روی سرور: Resend، Turnstile، OAuth گیت‌هاب، <span class="mono">CRON_SECRET</span>، در صورت نیاز webhook هشدار.</li>
+            <li>پشت Nginx: <span class="mono">TRUST_PROXY=true</span> فقط اگر پروکسی <span class="mono">X-Forwarded-For</span> / <span class="mono">X-Real-IP</span> را بازنویسی کند.</li>
+            <li>یک RFQ آزمایشی در هر زبان پس از استقرار (Task 8.5).</li>
+            <li>ثبت نقشهٔ سایت در Search Console پس از DNS و HTTPS.</li>
+            <li>همکاران گیت‌هاب با حداقل امتیاز Write، اجبار 2FA، و حفاظت شاخهٔ master.</li>
+            <li>RUM فقط پس از بررسی حریم، سیاست نگهداری، به‌روزرسانی متن حریم و امضای اپراتور.</li>
+            <li>وصل کردن Lighthouse CI به بودجهٔ آزمایشگاهی در صورت تمایل خط لولهٔ استقرار.</li>
+            <li>بازبینی دوره‌ای <span class="mono">npm audit</span> برای گراف Decap تا وقتی بالادست اصلاح بدهد.</li>
+            <li>اگر مخزن خصوصی شود، <span class="mono">public_repo</span> از کار می‌افتد — نباید خاموش به <span class="mono">repo</span> برگشت.</li>
+          </ul>
+          <p>
+            این سند قابلیت جدید نیست، استقرار نیست، و فاز تازه‌ای را شروع نمی‌کند.
+            کار توسعهٔ برنامهٔ هشت‌فازی در مخزن متوقف است تا تأیید بعدی شما.
+          </p>
+        </section>
+
+        <footer class="doc">
+          Feiz Food Group · گزارش نهایی اصلاحات · ۱۸ اوت ۲۰۲۶ · فقط حقایق راستی‌آزمایی‌شده از مخزن و اسناد فاز ۱ تا ۸
+        </footer>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
+زه‌ای را شروع نمی‌کند.
+            کار توسعهٔ برنامهٔ هشت‌فازی در مخزن متوقف است تا تأیید بعدی شما.
+          </p>
+        </section>
+
+        <footer class="doc">
+          Feiz Food Group · گزارش نهایی اصلاحات · ۱۸ اوت ۲۰۲۶ · فقط حقایق راستی‌آزمایی‌شده از مخزن و اسناد فاز ۱ تا ۸
+        </footer>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

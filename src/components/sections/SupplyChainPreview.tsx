@@ -38,7 +38,11 @@ export default function SupplyChainPreview({
           intro={dictionary.homepage.supplyChainIntro}
         />
 
-        <SupplyChainRail stages={stages} className="mt-14" />
+        <SupplyChainRail
+          stages={stages}
+          ariaLabel={dictionary.homepage.supplyRailLabel}
+          className="mt-14"
+        />
 
         <Reveal>
           <div className="mt-6 flex justify-center">

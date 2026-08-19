@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import {
+  OAUTH_POPUP_COOP,
   STATE_COOKIE,
   STATE_COOKIE_PATH,
   callbackCsp,
@@ -51,6 +52,10 @@ function popup(
         "Content-Type": "text/html; charset=utf-8",
         "Cache-Control": "no-store",
         "Content-Security-Policy": callbackCsp(nonce),
+        // Must stay unsafe-none: see OAUTH_POPUP_COOP. next.config.ts mirrors
+        // this so a document that somehow skips the route helper still keeps
+        // window.opener after the GitHub hop.
+        "Cross-Origin-Opener-Policy": OAUTH_POPUP_COOP,
       },
       ...init,
     },
@@ -87,6 +92,7 @@ export async function GET(request: Request) {
         headers: {
           "Content-Type": "text/plain; charset=utf-8",
           "Cache-Control": "no-store",
+          "Cross-Origin-Opener-Policy": OAUTH_POPUP_COOP,
         },
       },
     );

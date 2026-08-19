@@ -1,0 +1,55 @@
+# ──────────────────────────────────────────────────────────────────────────
+# Feiz Food Group — systemd unit example (Roadmap Task 3.1)
+# ──────────────────────────────────────────────────────────────────────────
+# Supervises the `next start` process on the single-instance VPS.
+#
+# Install to /etc/systemd/system/feiz-food.service, edit paths, then:
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now feiz-food
+#   sudo systemctl status feiz-food
+#
+# Secrets live in /etc/feiz-food/env (mode 0600, owned by the service user),
+# referenced via EnvironmentFile — never in Git. `WorkingDirectory` must be the
+# deploy root so the `.data` outbox and build resolve correctly.
+# ──────────────────────────────────────────────────────────────────────────
+
+[Unit]
+Description=Feiz Food Group (Next.js)
+After=network.target
+
+[Service]
+Type=simple
+User=feiz
+Group=feiz
+WorkingDirectory=/opt/feiz-food/current
+EnvironmentFile=/etc/feiz-food/env
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node ./node_modules/next/dist/bin/next start --port 3000 --hostname 127.0.0.1
+
+# Restart on crash; cap restart rate.
+Restart=on-failure
+RestartSec=5s
+
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/feiz-food/current/.data
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+RestrictSUIDSGID=true
+LockPersonality=true
+SystemCallFilter=@system-service
+SystemCallArchitectures=native
+
+# Output to journald (structured RFQ events land here too).
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=feiz-food
+
+[Install]
+WantedBy=multi-user.target

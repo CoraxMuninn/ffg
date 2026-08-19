@@ -1,7 +1,7 @@
 ---
 title: "Repeat-Order Specifications"
 slug: long-term-cooperation
-description: "For repeat enquiries, a written product and document specification provides a stable reference for later orders."
+description: "A written product and document specification for repeat enquiries."
 icon: handshake
 enabled: true
 order: 8

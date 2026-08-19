@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import {
+  OAUTH_POPUP_COOP,
   OAUTH_SCOPE,
   STATE_COOKIE,
   STATE_COOKIE_PATH,
@@ -24,11 +25,23 @@ export const runtime = "nodejs";
 /** Reads request headers/cookies, so it must not be statically evaluated. */
 export const dynamic = "force-dynamic";
 
+function brokerHeaders(extra?: Record<string, string>): Record<string, string> {
+  return {
+    "Cross-Origin-Opener-Policy": OAUTH_POPUP_COOP,
+    ...extra,
+  };
+}
+
 export async function GET(request: Request) {
   if (!isOAuthConfigured()) {
     return new NextResponse(
       "GitHub OAuth is not configured. Set GITHUB_OAUTH_CLIENT_ID and GITHUB_OAUTH_CLIENT_SECRET.",
-      { status: 500, headers: { "Content-Type": "text/plain; charset=utf-8" } },
+      {
+        status: 500,
+        headers: brokerHeaders({
+          "Content-Type": "text/plain; charset=utf-8",
+        }),
+      },
     );
   }
 
@@ -40,7 +53,12 @@ export async function GET(request: Request) {
   if (!origin) {
     return new NextResponse(
       "This host is not an approved OAuth origin for this deployment.",
-      { status: 400, headers: { "Content-Type": "text/plain; charset=utf-8" } },
+      {
+        status: 400,
+        headers: brokerHeaders({
+          "Content-Type": "text/plain; charset=utf-8",
+        }),
+      },
     );
   }
 
@@ -53,6 +71,9 @@ export async function GET(request: Request) {
   authorizeUrl.searchParams.set("state", state);
 
   const response = NextResponse.redirect(authorizeUrl.toString());
+  // A COOP on this 302 still participates in the popup's redirect chain.
+  // Isolating here severs `window.opener` before GitHub is even reached.
+  response.headers.set("Cross-Origin-Opener-Policy", OAUTH_POPUP_COOP);
 
   response.cookies.set(STATE_COOKIE, state, {
     httpOnly: true,

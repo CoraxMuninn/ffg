@@ -1,8 +1,8 @@
 ---
 title: "Сертификат происхождения"
 slug: certificate-of-origin
-description: "Документ на конкретную партию, указывающий заявленную страну происхождения; орган выдачи и признание проверяются по направлению."
-image:
+description: "Заявленная страна происхождения; подтверждается по направлению."
+image: /media/certifications/certificate-of-origin.png
 enabled: true
 order: 6
 ---

@@ -1,10 +1,10 @@
-// Relative rather than the `@/` alias: this module is compiled standalone by
-// `tsconfig.test.json` for the dependency-free `node --test` suite, which has
-// no path-alias resolver.
+// Relative imports keep this structured-data module self-contained; the Vitest
+// suite (Roadmap Task 2.1) and the Next bundle both resolve them identically.
 import type { BlogPost, Product } from "../content";
 import { PUBLIC_EMAIL } from "../content/contact";
 import { localeConfig } from "../i18n/config";
 import type { Locale } from "../i18n/config";
+import { resolveBlogSeo } from "./blog-meta";
 import { SITE_NAME, SITE_URL } from "./config";
 
 /**
@@ -174,20 +174,30 @@ export function productSchema(locale: Locale, product: Product): Schema {
 
 export function articleSchema(locale: Locale, post: BlogPost): Schema {
   const url = `${SITE_URL}/${locale}/blog/${post.slug}`;
+  const seo = resolveBlogSeo(post);
+  // BlogPosting.image is the visible featured image, not a social crop.
+  const imageUrl = post.image;
   const schema: Schema = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "@id": `${url}#article`,
     headline: post.title,
-    description: post.excerpt,
+    description: seo.description,
     url,
-    mainEntityOfPage: { "@id": `${url}#webpage` },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${url}#webpage`,
+    },
     inLanguage: localeConfig[locale].language,
-    datePublished: post.date,
-    image: post.image
+    datePublished: seo.publishedTime,
+    // dateModified reflects the actual revision when the CMS sets `updated`,
+    // otherwise it mirrors datePublished (Task 5.7 / SEO-L2). Never an
+    // arbitrary build time.
+    dateModified: seo.modifiedTime,
+    image: imageUrl
       ? {
           "@type": "ImageObject",
-          url: absoluteUrl(post.image),
+          url: absoluteUrl(imageUrl),
           ...(post.imageAlt ? { caption: post.imageAlt } : {}),
         }
       : undefined,
@@ -201,7 +211,7 @@ export function articleSchema(locale: Locale, post: BlogPost): Schema {
       },
     },
     ...(post.category ? { articleSection: post.category } : {}),
-    ...(post.tags.length > 0 ? { keywords: post.tags } : {}),
+    ...(seo.keywords.length > 0 ? { keywords: seo.keywords.join(", ") } : {}),
   };
 
   // The CMS stores a team/byline string rather than a verified named person.

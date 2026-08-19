@@ -21,6 +21,9 @@ export {
   getPageContent,
   getBlogPosts,
   getBlogPost,
+  localesWithProduct,
+  localesWithMarket,
+  localesWithBlogPost,
 } from "./loaders";
 
 export { getIcon } from "./icon-registry";

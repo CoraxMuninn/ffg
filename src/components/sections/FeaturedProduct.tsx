@@ -26,7 +26,7 @@ export default function FeaturedProduct({
     <section className="bg-navy-glass/5 backdrop-blur-3xl py-20 lg:py-28">
       <Container>
         <div className="mb-12 text-center">
-          <span className="mb-4 inline-block rounded-full bg-cyan-brand/10 px-4 py-2 text-sm font-semibold text-cyan-brand">
+          <span className="mb-4 inline-block rounded-full bg-cyan-brand/10 px-4 py-2 text-sm font-semibold text-cyan-link-hover">
             {dictionary.homepage.featuredBadge}
           </span>
           <h2 className="text-3xl font-bold text-navy sm:text-4xl lg:text-5xl">
@@ -35,7 +35,7 @@ export default function FeaturedProduct({
         </div>
 
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-          <div className="relative h-96 overflow-hidden rounded-2xl shadow-card lg:h-[500px]">
+          <div className="relative h-96 overflow-hidden rounded-2xl shadow-card lg:h-125">
             {featured.image ? (
               <Image
                 src={featured.image}
@@ -53,7 +53,7 @@ export default function FeaturedProduct({
 
           <div>
             {featured.description && (
-              <p className="mb-8 text-base leading-relaxed text-silver sm:text-lg">
+              <p className="mb-8 text-base leading-relaxed text-ink-soft sm:text-lg">
                 {featured.description}
               </p>
             )}
@@ -68,13 +68,13 @@ export default function FeaturedProduct({
                     key={spec.label}
                     className="flex items-start gap-3 rounded-lg border border-gray-200 bg-white p-4"
                   >
-                    <Check className="mt-0.5 h-5 w-5 flex-shrink-0 text-cyan-brand" />
+                    <Check className="mt-0.5 h-5 w-5shrink-0 text-cyan-brand" />
                     <div className="min-w-0">
-                      <div className="mb-1 text-xs text-silver">
+                      <div className="mb-1 text-xs text-label">
                         {spec.label}
                       </div>
-                      <div className="hyphens-auto break-words text-sm font-semibold text-navy">
-                        {spec.value}
+                      <div className="hyphens-auto wrap-break-word text-sm font-semibold text-navy">
+                        <bdi>{spec.value}</bdi>
                       </div>
                     </div>
                   </div>
@@ -82,14 +82,17 @@ export default function FeaturedProduct({
               </div>
             )}
 
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <Button asChild variant="secondary" size="lg" className="flex-1">
+            <div className="flex h-25! sm:h-0 flex-col gap-4 sm:flex-row">
+              <Button asChild variant="secondary" size="md" className="flex-1">
                 <Link href={productPath(locale, featured.slug)}>
                   {dictionary.cta.viewFullSpecifications}
-                  <ArrowRight data-icon="end" className="h-5 w-5 rtl:rotate-180" />
+                  <ArrowRight
+                    data-icon="end"
+                    className="h-5 w-5 rtl:rotate-180"
+                  />
                 </Link>
               </Button>
-              <Button asChild size="lg" className="flex-1">
+              <Button asChild size="md" className="flex-1">
                 <Link href={contactPath(locale, featured.slug)}>
                   {dictionary.cta.requestQuote}
                 </Link>

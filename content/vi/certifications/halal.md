@@ -1,8 +1,8 @@
 ---
 title: "Chứng từ Halal"
 slug: halal
-description: "Nhóm giấy tờ dành cho thị trường hoặc người mua yêu cầu bằng chứng Halal; phạm vi, cơ quan cấp và hiệu lực được xác nhận theo lô."
-image:
+description: "Bằng chứng Halal được xác nhận theo lô khi được yêu cầu."
+image: /media/certifications/halal.png
 enabled: true
 order: 3
 ---

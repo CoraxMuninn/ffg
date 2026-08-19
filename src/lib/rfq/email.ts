@@ -9,7 +9,13 @@ import type { RfqPayload } from "./types";
  * The buyer's email is used only as `Reply-To`, never as the sender. The sender
  * is always the configured, verified `RFQ_FROM_EMAIL`. Server-only secrets are
  * never exposed to the client.
+ *
+ * Delivery is bounded by a timeout (audit ARCH-M9) so a slow/unavailable Resend
+ * cannot hang the request, and the result is classified so the outbox can
+ * decide retry-vs-give-up.
  */
+
+export type DeliveryErrorCategory = "permanent" | "transient";
 
 function renderField(label: string, value: string): string {
   if (!value) return "";
@@ -75,44 +81,75 @@ export function buildRfqEmailText(payload: RfqPayload, submittedAt: string): str
 
 export interface SendRfqEmailResult {
   ok: boolean;
-  /** Human-safe, generic error message (never internal details). */
+  /** Human-safe, generic error code (never internal details). */
   error?: string;
+  /** Classification for the outbox retry policy. */
+  category?: DeliveryErrorCategory;
 }
 
-export async function sendRfqEmail(payload: RfqPayload): Promise<SendRfqEmailResult> {
+/** Rejects after `ms`, labelling the outcome as a transient timeout. */
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  let timer: NodeJS.Timeout | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error("SEND_TIMEOUT")), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => {
+    if (timer) clearTimeout(timer);
+  });
+}
+
+export async function sendRfqEmail(
+  payload: RfqPayload,
+  options: { idempotencyKey?: string } = {},
+): Promise<SendRfqEmailResult> {
   const apiKey = RFQ.resendApiKey;
   const to = RFQ.toEmail;
   const from = RFQ.fromEmail;
 
   if (!apiKey || !to || !from) {
-    return { ok: false, error: "NOT_CONFIGURED" };
+    // Missing Resend configuration is a deployment error an operator must fix,
+    // not a transient hiccup — classify it permanent so the buyer is not left
+    // in an endless retry loop.
+    return { ok: false, error: "NOT_CONFIGURED", category: "permanent" };
   }
 
   const submittedAt = new Date().toISOString();
 
   try {
     const resend = new Resend(apiKey);
-    const { error } = await resend.emails.send({
-      from,
-      to: [to],
-      replyTo: [payload.email],
-      // Defense in depth: strip any control characters from the subject so it
-      // can never be used for email header injection, regardless of source.
-      subject: `New RFQ from ${payload.company} — ${payload.product}`.replace(
-        /[\u0000-\u001F\u007F-\u009F]/g,
-        ""
-      ),
-      html: buildRfqEmailHtml(payload, submittedAt),
-      text: buildRfqEmailText(payload, submittedAt),
-    });
+    const sendPromise = resend.emails.send(
+      {
+        from,
+        to: [to],
+        replyTo: [payload.email],
+        // Defense in depth: strip any control characters from the subject so it
+        // can never be used for email header injection, regardless of source.
+        subject: `New RFQ from ${payload.company} — ${payload.product}`.replace(
+          /[\u0000-\u001F\u007F-\u009F]/g,
+          "",
+        ),
+        html: buildRfqEmailHtml(payload, submittedAt),
+        text: buildRfqEmailText(payload, submittedAt),
+      },
+      // Resend-side dedup: a retried idempotency key produces one email even if
+      // a previous attempt actually reached Resend before our timeout fired.
+      options.idempotencyKey ? { idempotencyKey: options.idempotencyKey } : undefined,
+    );
+
+    const { error } = await withTimeout(sendPromise, RFQ.sendTimeoutMs);
 
     if (error) {
       // Never forward the underlying Resend error to the client.
-      return { ok: false, error: "SEND_FAILED" };
+      return { ok: false, error: "SEND_FAILED", category: "transient" };
     }
 
     return { ok: true };
-  } catch {
-    return { ok: false, error: "SEND_FAILED" };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "";
+    // A bounded timeout is a transient transport problem, safe to retry.
+    if (message === "SEND_TIMEOUT") {
+      return { ok: false, error: "SEND_TIMEOUT", category: "transient" };
+    }
+    return { ok: false, error: "SEND_FAILED", category: "transient" };
   }
 }

@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 
 import { isLocale, localeConfig, locales } from "@/lib/i18n/config";
@@ -9,30 +8,6 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
 import "../globals.css";
-
-const inter = localFont({
-  src: [
-    {
-      path: "../../../public/fonts/Inter-Variable.woff2",
-      weight: "100 900",
-      style: "normal",
-    },
-  ],
-  variable: "--font-sans",
-  display: "swap",
-});
-
-const vazirmatn = localFont({
-  src: [
-    {
-      path: "../../../public/fonts/Vazirmatn-Variable.woff2",
-      weight: "100 900",
-      style: "normal",
-    },
-  ],
-  variable: "--font-fa",
-  display: "swap",
-});
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -84,13 +59,27 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   const config = localeConfig[locale];
   const dictionary = getDictionary(locale);
 
+  // Per-locale font loading (Roadmap Task 7.1 / PERF-M1): fonts are self-hosted
+  // via @font-face in globals.css. A @font-face file is only fetched when its
+  // family is applied to rendered text (Inter for LTR locales via
+  // var(--font-sans); Vazirmatn for the Persian/RTL locale via var(--font-fa)).
+  // A single conditional <link rel="preload"> (hoisted to <head>) prioritizes
+  // the one family the page actually uses, so EN/RU/VI fetch Inter alone and FA
+  // fetches Vazirmatn alone — eliminating the reported 463 KB forced dual-font
+  // preload.
+  const fontPreload =
+    locale === "fa" ? "/fonts/Vazirmatn-Variable.woff2" : "/fonts/Inter-Variable.woff2";
+
   return (
-    <html
-      lang={config.language}
-      dir={config.direction}
-      className={`${inter.variable} ${vazirmatn.variable}`}
-    >
+    <html lang={config.language} dir={config.direction}>
       <body className="antialiased">
+        <link
+          rel="preload"
+          href={fontPreload}
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:z-[60] focus:bg-cyan-brand focus:px-4 focus:py-2 focus:text-white"

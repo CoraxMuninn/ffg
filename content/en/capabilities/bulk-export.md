@@ -1,7 +1,7 @@
 ---
 title: "Container Enquiries"
 slug: bulk-export
-description: "Container type, proposed load, loading scope, and document requirements are confirmed for each enquiry."
+description: "Container type, load, and documents confirmed per enquiry."
 icon: ship
 enabled: true
 order: 4

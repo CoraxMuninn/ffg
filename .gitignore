@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+# runtime data (RFQ delivery outbox — see docs/DEPLOYMENT.md). Never commit.
+/.data/
+
 # next.js
 /.next/
 /out/
@@ -30,18 +33,12 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files
 .env*
-# ...but the placeholder template must be committed so operators know which
+# The placeholder template must be committed so operators know which
 # variables the app needs.
 !.env.example
-
-# vercel
-.vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# oauth security regression suite build output (see tsconfig.test.json)
-/.test-build/
